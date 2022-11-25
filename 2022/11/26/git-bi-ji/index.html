@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="hexo博客搭建, Hexo">
+    <meta name="keywords" content="git笔记, Hexo">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>hexo博客搭建 | Hexo</title>
+    <title>git笔记 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -311,12 +311,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/9.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">hexo博客搭建</h1>
+                    <h1 class="description center-align post-title">git笔记</h1>
                 </div>
             </div>
         </div>
@@ -432,14 +432,27 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/hexo/">
-                                <span class="chip bg-color">hexo</span>
+                            <a href="/tags/%E5%9F%BA%E7%A1%80/">
+                                <span class="chip bg-color">基础</span>
+                            </a>
+                        
+                            <a href="/tags/git/">
+                                <span class="chip bg-color">git</span>
                             </a>
                         
                     </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/git/" class="post-category">
+                                git
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -448,7 +461,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-11-25
+                    2022-11-26
                 </div>
                 
 
@@ -472,26 +485,104 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>参照<a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_37781304/article/details/82729029">hexo史上最全搭建教程</a>搭建了hexo个人网站。</p>
-<h1 id="hexo简介"><a href="#hexo简介" class="headerlink" title="hexo简介"></a>hexo简介</h1><p>Hexo是一款基于Node.js的静态博客框架，依赖少易于安装使用，可以方便的生成静态网页托管在GitHub和Coding上，是搭建博客的首选框架。大家可以进入<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/">hexo官网</a>进行详细查看，因为Hexo的创建者是台湾人，对中文的支持很友好，可以选择中文进行查看。</p>
-<h1 id="hexo搭建步骤"><a href="#hexo搭建步骤" class="headerlink" title="hexo搭建步骤"></a>hexo搭建步骤</h1><ol>
-<li><h2 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h2></li>
-<li><h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2></li>
-<li><h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2></li>
-<li><h2 id="GitHub创建个人仓库"><a href="#GitHub创建个人仓库" class="headerlink" title="GitHub创建个人仓库"></a>GitHub创建个人仓库</h2></li>
-<li><h2 id="生成SSH添加到GitHub"><a href="#生成SSH添加到GitHub" class="headerlink" title="生成SSH添加到GitHub"></a>生成SSH添加到GitHub</h2></li>
-<li><h2 id="将hexo部署到GitHub"><a href="#将hexo部署到GitHub" class="headerlink" title="将hexo部署到GitHub"></a>将hexo部署到GitHub</h2></li>
-<li><h2 id="设置个人域名"><a href="#设置个人域名" class="headerlink" title="设置个人域名"></a>设置个人域名</h2></li>
-<li><h2 id="发布文章"><a href="#发布文章" class="headerlink" title="发布文章"></a>发布文章</h2></li>
-<li><h2 id="安装Git-1"><a href="#安装Git-1" class="headerlink" title="安装Git"></a>安装Git</h2></li>
-<li><h2 id="安装Node-js-1"><a href="#安装Node-js-1" class="headerlink" title="安装Node.js"></a>安装Node.js</h2></li>
-<li><h2 id="安装Hexo-1"><a href="#安装Hexo-1" class="headerlink" title="安装Hexo"></a>安装Hexo</h2></li>
-<li><h2 id="GitHub创建个人仓库-1"><a href="#GitHub创建个人仓库-1" class="headerlink" title="GitHub创建个人仓库"></a>GitHub创建个人仓库</h2></li>
-<li><h2 id="生成SSH添加到GitHub-1"><a href="#生成SSH添加到GitHub-1" class="headerlink" title="生成SSH添加到GitHub"></a>生成SSH添加到GitHub</h2></li>
-<li><h2 id="将hexo部署到GitHub-1"><a href="#将hexo部署到GitHub-1" class="headerlink" title="将hexo部署到GitHub"></a>将hexo部署到GitHub</h2></li>
-<li><h2 id="设置个人域名-1"><a href="#设置个人域名-1" class="headerlink" title="设置个人域名"></a>设置个人域名</h2></li>
-<li><h2 id="发布文章-1"><a href="#发布文章-1" class="headerlink" title="发布文章"></a>发布文章</h2></li>
+                <h1 id="git核心"><a href="#git核心" class="headerlink" title="git核心"></a>git核心</h1><p>![Screenshot_20220416_171404_tv.danmaku.bili](D:\Huawei Share\Huawei Share\Screenshot_20220416_171404_tv.danmaku.bili.jpg)</p>
+<h1 id="git登录"><a href="#git登录" class="headerlink" title="git登录"></a>git登录</h1><p>查看当前登录账号：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">git config user.name<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>查看当前登录邮箱</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">git config user.email<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>修改用户名和邮箱：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">git config --global user.name &quot;Your_username&quot;
+git config --global user.email &quot;Your_email&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>初始化一个Git仓库，使用<code>git init</code>命令。</p>
+<p>添加文件到Git仓库，分两步：</p>
+<ol>
+<li>使用命令<code>git add &lt;file&gt;</code>，注意，可反复多次使用，添加多个文件；</li>
+<li>使用命令<code>git commit -m &lt;message&gt;</code>，完成。</li>
 </ol>
+<ul>
+<li>要随时掌握工作区的状态，使用<code>git status</code>命令。</li>
+<li>如果<code>git status</code>告诉你有文件被修改过，用<code>git diff</code>可以查看修改内容。</li>
+</ul>
+<h1 id="版本切换"><a href="#版本切换" class="headerlink" title="版本切换"></a>版本切换</h1><ul>
+<li><code>HEAD</code>指向的版本就是当前版本，HEAD^表示上一个版本，HEAD^^表示上上个版本，HEAD~100表示往上100个版本，因此，Git允许我们在版本的历史之间穿梭，使用命令<code>git reset --hard commit_id</code>，commit_id版本号不需要写全，只需要写前几个。</li>
+<li>穿梭前，用<code>git log</code>可以查看提交历史，以便确定要回退到哪个版本。</li>
+<li>要重返未来，用<code>git reflog</code>查看命令历史，以便确定要回到未来的哪个版本。</li>
+</ul>
+<p>git把本地仓库推到github上</p>
+<pre class="line-numbers language-none"><code class="language-none">git remote add origin https:&#x2F;&#x2F;github.com&#x2F;Sheep1433&#x2F;learngit.git<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="C:\Users\Administrator\blog\newblog\source\picture\image-20211223210005615.png" alt="image-20211223210005615"></p>
+<pre class="line-numbers language-none"><code class="language-none">git checkout -- file 撤销对file的修改<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>在本机上创建ssh key，然后在主目录的.ssh文件夹中将公钥复制到github或者gitee中即可。</p>
+<pre class="line-numbers language-none"><code class="language-none">ssh-keygen -t rsa -C &quot;youremail@example.com&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>然后在本地仓库目录下运行以下命令，将本地仓库和远程库关联</p>
+<pre class="line-numbers language-none"><code class="language-none">git remote add origin git@github.com:Sheep1433&#x2F;learngit.git
+或者git remote add origin https:&#x2F;&#x2F;github.com&#x2F;Sheep1433&#x2F;learngit.git
+# git支持多种协议，如ssh和https,默认的git:&#x2F;&#x2F;使用的是ssh协议，速度快<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>将本地仓库内容推送到远程库</p>
+<pre class="line-numbers language-none"><code class="language-none">git push -u origin master<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>第一次推送master分支时，加上-u参数，会同时将本地master和远程库的master关联起来，以后的推送或拉取可以简化命令</p>
+<p>如</p>
+<pre class="line-numbers language-none"><code class="language-none">git push 或者 git push origin master<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>解除本地仓库和远程库的链接</strong></p>
+<p>查看远程库信息</p>
+<pre class="line-numbers language-none"><code class="language-none">git remote -v<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>然后删除</p>
+<pre class="line-numbers language-none"><code class="language-none">git remote rm origin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h1 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h1><p>创建dev分支并且切换</p>
+<pre class="line-numbers language-none"><code class="language-none">git checkout -b dev		等同于 git branch dev 加上git checkout dev也等同于git switch -c dev<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>使用git branch查看分支</p>
+<p>在dev分支中完成代码工作后，并使用git add和git commit 提交后，切换至master分支，是无法看到dev分支的工作的，通过在master分支中使用git merge dev命令合并分支。		</p>
+<pre class="line-numbers language-none"><code class="language-none">删除分支	git branch -d dev
+创建分支并切换		git checkout -b dev
+查看分支	git branch
+查看日志	git log
+合并分支	git merge dev
+禁用Fast-Forward模式进行合并分支	git merge --no-ff -m &quot;merge with no-ff&quot; dev
+git stash命令的场景假设：
+	保留工作现场		git stash
+	切换master分支 	 git checkout master
+	创建新分支		git checkout -b issue001
+	git add 和git commit -m提交修复
+	切回master分支	 git switch master
+	将issue分支合并入master分支	git merge --no-ff -m &quot;merge with no-ff&quot; issue001
+	切回dev分支		git switch dev
+	查看工作现场		git stash list
+	恢复现场并删除		git stash apply和git stash drop等同于git stash pop
+恢复指定的stash	git stash apply stash@&#123;0&#125;
+删除还没有合并的分支	git branch -D feature-vulcan
+从本地推送分支		git push origin branch-name
+如果推送失败，先用git pull抓取
+在本地创建和远程分支对应的分支		git checkout -b branch-name origin&#x2F;branch-name
+建立本地分支和远程分支的管理		git branch --set-upstream-to branch-name rigin&#x2F;branch-name
+查看日志	git log
+查看日志	git log --pretty&#x3D;oneline --abbrev-commit
+打上标签	git tag v1.0
+查看标签	git tag
+针对指定commit id打上标签	git tag v0.9 f52c633
+
+删除远程分支 git push origin --delete 远程分支名
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>将推送的远程库名字改成不同的，就可以将一个本地库推送到多个平台</p>
+<pre class="line-numbers language-none"><code class="language-none">git remote add github git@github.com:Sheep1433&#x2F;learngit.git
+git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>删除github上的文件夹，在本地仓库使用git rm -r –cached 文件夹名，再使用git commit和git push</p>
+<p>下载源码时切换版本	git clone 源码， git tag 列出所有版本，git checkout 版本号</p>
+<p>参与到别人的开源项目中</p>
+<p>在github中fork项目，然后git clone自己的仓库，这样才能提交推送，如果想让官方接受修改，在github上pr(pull requests)</p>
 
                 
             </div>
@@ -508,7 +599,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="/about" rel="external nofollow noreferrer">John Doe</a>
+                    <a href="/about" rel="external nofollow noreferrer">三岁浪迹天涯</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -518,7 +609,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://Sheep1433.github.io/2022/11/25/hexo-bo-ke-da-jian/">http://Sheep1433.github.io/2022/11/25/hexo-bo-ke-da-jian/</a>
+                    <a href="http://Sheep1433.github.io/2022/11/26/git-bi-ji/">http://Sheep1433.github.io/2022/11/26/git-bi-ji/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -531,7 +622,7 @@
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="/about" target="_blank">John Doe</a>
+                    <a href="/about" target="_blank">三岁浪迹天涯</a>
                     !
                 </span>
             </div>
@@ -556,8 +647,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/hexo/">
-                                    <span class="chip bg-color">hexo</span>
+                                <a href="/tags/%E5%9F%BA%E7%A1%80/">
+                                    <span class="chip bg-color">基础</span>
+                                </a>
+                            
+                                <a href="/tags/git/">
+                                    <span class="chip bg-color">git</span>
                                 </a>
                             
                         </div>
@@ -727,17 +822,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2022/11/26/shell-ru-men/">
+                <a href="/2022/11/26/git-bi-ji/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="shell入门">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="git笔记">
                         
-                        <span class="card-title">shell入门</span>
+                        <span class="card-title">git笔记</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -747,30 +843,31 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-11-26
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-11-26
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/shell/" class="post-category">
-                                    shell
+                            <a href="/categories/git/" class="post-category">
+                                    git
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/shell/">
-                        <span class="chip bg-color">shell</span>
-                    </a>
-                    
                     <a href="/tags/%E5%9F%BA%E7%A1%80/">
                         <span class="chip bg-color">基础</span>
+                    </a>
+                    
+                    <a href="/tags/git/">
+                        <span class="chip bg-color">git</span>
                     </a>
                     
                 </div>
@@ -784,31 +881,31 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/04/25/requests-yuan-ma-xue-xi/">
+                <a href="/2022/11/26/docker-ru-men/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="requests源码学习">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="docker入门">
                         
-                        <span class="card-title">requests源码学习</span>
+                        <span class="card-title">docker入门</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            关于requests中各模块源码的学习
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-25
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-11-26
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/requests/" class="post-category">
-                                    requests
+                            <a href="/categories/docker/" class="post-category">
+                                    docker
                                 </a>
                             
                             
@@ -818,8 +915,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/">
-                        <span class="chip bg-color">源码学习</span>
+                    <a href="/tags/%E5%9F%BA%E7%A1%80/">
+                        <span class="chip bg-color">基础</span>
+                    </a>
+                    
+                    <a href="/tags/docker/">
+                        <span class="chip bg-color">docker</span>
                     </a>
                     
                 </div>

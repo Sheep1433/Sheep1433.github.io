@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Git学习笔记, Hexo">
+    <meta name="keywords" content="docker入门, Hexo">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Git学习笔记 | Hexo</title>
+    <title>docker入门 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -311,12 +311,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Git学习笔记</h1>
+                    <h1 class="description center-align post-title">docker入门</h1>
                 </div>
             </div>
         </div>
@@ -432,8 +432,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Git/">
-                                <span class="chip bg-color">Git</span>
+                            <a href="/tags/%E5%9F%BA%E7%A1%80/">
+                                <span class="chip bg-color">基础</span>
+                            </a>
+                        
+                            <a href="/tags/docker/">
+                                <span class="chip bg-color">docker</span>
                             </a>
                         
                     </div>
@@ -444,8 +448,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" class="post-category">
-                                工具使用
+                            <a href="/categories/docker/" class="post-category">
+                                docker
                             </a>
                         
                     </div>
@@ -457,7 +461,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-04-25
+                    2022-11-26
                 </div>
                 
 
@@ -481,99 +485,97 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="git核心"><a href="#git核心" class="headerlink" title="git核心"></a>git核心</h1><p>![Screenshot_20220416_171404_tv.danmaku.bili](D:\Huawei Share\Huawei Share\Screenshot_20220416_171404_tv.danmaku.bili.jpg)</p>
-<h1 id="git登录"><a href="#git登录" class="headerlink" title="git登录"></a>git登录</h1><p>查看当前登录账号：</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">git config user.name<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+                <h2 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h2><p>不支持windows10家庭版</p>
+<p>CentOS 安装配置</p>
+<p>yum install -y yum-utils device-mapper-persistent-data lvm2		安装依赖</p>
+<p> yum-config-manager –add-repo <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo">http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</a>	添加源</p>
+<p>yum -y install docker-ce 	安装docker	</p>
+<p>或者curl -fsSL <a target="_blank" rel="noopener" href="https://get.docker.com/">https://get.docker.com</a> | bash -s docker –mirror Aliyun</p>
+<p>此时直接使用docker ps查看进程是无效的，需要先systemctl start docker启动</p>
+<p>设置开机自启动：	systemctl enable docker</p>
+<p>docker pull nginx或者docker pull nginx:1.17.10</p>
+<p>docker-compose安装</p>
+<pre class="line-numbers language-none"><code class="language-none"># curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.8.1&#x2F;docker-compose-&#96;uname -s&#96;-&#96;uname -m&#96; &gt; &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose
+# chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<p>查看当前登录邮箱</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">git config user.email<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker version	docker版本信息
+docker info		docker系统信息
+docker images	查看所有镜像
+docker search busybox 	在网上搜索镜像
+docker pull busybOx:latest	拉取下载
+docker save busybox &gt; busybox.tar	导出
+docker load &lt; busybox.tar	导入
+docker rmi busybox:latest	删除镜像
+docker tag busybox:latest busybox:test 	更改镜像名
+docker history busybox 	查看镜像创建历史
 
-<p>修改用户名和邮箱：</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">git config --global user.name &quot;Your_username&quot;
-git config --global user.email &quot;Your_email&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+docker run -d --name&#x3D;busybox busybox:latest ping 114.114.114.114	运行容器
+docker ps, docker ps -a		查看运行的容器
+docker top busybox 		查看容器中运行的进程
+docker stats busybox 	查看资源占用
+docker start&#x2F;restart&#x2F;stop&#x2F;kill busybox 容器
+docker pause&#x2F;unpause busybox 	暂停容器
+docker rm -f busybox 	强制删除容器
 
-<p>初始化一个Git仓库，使用<code>git init</code>命令。</p>
-<p>添加文件到Git仓库，分两步：</p>
-<ol>
-<li>使用命令<code>git add &lt;file&gt;</code>，注意，可反复多次使用，添加多个文件；</li>
-<li>使用命令<code>git commit -m &lt;message&gt;</code>，完成。</li>
-</ol>
+docker exec -it busybox ls	执行命令
+docker exec -it elasticsearch &#x2F;bin&#x2F;bash	在该容器下执行bash命令
+docker cp busyboxL&#x2F;etc&#x2F;hosts hosts		复制文件
+docker logs -f busybox		查看容器日志
+docker inspect busybox		查看容器&#x2F;镜像的元信息
+docker inspect -f&#39;&#123;&#123;.Id&#125;&#125;&#39; busybox		格式化输出
+
+docker build	基于dockerfile在构建镜像
+docker commit	将容器转化为镜像<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Nginx容器</p>
+<pre class="line-numbers language-none"><code class="language-none">docker run -d --name nginx -p 8088:80 nginx1.17.9			运行
+docker run -d --name nginx1 -p 8089:80 -v $&#123;PWD&#125;&#x2F;html:&#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html&#x2F;nginx:1.17.9	挂载目录
+docker stop 停止<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>此外，还可以利用 <code>ADD</code> 命令复制本地文件到镜像；用 <code>EXPOSE</code> 命令来向外部开放端口；用 <code>CMD</code> 命令来描述容器启动后运行的程序等。例如</p>
+<p>当利用 <code>docker run</code> 来创建容器时，Docker 在后台运行的标准操作包括：</p>
 <ul>
-<li>要随时掌握工作区的状态，使用<code>git status</code>命令。</li>
-<li>如果<code>git status</code>告诉你有文件被修改过，用<code>git diff</code>可以查看修改内容。</li>
+<li>检查本地是否存在指定的镜像，不存在就从公有仓库下载</li>
+<li>利用镜像创建并启动一个容器</li>
+<li>分配一个文件系统，并在只读的镜像层外面挂载一层可读写层</li>
+<li>从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中去</li>
+<li>从地址池配置一个 ip 地址给容器</li>
+<li>执行用户指定的应用程序</li>
+<li>执行完毕后容器被终止</li>
 </ul>
-<h1 id="版本切换"><a href="#版本切换" class="headerlink" title="版本切换"></a>版本切换</h1><ul>
-<li><code>HEAD</code>指向的版本就是当前版本，HEAD^表示上一个版本，HEAD^^表示上上个版本，HEAD~100表示往上100个版本，因此，Git允许我们在版本的历史之间穿梭，使用命令<code>git reset --hard commit_id</code>，commit_id版本号不需要写全，只需要写前几个。</li>
-<li>穿梭前，用<code>git log</code>可以查看提交历史，以便确定要回退到哪个版本。</li>
-<li>要重返未来，用<code>git reflog</code>查看命令历史，以便确定要回到未来的哪个版本。</li>
+<h2 id="守护态运行："><a href="#守护态运行：" class="headerlink" title="守护态运行："></a>守护态运行：</h2><p>更多的时候，需要让 Docker 容器在后台以守护态（Daemonized）形式运行。此时，可以通过添加 <code>-d</code> 参数来实现</p>
+<h2 id="容器重启"><a href="#容器重启" class="headerlink" title="容器重启"></a>容器重启</h2><p>处于终止状态的容器，可以通过 <code>docker start</code> 命令来重新启动。</p>
+<p>此外，<code>docker restart</code> 命令会将一个运行态的容器终止，然后再重新启动它。</p>
+<h2 id="Dockerfile中命令"><a href="#Dockerfile中命令" class="headerlink" title="Dockerfile中命令"></a>Dockerfile中命令</h2><h3 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h3><p>格式为 <code>RUN &lt;command&gt;</code> 或 <code>RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code>。</p>
+<p>前者将在 shell 终端中运行命令，即 <code>/bin/sh -c</code>；后者则使用 <code>exec</code> 执行。指定使用其它终端可以通过第二种方式实现，例如 <code>RUN [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;echo hello&quot;]</code>。</p>
+<p>每条 <code>RUN</code> 指令将在当前镜像基础上执行指定命令，并提交为新的镜像。当命令较长时可以使用 <code>\</code> 来换行</p>
+<h3 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h3><p>支持三种格式</p>
+<ul>
+<li><code>CMD [&quot;executable&quot;,&quot;param1&quot;,&quot;param2&quot;]</code> 使用 <code>exec</code> 执行，推荐方式；</li>
+<li><code>CMD command param1 param2</code> 在 <code>/bin/sh</code> 中执行，提供给需要交互的应用；</li>
+<li><code>CMD [&quot;param1&quot;,&quot;param2&quot;]</code> 提供给 <code>ENTRYPOINT</code> 的默认参数；</li>
 </ul>
-<p>git把本地仓库推到github上</p>
-<pre class="line-numbers language-none"><code class="language-none">git remote add origin https:&#x2F;&#x2F;github.com&#x2F;Sheep1433&#x2F;learngit.git<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>指定启动容器时执行的命令，每个 Dockerfile 只能有一条 <code>CMD</code> 命令。如果指定了多条命令，只有最后一条会被执行。</p>
+<p>如果用户启动容器时候指定了运行的命令，则会覆盖掉 <code>CMD</code> 指定的命令。</p>
+<h3 id="ENV"><a href="#ENV" class="headerlink" title="ENV"></a>ENV</h3><p>格式为 <code>ENV &lt;key&gt; &lt;value&gt;</code>。 指定一个环境变量，会被后续 <code>RUN</code> 指令使用，并在容器运行时保持。</p>
+<p>例如</p>
+<pre class="line-numbers language-none"><code class="language-none">ENV PG_MAJOR 9.3
+ENV PG_VERSION 9.3.4
+RUN curl -SL http:&#x2F;&#x2F;example.com&#x2F;postgres-$PG_VERSION.tar.xz | tar -xJC &#x2F;usr&#x2F;src&#x2F;postgress &amp;&amp; …
+ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p><img src="C:\Users\DESKTOP\AppData\Roaming\Typora\typora-user-images\image-20211223210005615.png" alt="image-20211223210005615"></p>
-<pre class="line-numbers language-none"><code class="language-none">git checkout -- file 撤销对file的修改<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>在本机上创建ssh key，然后在主目录的.ssh文件夹中将公钥复制到github或者gitee中即可。</p>
-<pre class="line-numbers language-none"><code class="language-none">ssh-keygen -t rsa -C &quot;youremail@example.com&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>然后在本地仓库目录下运行以下命令，将本地仓库和远程库关联</p>
-<pre class="line-numbers language-none"><code class="language-none">git remote add origin git@github.com:Sheep1433&#x2F;learngit.git
-或者git remote add origin https:&#x2F;&#x2F;github.com&#x2F;Sheep1433&#x2F;learngit.git
-# git支持多种协议，如ssh和https,默认的git:&#x2F;&#x2F;使用的是ssh协议，速度快<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>将本地仓库内容推送到远程库</p>
-<pre class="line-numbers language-none"><code class="language-none">git push -u origin master<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>第一次推送master分支时，加上-u参数，会同时将本地master和远程库的master关联起来，以后的推送或拉取可以简化命令</p>
-<p>如</p>
-<pre class="line-numbers language-none"><code class="language-none">git push 或者 git push origin master<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p><strong>解除本地仓库和远程库的链接</strong></p>
-<p>查看远程库信息</p>
-<pre class="line-numbers language-none"><code class="language-none">git remote -v<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>然后删除</p>
-<pre class="line-numbers language-none"><code class="language-none">git remote rm origin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<h1 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h1><p>创建dev分支并且切换</p>
-<pre class="line-numbers language-none"><code class="language-none">git checkout -b dev		等同于 git branch dev 加上git checkout dev也等同于git switch -c dev<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>使用git branch查看分支</p>
-<p>在dev分支中完成代码工作后，并使用git add和git commit 提交后，切换至master分支，是无法看到dev分支的工作的，通过在master分支中使用git merge dev命令合并分支。		</p>
-<pre class="line-numbers language-none"><code class="language-none">删除分支	git branch -d dev
-创建分支并切换		git checkout -b dev
-查看分支	git branch
-查看日志	git log
-合并分支	git merge dev
-禁用Fast-Forward模式进行合并分支	git merge --no-ff -m &quot;merge with no-ff&quot; dev
-git stash命令的场景假设：
-	保留工作现场		git stash
-	切换master分支 	 git checkout master
-	创建新分支		git checkout -b issue001
-	git add 和git commit -m提交修复
-	切回master分支	 git switch master
-	将issue分支合并入master分支	git merge --no-ff -m &quot;merge with no-ff&quot; issue001
-	切回dev分支		git switch dev
-	查看工作现场		git stash list
-	恢复现场并删除		git stash apply和git stash drop等同于git stash pop
-恢复指定的stash	git stash apply stash@&#123;0&#125;
-删除还没有合并的分支	git branch -D feature-vulcan
-从本地推送分支		git push origin branch-name
-如果推送失败，先用git pull抓取
-在本地创建和远程分支对应的分支		git checkout -b branch-name origin&#x2F;branch-name
-建立本地分支和远程分支的管理		git branch --set-upstream-to branch-name rigin&#x2F;branch-name
-查看日志	git log
-查看日志	git log --pretty&#x3D;oneline --abbrev-commit
-打上标签	git tag v1.0
-查看标签	git tag
-针对指定commit id打上标签	git tag v0.9 f52c633<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>将推送的远程库名字改成不同的，就可以将一个本地库推送到多个平台</p>
-<pre class="line-numbers language-none"><code class="language-none">git remote add github git@github.com:Sheep1433&#x2F;learngit.git
-git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-<p>参与到别人的开源项目中</p>
-<p>在github中fork项目，然后git clone自己的仓库，这样才能提交推送，如果想让官方接受修改，在github上pr(pull requests)</p>
+<h3 id="EXPOSE"><a href="#EXPOSE" class="headerlink" title="EXPOSE"></a>EXPOSE</h3><p>格式为 <code>EXPOSE &lt;port&gt; [&lt;port&gt;...]</code>。</p>
+<p>告诉 Docker 服务端容器暴露的端口号，供互联系统使用。在启动容器时需要通过 -P，Docker 主机会自动分配一个端口转发到指定的端口。</p>
+<h3 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h3><p>格式为 <code>ADD &lt;src&gt; &lt;dest&gt;</code>。</p>
+<p>该命令将复制指定的 <code>&lt;src&gt;</code> 到容器中的 <code>&lt;dest&gt;</code>。 其中 <code>&lt;src&gt;</code> 可以是Dockerfile所在目录的一个相对路径；也可以是一个 URL；还可以是一个 tar 文件（自动解压为目录）。</p>
+<h3 id="COPY"><a href="#COPY" class="headerlink" title="COPY"></a>COPY</h3><p>格式为 <code>COPY &lt;src&gt; &lt;dest&gt;</code>。</p>
+<p>复制本地主机的 <code>&lt;src&gt;</code>（为 Dockerfile 所在目录的相对路径）到容器中的 <code>&lt;dest&gt;</code>。</p>
+<p>当使用本地目录为源目录时，推荐使用 <code>COPY</code>。</p>
+<h3 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h3><p>格式为 <code>WORKDIR /path/to/workdir</code>。</p>
+<p>为后续的 <code>RUN</code>、<code>CMD</code>、<code>ENTRYPOINT</code> 指令配置工作目录。</p>
+<p>可以使用多个 <code>WORKDIR</code> 指令，后续命令如果参数是相对路径，则会基于之前命令指定的路径</p>
 
                 
             </div>
@@ -590,7 +592,7 @@ git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="/about" rel="external nofollow noreferrer">小章</a>
+                    <a href="/about" rel="external nofollow noreferrer">三岁浪迹天涯</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -600,7 +602,7 @@ git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://Sheep1433.github.io/2022/04/25/git-xue-xi-bi-ji/">http://Sheep1433.github.io/2022/04/25/git-xue-xi-bi-ji/</a>
+                    <a href="http://Sheep1433.github.io/2022/11/26/docker-ru-men/">http://Sheep1433.github.io/2022/11/26/docker-ru-men/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -613,7 +615,7 @@ git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="/about" target="_blank">小章</a>
+                    <a href="/about" target="_blank">三岁浪迹天涯</a>
                     !
                 </span>
             </div>
@@ -638,8 +640,12 @@ git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Git/">
-                                    <span class="chip bg-color">Git</span>
+                                <a href="/tags/%E5%9F%BA%E7%A1%80/">
+                                    <span class="chip bg-color">基础</span>
+                                </a>
+                            
+                                <a href="/tags/docker/">
+                                    <span class="chip bg-color">docker</span>
                                 </a>
                             
                         </div>
@@ -813,13 +819,13 @@ git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/11/25/hexo-bo-ke-da-jian/">
+                <a href="/2022/11/26/git-bi-ji/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="hexo博客搭建">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="git笔记">
                         
-                        <span class="card-title">hexo博客搭建</span>
+                        <span class="card-title">git笔记</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -830,12 +836,16 @@ git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-11-25
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-11-26
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            John Doe
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/git/" class="post-category">
+                                    git
+                                </a>
+                            
                             
                         </span>
                     </div>
@@ -843,8 +853,12 @@ git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/hexo/">
-                        <span class="chip bg-color">hexo</span>
+                    <a href="/tags/%E5%9F%BA%E7%A1%80/">
+                        <span class="chip bg-color">基础</span>
+                    </a>
+                    
+                    <a href="/tags/git/">
+                        <span class="chip bg-color">git</span>
                     </a>
                     
                 </div>
@@ -858,31 +872,31 @@ git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/04/25/requests-yuan-ma-xue-xi/">
+                <a href="/2022/11/26/shell-ru-men/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="requests源码学习">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="shell入门">
                         
-                        <span class="card-title">requests源码学习</span>
+                        <span class="card-title">shell入门</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            关于requests中各模块源码的学习
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-25
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-11-26
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/requests/" class="post-category">
-                                    requests
+                            <a href="/categories/shell/" class="post-category">
+                                    shell
                                 </a>
                             
                             
@@ -892,8 +906,12 @@ git remote add gitee git@github.com:Sheep1433&#x2F;learngit.git<span aria-hidden
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/">
-                        <span class="chip bg-color">源码学习</span>
+                    <a href="/tags/shell/">
+                        <span class="chip bg-color">shell</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%9F%BA%E7%A1%80/">
+                        <span class="chip bg-color">基础</span>
                     </a>
                     
                 </div>

@@ -6,7 +6,7 @@
   <link href="http://sheep1433.github.io/atom.xml" rel="self"/>
   
   <link href="http://sheep1433.github.io/"/>
-  <updated>2022-04-25T01:59:33.146Z</updated>
+  <updated>2022-04-15T07:42:55.262Z</updated>
   <id>http://sheep1433.github.io/</id>
   
   <author>
@@ -15,31 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Git学习笔记</title>
-    <link href="http://sheep1433.github.io/2022/04/25/git-xue-xi-bi-ji/"/>
-    <id>http://sheep1433.github.io/2022/04/25/git-xue-xi-bi-ji/</id>
-    <published>2022-04-25T01:58:20.000Z</published>
-    <updated>2022-04-25T01:59:33.146Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;git核心&quot;&gt;&lt;a href=&quot;#git核心&quot; class=&quot;headerlink&quot; title=&quot;git核心&quot;&gt;&lt;/a&gt;git核心&lt;/h1&gt;&lt;p&gt;![Screenshot_20220416_171404_tv.danmaku.bili](D:\Huawei</summary>
-        
-      
-    
-    
-    
-    <category term="工具使用" scheme="http://sheep1433.github.io/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/"/>
-    
-    
-    <category term="Git" scheme="http://sheep1433.github.io/tags/Git/"/>
-    
-  </entry>
   
   <entry>
     <title>hexo博客搭建</title>
@@ -208,6 +183,89 @@
     
     
     <category term="数据结构" scheme="http://sheep1433.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>shell入门</title>
+    <link href="http://sheep1433.github.io/2022/11/26/shell-ru-men/"/>
+    <id>http://sheep1433.github.io/2022/11/26/shell-ru-men/</id>
+    <published>2022-11-25T16:14:09.000Z</published>
+    <updated>2022-11-25T16:20:58.833Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;基础知识&quot;&gt;&lt;a href=&quot;#基础知识&quot; class=&quot;headerlink&quot; title=&quot;基础知识&quot;&gt;&lt;/a&gt;基础知识&lt;/h2&gt;&lt;p&gt;在 shell 脚本，&lt;code&gt;#!&lt;/code&gt; 告诉系统其后路径所指定的程序即是解释此脚本文件的 Shell</summary>
+        
+      
+    
+    
+    
+    <category term="shell" scheme="http://sheep1433.github.io/categories/shell/"/>
+    
+    
+    <category term="shell" scheme="http://sheep1433.github.io/tags/shell/"/>
+    
+    <category term="基础" scheme="http://sheep1433.github.io/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>docker入门</title>
+    <link href="http://sheep1433.github.io/2022/11/26/docker-ru-men/"/>
+    <id>http://sheep1433.github.io/2022/11/26/docker-ru-men/</id>
+    <published>2022-11-25T16:24:22.000Z</published>
+    <updated>2022-11-25T16:25:56.859Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;docker&quot;&gt;&lt;a href=&quot;#docker&quot; class=&quot;headerlink&quot; title=&quot;docker&quot;&gt;&lt;/a&gt;docker&lt;/h2&gt;&lt;p&gt;不支持windows10家庭版&lt;/p&gt;
+&lt;p&gt;CentOS 安装配置&lt;/p&gt;
+&lt;p&gt;yum install</summary>
+        
+      
+    
+    
+    
+    <category term="docker" scheme="http://sheep1433.github.io/categories/docker/"/>
+    
+    
+    <category term="基础" scheme="http://sheep1433.github.io/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+    <category term="docker" scheme="http://sheep1433.github.io/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>git笔记</title>
+    <link href="http://sheep1433.github.io/2022/11/26/git-bi-ji/"/>
+    <id>http://sheep1433.github.io/2022/11/26/git-bi-ji/</id>
+    <published>2022-11-25T16:26:18.000Z</published>
+    <updated>2022-11-25T16:30:21.066Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;git核心&quot;&gt;&lt;a href=&quot;#git核心&quot; class=&quot;headerlink&quot; title=&quot;git核心&quot;&gt;&lt;/a&gt;git核心&lt;/h1&gt;&lt;p&gt;![Screenshot_20220416_171404_tv.danmaku.bili](D:\Huawei</summary>
+        
+      
+    
+    
+    
+    <category term="git" scheme="http://sheep1433.github.io/categories/git/"/>
+    
+    
+    <category term="基础" scheme="http://sheep1433.github.io/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+    <category term="git" scheme="http://sheep1433.github.io/tags/git/"/>
     
   </entry>
   
