@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>grep、sed、awk三剑客</title>
+      <link href="/2022/12/01/grep-sed-awk-san-jian-ke/"/>
+      <url>/2022/12/01/grep-sed-awk-san-jian-ke/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> shell </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 基础 </tag>
+            
+            <tag> 三剑客 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>git笔记</title>
       <link href="/2022/11/26/git-bi-ji/"/>
       <url>/2022/11/26/git-bi-ji/</url>
@@ -47,9 +74,9 @@
       
         <tags>
             
-            <tag> 基础 </tag>
-            
             <tag> docker </tag>
+            
+            <tag> 基础 </tag>
             
         </tags>
       
@@ -74,9 +101,9 @@
       
         <tags>
             
-            <tag> shell </tag>
-            
             <tag> 基础 </tag>
+            
+            <tag> shell </tag>
             
         </tags>
       
