@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="docker入门, 浪迹天涯">
+    <meta name="keywords" content="linux常用命令, 浪迹天涯">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>docker入门 | 浪迹天涯</title>
+    <title>linux常用命令 | 浪迹天涯</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -311,12 +311,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">docker入门</h1>
+                    <h1 class="description center-align post-title">linux常用命令</h1>
                 </div>
             </div>
         </div>
@@ -432,12 +432,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/docker/">
-                                <span class="chip bg-color">docker</span>
-                            </a>
-                        
                             <a href="/tags/%E5%9F%BA%E7%A1%80/">
                                 <span class="chip bg-color">基础</span>
+                            </a>
+                        
+                            <a href="/tags/linux/">
+                                <span class="chip bg-color">linux</span>
                             </a>
                         
                     </div>
@@ -448,8 +448,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/docker/" class="post-category">
-                                docker
+                            <a href="/categories/linux/" class="post-category">
+                                linux
                             </a>
                         
                     </div>
@@ -461,7 +461,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-11-26
+                    2022-12-02
                 </div>
                 
 
@@ -485,97 +485,67 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h2><p>不支持windows10家庭版</p>
-<p>CentOS 安装配置</p>
-<p>yum install -y yum-utils device-mapper-persistent-data lvm2		安装依赖</p>
-<p> yum-config-manager –add-repo <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo">http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</a>	添加源</p>
-<p>yum -y install docker-ce 	安装docker	</p>
-<p>或者curl -fsSL <a target="_blank" rel="noopener" href="https://get.docker.com/">https://get.docker.com</a> | bash -s docker –mirror Aliyun</p>
-<p>此时直接使用docker ps查看进程是无效的，需要先systemctl start docker启动</p>
-<p>设置开机自启动：	systemctl enable docker</p>
-<p>docker pull nginx或者docker pull nginx:1.17.10</p>
-<p>docker-compose安装</p>
-<pre class="line-numbers language-none"><code class="language-none"># curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.8.1&#x2F;docker-compose-&#96;uname -s&#96;-&#96;uname -m&#96; &gt; &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose
-# chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+                <h1 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h1><h2 id="常见命令"><a href="#常见命令" class="headerlink" title="常见命令"></a>常见命令</h2><pre class="line-numbers language-none"><code class="language-none">cat			chmod		diff		cut			mv
+tee			cp			which		whereis		awk
+scp			sed			tr			sort		head
+tail		less		more		unzip		tar
+vi			wc			ln<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker version	docker版本信息
-docker info		docker系统信息
-docker images	查看所有镜像
-docker search busybox 	在网上搜索镜像
-docker pull busybOx:latest	拉取下载
-docker save busybox &gt; busybox.tar	导出
-docker load &lt; busybox.tar	导入
-docker rmi busybox:latest	删除镜像
-docker tag busybox:latest busybox:test 	更改镜像名
-docker history busybox 	查看镜像创建历史
+<h2 id="具体案例"><a href="#具体案例" class="headerlink" title="具体案例"></a>具体案例</h2><h3 id="复制文件夹"><a href="#复制文件夹" class="headerlink" title="复制文件夹"></a>复制文件夹</h3><p>cp -r 文件夹</p>
+<h3 id="统计文件有多少行"><a href="#统计文件有多少行" class="headerlink" title="统计文件有多少行"></a>统计文件有多少行</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">wc</span> testfile           <span class="token comment"># testfile文件的统计信息  </span>
+<span class="token number">3</span> <span class="token number">92</span> <span class="token number">598</span> testfile       <span class="token comment"># testfile文件的行数为3、单词数92、字节数598</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-docker run -d --name&#x3D;busybox busybox:latest ping 114.114.114.114	运行容器
-docker ps, docker ps -a		查看运行的容器
-docker top busybox 		查看容器中运行的进程
-docker stats busybox 	查看资源占用
-docker start&#x2F;restart&#x2F;stop&#x2F;kill busybox 容器
-docker pause&#x2F;unpause busybox 	暂停容器
-docker rm -f busybox 	强制删除容器
-
-docker exec -it busybox ls	执行命令
-docker exec -it elasticsearch &#x2F;bin&#x2F;bash	在该容器下执行bash命令
-docker cp busyboxL&#x2F;etc&#x2F;hosts hosts		复制文件
-docker logs -f busybox		查看容器日志
-docker inspect busybox		查看容器&#x2F;镜像的元信息
-docker inspect -f&#39;&#123;&#123;.Id&#125;&#125;&#39; busybox		格式化输出
-
-docker build	基于dockerfile在构建镜像
-docker commit	将容器转化为镜像<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>Nginx容器</p>
-<pre class="line-numbers language-none"><code class="language-none">docker run -d --name nginx -p 8088:80 nginx1.17.9			运行
-docker run -d --name nginx1 -p 8089:80 -v $&#123;PWD&#125;&#x2F;html:&#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html&#x2F;nginx:1.17.9	挂载目录
-docker stop 停止<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>此外，还可以利用 <code>ADD</code> 命令复制本地文件到镜像；用 <code>EXPOSE</code> 命令来向外部开放端口；用 <code>CMD</code> 命令来描述容器启动后运行的程序等。例如</p>
-<p>当利用 <code>docker run</code> 来创建容器时，Docker 在后台运行的标准操作包括：</p>
 <ul>
-<li>检查本地是否存在指定的镜像，不存在就从公有仓库下载</li>
-<li>利用镜像创建并启动一个容器</li>
-<li>分配一个文件系统，并在只读的镜像层外面挂载一层可读写层</li>
-<li>从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中去</li>
-<li>从地址池配置一个 ip 地址给容器</li>
-<li>执行用户指定的应用程序</li>
-<li>执行完毕后容器被终止</li>
+<li>-c或–bytes或–chars 只显示Bytes数。</li>
+<li>-l或–lines 显示行数。</li>
+<li>-w或–words 只显示字数。</li>
 </ul>
-<h2 id="守护态运行："><a href="#守护态运行：" class="headerlink" title="守护态运行："></a>守护态运行：</h2><p>更多的时候，需要让 Docker 容器在后台以守护态（Daemonized）形式运行。此时，可以通过添加 <code>-d</code> 参数来实现</p>
-<h2 id="容器重启"><a href="#容器重启" class="headerlink" title="容器重启"></a>容器重启</h2><p>处于终止状态的容器，可以通过 <code>docker start</code> 命令来重新启动。</p>
-<p>此外，<code>docker restart</code> 命令会将一个运行态的容器终止，然后再重新启动它。</p>
-<h2 id="Dockerfile中命令"><a href="#Dockerfile中命令" class="headerlink" title="Dockerfile中命令"></a>Dockerfile中命令</h2><h3 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h3><p>格式为 <code>RUN &lt;command&gt;</code> 或 <code>RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code>。</p>
-<p>前者将在 shell 终端中运行命令，即 <code>/bin/sh -c</code>；后者则使用 <code>exec</code> 执行。指定使用其它终端可以通过第二种方式实现，例如 <code>RUN [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;echo hello&quot;]</code>。</p>
-<p>每条 <code>RUN</code> 指令将在当前镜像基础上执行指定命令，并提交为新的镜像。当命令较长时可以使用 <code>\</code> 来换行</p>
-<h3 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h3><p>支持三种格式</p>
-<ul>
-<li><code>CMD [&quot;executable&quot;,&quot;param1&quot;,&quot;param2&quot;]</code> 使用 <code>exec</code> 执行，推荐方式；</li>
-<li><code>CMD command param1 param2</code> 在 <code>/bin/sh</code> 中执行，提供给需要交互的应用；</li>
-<li><code>CMD [&quot;param1&quot;,&quot;param2&quot;]</code> 提供给 <code>ENTRYPOINT</code> 的默认参数；</li>
-</ul>
-<p>指定启动容器时执行的命令，每个 Dockerfile 只能有一条 <code>CMD</code> 命令。如果指定了多条命令，只有最后一条会被执行。</p>
-<p>如果用户启动容器时候指定了运行的命令，则会覆盖掉 <code>CMD</code> 指定的命令。</p>
-<h3 id="ENV"><a href="#ENV" class="headerlink" title="ENV"></a>ENV</h3><p>格式为 <code>ENV &lt;key&gt; &lt;value&gt;</code>。 指定一个环境变量，会被后续 <code>RUN</code> 指令使用，并在容器运行时保持。</p>
-<p>例如</p>
-<pre class="line-numbers language-none"><code class="language-none">ENV PG_MAJOR 9.3
-ENV PG_VERSION 9.3.4
-RUN curl -SL http:&#x2F;&#x2F;example.com&#x2F;postgres-$PG_VERSION.tar.xz | tar -xJC &#x2F;usr&#x2F;src&#x2F;postgress &amp;&amp; …
-ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="建立软链接-快捷方式-，以及硬链接的命令。"><a href="#建立软链接-快捷方式-，以及硬链接的命令。" class="headerlink" title="建立软链接(快捷方式)，以及硬链接的命令。"></a><strong>建立软链接(快捷方式)，以及硬链接的命令。</strong></h3><p> 软链接： ln -s slink source<br> 硬链接： ln link source </p>
+<h3 id="which、whereis、find、locate的区别"><a href="#which、whereis、find、locate的区别" class="headerlink" title="which、whereis、find、locate的区别"></a>which、whereis、find、locate的区别</h3><h1 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h1><h2 id="常见命令-1"><a href="#常见命令-1" class="headerlink" title="常见命令"></a>常见命令</h2><pre class="line-numbers language-none"><code class="language-none">df		du		cd		mkdir		ls
+rmdir	pwd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<h3 id="EXPOSE"><a href="#EXPOSE" class="headerlink" title="EXPOSE"></a>EXPOSE</h3><p>格式为 <code>EXPOSE &lt;port&gt; [&lt;port&gt;...]</code>。</p>
-<p>告诉 Docker 服务端容器暴露的端口号，供互联系统使用。在启动容器时需要通过 -P，Docker 主机会自动分配一个端口转发到指定的端口。</p>
-<h3 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h3><p>格式为 <code>ADD &lt;src&gt; &lt;dest&gt;</code>。</p>
-<p>该命令将复制指定的 <code>&lt;src&gt;</code> 到容器中的 <code>&lt;dest&gt;</code>。 其中 <code>&lt;src&gt;</code> 可以是Dockerfile所在目录的一个相对路径；也可以是一个 URL；还可以是一个 tar 文件（自动解压为目录）。</p>
-<h3 id="COPY"><a href="#COPY" class="headerlink" title="COPY"></a>COPY</h3><p>格式为 <code>COPY &lt;src&gt; &lt;dest&gt;</code>。</p>
-<p>复制本地主机的 <code>&lt;src&gt;</code>（为 Dockerfile 所在目录的相对路径）到容器中的 <code>&lt;dest&gt;</code>。</p>
-<p>当使用本地目录为源目录时，推荐使用 <code>COPY</code>。</p>
-<h3 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h3><p>格式为 <code>WORKDIR /path/to/workdir</code>。</p>
-<p>为后续的 <code>RUN</code>、<code>CMD</code>、<code>ENTRYPOINT</code> 指令配置工作目录。</p>
-<p>可以使用多个 <code>WORKDIR</code> 指令，后续命令如果参数是相对路径，则会基于之前命令指定的路径</p>
+<h2 id="具体案例-1"><a href="#具体案例-1" class="headerlink" title="具体案例"></a>具体案例</h2><h3 id="du-和-df-的定义，以及区别？"><a href="#du-和-df-的定义，以及区别？" class="headerlink" title="du 和 df 的定义，以及区别？"></a><strong>du 和 df 的定义，以及区别？</strong></h3><p> <strong>答案：</strong> </p>
+<p> du 显示目录或文件的大小 </p>
+<p> df 显示每个&lt;文件&gt;所在的文件系统的信息，默认是显示所有文件系统。<br> （文件系统分配其中的一些磁盘块用来记录它自身的一些数据，如 i 节点，磁盘分布图，间接块，超级块等。这些数据对大多数用户级的程序来说是不可见的，通常称为 Meta Data。） du 命令是用户级的程序，它不考虑 Meta Data，而 df 命令则查看文件系统的磁盘分配图并考虑 Meta Data。<br> df 命令获得真正的文件系统数据，而 du 命令只查看文件系统的部分情况。 </p>
+<pre class="line-numbers language-none"><code class="language-none">df -h查看当前目录
+df -h &#x2F;usr&#x2F;  查看指定目录
+du --max-depth&#x3D;1 -h 查看当前目录每个文件夹的情况
+du --max-depth&#x3D;1 -h  &#x2F;usr&#x2F; 指定目录
+du -sh &#x2F;usr&#x2F; 计算文件夹大小<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="创建多级目录"><a href="#创建多级目录" class="headerlink" title="创建多级目录"></a>创建多级目录</h3><p>mkdir -p</p>
+<h1 id="网络管理"><a href="#网络管理" class="headerlink" title="网络管理"></a>网络管理</h1><h3 id="常见命令-2"><a href="#常见命令-2" class="headerlink" title="常见命令"></a>常见命令</h3><pre class="line-numbers language-none"><code class="language-none">nc			ifconfig		netstat<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="具体案例-2"><a href="#具体案例-2" class="headerlink" title="具体案例"></a>具体案例</h2><h3 id="netstat命令参数"><a href="#netstat命令参数" class="headerlink" title="netstat命令参数"></a>netstat命令参数</h3><p>列出所有端口 netstat -a<br>列出所有 tcp 端口 netstat -at<br>列出所有 udp 端口 netstat -au</p>
+<h1 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h1><h2 id="常见命令-3"><a href="#常见命令-3" class="headerlink" title="常见命令"></a>常见命令</h2><pre class="line-numbers language-none"><code class="language-none">date		kill		ps			top			pstree
+tree		shutdown	uname		who			free
+crontab		yum			job			history<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="具体案例-3"><a href="#具体案例-3" class="headerlink" title="具体案例"></a>具体案例</h2><h3 id="查看linux系统版本和内核版本"><a href="#查看linux系统版本和内核版本" class="headerlink" title="查看linux系统版本和内核版本"></a>查看linux系统版本和内核版本</h3><p><strong>查看内核版本</strong></p>
+<p>cat &#x2F;proc&#x2F;version</p>
+<p>uname -a</p>
+<p><strong>查看Linux系统版本的命令</strong></p>
+<p>lsb_release -a					  有的版本支持</p>
+<p>cat &#x2F;etc&#x2F;redhat-release 	适合redhat系的linux，如centos</p>
+<p>cat &#x2F;etc&#x2F;issue					  适合所有版本</p>
+<h3 id="ps-aux命令中常见状态"><a href="#ps-aux命令中常见状态" class="headerlink" title="ps aux命令中常见状态"></a>ps aux命令中常见状态</h3><p><img src="C:\Users\Administrator\blog\newblog\source\picture\image-20221119164738929.png" alt="image-20221119164738929"></p>
+<h3 id="free命令"><a href="#free命令" class="headerlink" title="free命令"></a>free命令</h3><p>​	用于显示内存状态。</p>
+<p>​	会显示内存的使用情况，包括实体内存，虚拟的交换文件内存，共享内存区段，以及系统核心使用的缓冲区等。</p>
+<h3 id="top命令"><a href="#top命令" class="headerlink" title="top命令"></a>top命令</h3><p> top命令用于实时显示 process 的动态。</p>
+<p><a target="_blank" rel="noopener" href="http://c.biancheng.net/view/1065.html">Linux top命令详解：持续监听进程运行状态 (biancheng.net)</a></p>
+<p>top -b -n 1 &gt; &#x2F;root&#x2F;top.log		#让top命令只执行一次，然后把执行结果保存到top.log文件中，这样就能看到所有的进程了</p>
+<ul>
+<li>-b：使用批处理模式输出。一般和”-n”选项合用，用于把 top 命令重定向到文件中；</li>
+<li>-n 次数：指定 top 命令执行的次数。一般和”-“选项合用；</li>
+<li>-p 进程PID：仅查看指定 ID 的进程；</li>
+</ul>
+<p>top命令可以按shift+f设置排序规则和展示内容</p>
+<h3 id="查看某个进程下线程信息"><a href="#查看某个进程下线程信息" class="headerlink" title="查看某个进程下线程信息"></a>查看某个进程下线程信息</h3><p>top -H -p <PID></p>
+<p>ps -T -p <PID></p>
+<p>另外pstree -p <PID>可以查看这些进程的父子关系</p>
+<h3 id="ps-ef和ps-aux的区别"><a href="#ps-ef和ps-aux的区别" class="headerlink" title="ps -ef和ps aux的区别"></a>ps -ef和ps aux的区别</h3><p>ps -ef包含进程和父进程</p>
+<p>ps aux包含内存CPU的占用情况</p>
+<h3 id="查看后台任务"><a href="#查看后台任务" class="headerlink" title="查看后台任务?"></a>查看后台任务?</h3><p>job -l</p>
 
                 
             </div>
@@ -602,7 +572,7 @@ ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-h
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://Sheep1433.github.io/2022/11/26/docker-ru-men/">http://Sheep1433.github.io/2022/11/26/docker-ru-men/</a>
+                    <a href="http://Sheep1433.github.io/2022/12/02/linux-chang-yong-ming-ling/">http://Sheep1433.github.io/2022/12/02/linux-chang-yong-ming-ling/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -640,12 +610,12 @@ ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-h
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/docker/">
-                                    <span class="chip bg-color">docker</span>
-                                </a>
-                            
                                 <a href="/tags/%E5%9F%BA%E7%A1%80/">
                                     <span class="chip bg-color">基础</span>
+                                </a>
+                            
+                                <a href="/tags/linux/">
+                                    <span class="chip bg-color">linux</span>
                                 </a>
                             
                         </div>
@@ -815,17 +785,18 @@ ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-h
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2022/11/26/git-bi-ji/">
+                <a href="/2022/12/02/linux-chang-yong-ming-ling/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="git笔记">
+                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="linux常用命令">
                         
-                        <span class="card-title">git笔记</span>
+                        <span class="card-title">linux常用命令</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -835,21 +806,22 @@ ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-h
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-11-26
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-12-02
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/git/" class="post-category">
-                                    git
+                            <a href="/categories/linux/" class="post-category">
+                                    linux
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -857,8 +829,8 @@ ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-h
                         <span class="chip bg-color">基础</span>
                     </a>
                     
-                    <a href="/tags/git/">
-                        <span class="chip bg-color">git</span>
+                    <a href="/tags/linux/">
+                        <span class="chip bg-color">linux</span>
                     </a>
                     
                 </div>
@@ -872,13 +844,13 @@ ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-h
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/11/26/shell-ru-men/">
+                <a href="/2022/12/01/grep-sed-awk-san-jian-ke/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="shell入门">
+                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="grep、sed、awk三剑客">
                         
-                        <span class="card-title">shell入门</span>
+                        <span class="card-title">grep、sed、awk三剑客</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -889,7 +861,7 @@ ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-h
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-11-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-12-01
                             </span>
                         <span class="publish-author">
                             
@@ -910,8 +882,8 @@ ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-h
                         <span class="chip bg-color">基础</span>
                     </a>
                     
-                    <a href="/tags/shell/">
-                        <span class="chip bg-color">shell</span>
+                    <a href="/tags/%E4%B8%89%E5%89%91%E5%AE%A2/">
+                        <span class="chip bg-color">三剑客</span>
                     </a>
                     
                 </div>
