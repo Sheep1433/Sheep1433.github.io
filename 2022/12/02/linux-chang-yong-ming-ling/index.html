@@ -485,14 +485,14 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h1><h2 id="常见命令"><a href="#常见命令" class="headerlink" title="常见命令"></a>常见命令</h2><pre class="line-numbers language-none"><code class="language-none">cat			chmod		diff		cut			mv
+                <h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><h3 id="常见命令"><a href="#常见命令" class="headerlink" title="常见命令"></a>常见命令</h3><pre class="line-numbers language-none"><code class="language-none">cat			chmod		diff		cut			mv
 tee			cp			which		whereis		awk
 scp			sed			tr			sort		head
 tail		less		more		unzip		tar
-vi			wc			ln<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+vi			wc			ln			uniq		nl<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="具体案例"><a href="#具体案例" class="headerlink" title="具体案例"></a>具体案例</h2><h3 id="复制文件夹"><a href="#复制文件夹" class="headerlink" title="复制文件夹"></a>复制文件夹</h3><p>cp -r 文件夹</p>
-<h3 id="统计文件有多少行"><a href="#统计文件有多少行" class="headerlink" title="统计文件有多少行"></a>统计文件有多少行</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">wc</span> testfile           <span class="token comment"># testfile文件的统计信息  </span>
+<h3 id="具体案例"><a href="#具体案例" class="headerlink" title="具体案例"></a>具体案例</h3><h4 id="复制文件夹"><a href="#复制文件夹" class="headerlink" title="复制文件夹"></a>复制文件夹</h4><p>cp -r 文件夹</p>
+<h4 id="统计文件有多少行"><a href="#统计文件有多少行" class="headerlink" title="统计文件有多少行"></a>统计文件有多少行</h4><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">wc</span> testfile           <span class="token comment"># testfile文件的统计信息  </span>
 <span class="token number">3</span> <span class="token number">92</span> <span class="token number">598</span> testfile       <span class="token comment"># testfile文件的行数为3、单词数92、字节数598</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <ul>
@@ -500,11 +500,26 @@ vi			wc			ln<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 <li>-l或–lines 显示行数。</li>
 <li>-w或–words 只显示字数。</li>
 </ul>
-<h3 id="建立软链接-快捷方式-，以及硬链接的命令。"><a href="#建立软链接-快捷方式-，以及硬链接的命令。" class="headerlink" title="建立软链接(快捷方式)，以及硬链接的命令。"></a><strong>建立软链接(快捷方式)，以及硬链接的命令。</strong></h3><p> 软链接： ln -s slink source<br> 硬链接： ln link source </p>
-<h3 id="which、whereis、find、locate的区别"><a href="#which、whereis、find、locate的区别" class="headerlink" title="which、whereis、find、locate的区别"></a>which、whereis、find、locate的区别</h3><h1 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h1><h2 id="常见命令-1"><a href="#常见命令-1" class="headerlink" title="常见命令"></a>常见命令</h2><pre class="line-numbers language-none"><code class="language-none">df		du		cd		mkdir		ls
+<h4 id="建立软链接-快捷方式-，以及硬链接的命令。"><a href="#建立软链接-快捷方式-，以及硬链接的命令。" class="headerlink" title="建立软链接(快捷方式)，以及硬链接的命令。"></a><strong>建立软链接(快捷方式)，以及硬链接的命令。</strong></h4><p> 软链接： ln -s slink source<br> 硬链接： ln link source </p>
+<h4 id="which、whereis、find、locate的区别"><a href="#which、whereis、find、locate的区别" class="headerlink" title="which、whereis、find、locate的区别"></a>which、whereis、find、locate的区别</h4><h4 id="uniq命令用法"><a href="#uniq命令用法" class="headerlink" title="uniq命令用法"></a>uniq命令用法</h4><p>用于检查及删除文本文件中重复出现的行列，一般与 sort 命令结合使用</p>
+<ul>
+<li>-c或–count 在每列旁边显示该行重复出现的次数。</li>
+<li>-d或–repeated 仅显示重复出现的行列。</li>
+</ul>
+<p>当文件中重复行不是连续的，uniq是不起作用的，所以要结合sort使用</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 统计文件中不重复的行</span>
+<span class="token function">sort</span> test.txt <span class="token operator">|</span> <span class="token function">uniq</span>
+<span class="token comment"># 统计各行在文件中出现的次数</span>
+<span class="token function">sort</span> testfile1 <span class="token operator">|</span> <span class="token function">uniq</span> -c
+<span class="token comment"># 在文件中找出重复的行</span>
+<span class="token function">sort</span> testfile1 <span class="token operator">|</span> <span class="token function">uniq</span> -d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h2><h3 id="常见命令-1"><a href="#常见命令-1" class="headerlink" title="常见命令"></a>常见命令</h3><pre class="line-numbers language-none"><code class="language-none">df		du		cd		mkdir		ls
 rmdir	pwd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<h2 id="具体案例-1"><a href="#具体案例-1" class="headerlink" title="具体案例"></a>具体案例</h2><h3 id="du-和-df-的定义，以及区别？"><a href="#du-和-df-的定义，以及区别？" class="headerlink" title="du 和 df 的定义，以及区别？"></a><strong>du 和 df 的定义，以及区别？</strong></h3><p> <strong>答案：</strong> </p>
+<h3 id="具体案例-1"><a href="#具体案例-1" class="headerlink" title="具体案例"></a>具体案例</h3><h4 id="du-和-df-的定义，以及区别？"><a href="#du-和-df-的定义，以及区别？" class="headerlink" title="du 和 df 的定义，以及区别？"></a><strong>du 和 df 的定义，以及区别？</strong></h4><p> <strong>答案：</strong> </p>
 <p> du 显示目录或文件的大小 </p>
 <p> df 显示每个&lt;文件&gt;所在的文件系统的信息，默认是显示所有文件系统。<br> （文件系统分配其中的一些磁盘块用来记录它自身的一些数据，如 i 节点，磁盘分布图，间接块，超级块等。这些数据对大多数用户级的程序来说是不可见的，通常称为 Meta Data。） du 命令是用户级的程序，它不考虑 Meta Data，而 df 命令则查看文件系统的磁盘分配图并考虑 Meta Data。<br> df 命令获得真正的文件系统数据，而 du 命令只查看文件系统的部分情况。 </p>
 <pre class="line-numbers language-none"><code class="language-none">df -h查看当前目录
@@ -513,25 +528,25 @@ du --max-depth&#x3D;1 -h 查看当前目录每个文件夹的情况
 du --max-depth&#x3D;1 -h  &#x2F;usr&#x2F; 指定目录
 du -sh &#x2F;usr&#x2F; 计算文件夹大小<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="创建多级目录"><a href="#创建多级目录" class="headerlink" title="创建多级目录"></a>创建多级目录</h3><p>mkdir -p</p>
-<h1 id="网络管理"><a href="#网络管理" class="headerlink" title="网络管理"></a>网络管理</h1><h3 id="常见命令-2"><a href="#常见命令-2" class="headerlink" title="常见命令"></a>常见命令</h3><pre class="line-numbers language-none"><code class="language-none">nc			ifconfig		netstat<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h4 id="创建多级目录"><a href="#创建多级目录" class="headerlink" title="创建多级目录"></a>创建多级目录</h4><p>mkdir -p</p>
+<h2 id="网络管理"><a href="#网络管理" class="headerlink" title="网络管理"></a>网络管理</h2><h3 id="常见命令-2"><a href="#常见命令-2" class="headerlink" title="常见命令"></a>常见命令</h3><pre class="line-numbers language-none"><code class="language-none">nc			ifconfig		netstat<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<h2 id="具体案例-2"><a href="#具体案例-2" class="headerlink" title="具体案例"></a>具体案例</h2><h3 id="netstat命令参数"><a href="#netstat命令参数" class="headerlink" title="netstat命令参数"></a>netstat命令参数</h3><p>列出所有端口 netstat -a<br>列出所有 tcp 端口 netstat -at<br>列出所有 udp 端口 netstat -au</p>
-<h1 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h1><h2 id="常见命令-3"><a href="#常见命令-3" class="headerlink" title="常见命令"></a>常见命令</h2><pre class="line-numbers language-none"><code class="language-none">date		kill		ps			top			pstree
+<h3 id="具体案例-2"><a href="#具体案例-2" class="headerlink" title="具体案例"></a>具体案例</h3><h4 id="netstat命令参数"><a href="#netstat命令参数" class="headerlink" title="netstat命令参数"></a>netstat命令参数</h4><p>列出所有端口 netstat -a<br>列出所有 tcp 端口 netstat -at<br>列出所有 udp 端口 netstat -au</p>
+<h2 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h2><h3 id="常见命令-3"><a href="#常见命令-3" class="headerlink" title="常见命令"></a>常见命令</h3><pre class="line-numbers language-none"><code class="language-none">date		kill		ps			top			pstree
 tree		shutdown	uname		who			free
 crontab		yum			job			history<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="具体案例-3"><a href="#具体案例-3" class="headerlink" title="具体案例"></a>具体案例</h2><h3 id="查看linux系统版本和内核版本"><a href="#查看linux系统版本和内核版本" class="headerlink" title="查看linux系统版本和内核版本"></a>查看linux系统版本和内核版本</h3><p><strong>查看内核版本</strong></p>
+<h3 id="具体案例-3"><a href="#具体案例-3" class="headerlink" title="具体案例"></a>具体案例</h3><h4 id="查看linux系统版本和内核版本"><a href="#查看linux系统版本和内核版本" class="headerlink" title="查看linux系统版本和内核版本"></a>查看linux系统版本和内核版本</h4><p><strong>查看内核版本</strong></p>
 <p>cat &#x2F;proc&#x2F;version</p>
 <p>uname -a</p>
 <p><strong>查看Linux系统版本的命令</strong></p>
 <p>lsb_release -a					  有的版本支持</p>
 <p>cat &#x2F;etc&#x2F;redhat-release 	适合redhat系的linux，如centos</p>
 <p>cat &#x2F;etc&#x2F;issue					  适合所有版本</p>
-<h3 id="ps-aux命令中常见状态"><a href="#ps-aux命令中常见状态" class="headerlink" title="ps aux命令中常见状态"></a>ps aux命令中常见状态</h3><p><img src="C:\Users\Administrator\blog\newblog\source\picture\image-20221119164738929.png" alt="image-20221119164738929"></p>
-<h3 id="free命令"><a href="#free命令" class="headerlink" title="free命令"></a>free命令</h3><p>​	用于显示内存状态。</p>
+<h4 id="ps-aux命令中常见状态"><a href="#ps-aux命令中常见状态" class="headerlink" title="ps aux命令中常见状态"></a>ps aux命令中常见状态</h4><p><img src="C:\Users\Administrator\blog\newblog\source\picture\image-20221119164738929.png" alt="image-20221119164738929"></p>
+<h4 id="free命令"><a href="#free命令" class="headerlink" title="free命令"></a>free命令</h4><p>​	用于显示内存状态。</p>
 <p>​	会显示内存的使用情况，包括实体内存，虚拟的交换文件内存，共享内存区段，以及系统核心使用的缓冲区等。</p>
-<h3 id="top命令"><a href="#top命令" class="headerlink" title="top命令"></a>top命令</h3><p> top命令用于实时显示 process 的动态。</p>
+<h4 id="top命令"><a href="#top命令" class="headerlink" title="top命令"></a>top命令</h4><p> top命令用于实时显示 process 的动态。</p>
 <p><a target="_blank" rel="noopener" href="http://c.biancheng.net/view/1065.html">Linux top命令详解：持续监听进程运行状态 (biancheng.net)</a></p>
 <p>top -b -n 1 &gt; &#x2F;root&#x2F;top.log		#让top命令只执行一次，然后把执行结果保存到top.log文件中，这样就能看到所有的进程了</p>
 <ul>
@@ -540,12 +555,12 @@ crontab		yum			job			history<span aria-hidden="true" class="line-numbers-rows"><
 <li>-p 进程PID：仅查看指定 ID 的进程；</li>
 </ul>
 <p>top命令可以按shift+f设置排序规则和展示内容</p>
-<h3 id="查看某个进程下线程信息"><a href="#查看某个进程下线程信息" class="headerlink" title="查看某个进程下线程信息"></a>查看某个进程下线程信息</h3><p>top -H -p <PID></p>
+<h4 id="查看某个进程下线程信息"><a href="#查看某个进程下线程信息" class="headerlink" title="查看某个进程下线程信息"></a>查看某个进程下线程信息</h4><p>top -H -p <PID></p>
 <p>ps -T -p <PID></p>
 <p>另外pstree -p <PID>可以查看这些进程的父子关系</p>
-<h3 id="ps-ef和ps-aux的区别"><a href="#ps-ef和ps-aux的区别" class="headerlink" title="ps -ef和ps aux的区别"></a>ps -ef和ps aux的区别</h3><p>ps -ef包含进程和父进程</p>
+<h4 id="ps-ef和ps-aux的区别"><a href="#ps-ef和ps-aux的区别" class="headerlink" title="ps -ef和ps aux的区别"></a>ps -ef和ps aux的区别</h4><p>ps -ef包含进程和父进程</p>
 <p>ps aux包含内存CPU的占用情况</p>
-<h3 id="查看后台任务"><a href="#查看后台任务" class="headerlink" title="查看后台任务?"></a>查看后台任务?</h3><p>job -l</p>
+<h4 id="查看后台任务"><a href="#查看后台任务" class="headerlink" title="查看后台任务?"></a>查看后台任务?</h4><p>job -l</p>
 
                 
             </div>

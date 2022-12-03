@@ -562,6 +562,14 @@
 <span class="token comment"># Output:</span>
 <span class="token comment"># 3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<h2 id="map"><a href="#map" class="headerlink" title="map"></a>map</h2><p>map创建方式</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 方式一</span>
+<span class="token builtin class-name">declare</span> -A myMap
+myMap<span class="token punctuation">[</span><span class="token string">"my03"</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">"03"</span>
+
+<span class="token comment"># 方式二</span>
+<span class="token builtin class-name">declare</span> -A <span class="token assign-left variable">myMap</span><span class="token operator">=</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"my01"</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">"01"</span> <span class="token punctuation">[</span><span class="token string">"my02"</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">"02"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>bash只支持一维数组</p>
 <h3 id="创建数组"><a href="#创建数组" class="headerlink" title="创建数组"></a>创建数组</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 创建数组的不同方式</span>
 <span class="token assign-left variable">nums</span><span class="token operator">=</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token number">2</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token number">0</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span>

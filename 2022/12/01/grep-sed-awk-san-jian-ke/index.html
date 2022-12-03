@@ -527,11 +527,11 @@
 
 <h2 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h2><h3 id="参数选项-1"><a href="#参数选项-1" class="headerlink" title="参数选项"></a>参数选项</h3><p><strong>参数说明</strong>：</p>
 <blockquote>
-<p>-e<script>或--expression=<script> 以选项中指定的script来处理输入的文本文件。</p>
-<p>-f<script文件>或--file=<script文件> 以选项中指定的script文件来处理输入的文本文件。</p>
-<p>-h或--help 显示帮助。</p>
-<p>-n或--quiet或--silent 仅显示script处理后的结果。</p>
-<p>-V或--version 显示版本信息。</p>
+<p>-e 以选项中指定的script来处理输入的文本文件。</p>
+<p>-f以选项中指定的script文件来处理输入的文本文件。</p>
+<p>-h或–help 显示帮助。</p>
+<p>-n或–quiet或–silent 仅显示script处理后的结果。</p>
+<p>-V或–version 显示版本信息。</p>
 </blockquote>
 <p><strong>动作说明</strong>：</p>
 <blockquote>
@@ -540,7 +540,7 @@
 <p>d ：删除，因为是删除啊，所以 d 后面通常不接任何东东；</p>
 <p>i ：插入， i 的后面可以接字串，而这些字串会在新的一行出现(目前的上一行)；</p>
 <p><strong>p ：打印，亦即将某个选择的数据印出。通常 p 会与参数 sed -n 一起运行～</strong></p>
-<p>s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正则表达式！例如 1,20s/old/new/g 就是啦！</p>
+<p>s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正则表达式！例如 1,20s&#x2F;old&#x2F;new&#x2F;g 就是啦！</p>
 </blockquote>
 <h3 id="常用示例-1"><a href="#常用示例-1" class="headerlink" title="常用示例"></a>常用示例</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 在test文件的第四行后添加一行，并将结果输出到标准输出</span>
 <span class="token function">sed</span> <span class="token string">'4a newline'</span> test.txt
@@ -559,12 +559,12 @@ newline_2'</span>
 <span class="token function">sed</span> -i <span class="token string">'s/oo/kk/g'</span> test.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h2 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h2><h3 id="参数选项-2"><a href="#参数选项-2" class="headerlink" title="参数选项"></a>参数选项</h3><ul>
-<li>-F fs or --field-separator fs<br>指定输入文件折分隔符，fs是一个字符串或者是一个正则表达式，如-F:。</li>
+<li>-F fs or –field-separator fs<br>指定输入文件折分隔符，fs是一个字符串或者是一个正则表达式，如-F:。</li>
 </ul>
-<h3 id="常用示例-2"><a href="#常用示例-2" class="headerlink" title="常用示例"></a>常用示例</h3><pre class="line-numbers language-none"><code class="language-none"># 每行按空格或TAB分割，输出文本中的1、4项
-awk &#39;&#123;print $1,$4&#125;&#39; log.txt
-# 使用&quot;,&quot;分割
-awk -F, &#39;&#123;print $1,$2&#125;&#39;   log.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="常用示例-2"><a href="#常用示例-2" class="headerlink" title="常用示例"></a>常用示例</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 每行按空格或TAB分割，输出文本中的1、4项</span>
+<span class="token function">awk</span> <span class="token string">'&#123;print $1,$4&#125;'</span> log.txt
+<span class="token comment"># 使用","分割</span>
+<span class="token function">awk</span> -F, <span class="token string">'&#123;print $1,$2&#125;'</span>   log.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
                 

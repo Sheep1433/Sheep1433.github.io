@@ -485,8 +485,8 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="git核心"><a href="#git核心" class="headerlink" title="git核心"></a>git核心</h1><p>![Screenshot_20220416_171404_tv.danmaku.bili](D:\Huawei Share\Huawei Share\Screenshot_20220416_171404_tv.danmaku.bili.jpg)</p>
-<h1 id="git登录"><a href="#git登录" class="headerlink" title="git登录"></a>git登录</h1><p>查看当前登录账号：</p>
+                <h2 id="git核心"><a href="#git核心" class="headerlink" title="git核心"></a>git核心</h2><p>![Screenshot_20220416_171404_tv.danmaku.bili](D:\Huawei Share\Huawei Share\Screenshot_20220416_171404_tv.danmaku.bili.jpg)</p>
+<h2 id="git登录"><a href="#git登录" class="headerlink" title="git登录"></a>git登录</h2><p>查看当前登录账号：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">git config user.name<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>查看当前登录邮箱</p>
@@ -506,7 +506,7 @@ git config --global user.email &quot;Your_email&quot;<span aria-hidden="true" cl
 <li>要随时掌握工作区的状态，使用<code>git status</code>命令。</li>
 <li>如果<code>git status</code>告诉你有文件被修改过，用<code>git diff</code>可以查看修改内容。</li>
 </ul>
-<h1 id="版本切换"><a href="#版本切换" class="headerlink" title="版本切换"></a>版本切换</h1><ul>
+<h2 id="版本切换"><a href="#版本切换" class="headerlink" title="版本切换"></a>版本切换</h2><ul>
 <li><code>HEAD</code>指向的版本就是当前版本，HEAD^表示上一个版本，HEAD^^表示上上个版本，HEAD~100表示往上100个版本，因此，Git允许我们在版本的历史之间穿梭，使用命令<code>git reset --hard commit_id</code>，commit_id版本号不需要写全，只需要写前几个。</li>
 <li>穿梭前，用<code>git log</code>可以查看提交历史，以便确定要回退到哪个版本。</li>
 <li>要重返未来，用<code>git reflog</code>查看命令历史，以便确定要回到未来的哪个版本。</li>
@@ -539,7 +539,7 @@ git config --global user.email &quot;Your_email&quot;<span aria-hidden="true" cl
 <p>然后删除</p>
 <pre class="line-numbers language-none"><code class="language-none">git remote rm origin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<h1 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h1><p>创建dev分支并且切换</p>
+<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><p>创建dev分支并且切换</p>
 <pre class="line-numbers language-none"><code class="language-none">git checkout -b dev		等同于 git branch dev 加上git checkout dev也等同于git switch -c dev<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>使用git branch查看分支</p>
