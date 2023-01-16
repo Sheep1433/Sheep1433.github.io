@@ -1,0 +1,90 @@
+---
+title: requests学习
+author: 
+date: 2022-04-17 10:22:51
+tags: requests
+---
+
+# __init__模块	
+
+init总体结构只包含check_compatibility和_check_ctyptography两个函数，对版本信息进行校验
+
+收获：
+
+在函数内部多次assert，如果没有完全通过，则会抛出AssertError
+
+对版本信息验证是否在2.0.0~3.0.0之间，可以使用 assert (2,0,0) <= (major, minor, patch) < (3,0,0) 或者assert [2,0,0] <= (major, minor, patch) < [3,0,0]，归因于python列表(元组)比较大小
+
+导包过程中 from . import utils中的.表示当前位置
+
+# compat、_internal_utils模块
+
+负责python2、python3以及简单的编码处理
+
+# certs模块
+
+CA证书相关
+
+# exceptions模块
+
+异常处理模块，应用到了super、hasattr、多继承等，还有字典的pop方法，pop方法可以加一个默认返回值kwargs.pop('response', None)，具体工作原理还需要结合调用时学习
+
+cookies模块
+
+hooks模块
+
+packages模块	
+
+# status_codes模块
+
+该模块中有所有的状态信息，但是内部直接通过_init()执行，似乎没有被调用类或变量，还需要models等模块中结合学习
+
+# auth模块
+
+身份认证相关，在models、adapter、sessions等模块中调用了，学习这几个模块再返回学习
+
+# API模块
+
+api模块中，包含request、get、option、post等函数，而get等通过调用request实现函数功能，而request调用的是session.request函数，同时使用with sessions.Session() as session:对session进行上下文管理，确保会话及时关闭，避免出现类似内存泄漏的情况
+
+# structures模块
+
+新建了两种数据结构，CaseInsensitiveDict和LookupDict，其中CaseInsensitiveDict继承于MutableMapping，实现了__setitem__,__getitem__,__delitem__,__iter__,__len__等方法，解决大小写问题，在self._store中存储的键值形式为 "lower_key" : ("real_key","value")，查询时用小写查询，同时能保留原信息，具体实现方法很值得学习
+
+# session模块
+
+# models模块
+
+ models模块中首先创建了RequestEncodingMixin、RequestHooksMixin基类，类中只有相关方法，供后续子类调用，其中RequestHooksMixin类中使用了self.hooks属性，hooks属性由其子类创建，因此此处使用了Mixin模式，并且父类调用了子类的属性。
+
+```python
+class RequestHooksMixin(object):
+    def register_hook(self, event, hook):
+        """Properly register a hook."""
+
+        if event not in self.hooks:
+            raise ValueError('Unsupported event specified, with event name "%s"' % (event))
+
+        if isinstance(hook, Callable):
+            self.hooks[event].append(hook)
+```
+
+此外用到了Callable，这是一种可调用执行对象，并且可以执行参数，也就是在对象后面使用小括号执行代码，那么这个对象就是Callable对象，callable包含函数、类、类里的方法、实现了__callable__方法的实例对象
+
+```python3
+class Stu(object):
+    def __init__(self, name):
+        self.name = name
+
+    def __call__(self, *args, **kwargs):
+        self.run()
+
+    def run(self):
+        print('{name} is running'.format(name=self.name))
+
+stu = Stu('小明')
+print(callable(stu))    # True
+stu() 
+```
+
+这个stu就是实例对象，但是在内部实现了__callable__方法，就可以像函数一样调用
