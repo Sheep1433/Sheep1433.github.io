@@ -1,9 +1,5 @@
 .DS_Store
 Thumbs.db
-../newblog/db.json
 *.log
-node_modules/
-public/
-.deploy*/
 _multiconfig.yml
 .idea
