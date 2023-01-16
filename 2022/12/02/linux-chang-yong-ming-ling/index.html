@@ -489,7 +489,8 @@
 tee			cp			which		whereis		awk
 scp			sed			tr			sort		head
 tail		less		more		unzip		tar
-vi			wc			ln			uniq		nl<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+vi			wc			ln			uniq		nl
+xargs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="具体案例"><a href="#具体案例" class="headerlink" title="具体案例"></a>具体案例</h3><h4 id="复制文件夹"><a href="#复制文件夹" class="headerlink" title="复制文件夹"></a>复制文件夹</h4><p>cp -r 文件夹</p>
 <h4 id="统计文件有多少行"><a href="#统计文件有多少行" class="headerlink" title="统计文件有多少行"></a>统计文件有多少行</h4><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">wc</span> testfile           <span class="token comment"># testfile文件的统计信息  </span>
@@ -501,7 +502,12 @@ vi			wc			ln			uniq		nl<span aria-hidden="true" class="line-numbers-rows"><span>
 <li>-w或–words 只显示字数。</li>
 </ul>
 <h4 id="建立软链接-快捷方式-，以及硬链接的命令。"><a href="#建立软链接-快捷方式-，以及硬链接的命令。" class="headerlink" title="建立软链接(快捷方式)，以及硬链接的命令。"></a><strong>建立软链接(快捷方式)，以及硬链接的命令。</strong></h4><p> 软链接： ln -s slink source<br> 硬链接： ln link source </p>
-<h4 id="which、whereis、find、locate的区别"><a href="#which、whereis、find、locate的区别" class="headerlink" title="which、whereis、find、locate的区别"></a>which、whereis、find、locate的区别</h4><h4 id="uniq命令用法"><a href="#uniq命令用法" class="headerlink" title="uniq命令用法"></a>uniq命令用法</h4><p>用于检查及删除文本文件中重复出现的行列，一般与 sort 命令结合使用</p>
+<h4 id="which、whereis、find、locate的区别"><a href="#which、whereis、find、locate的区别" class="headerlink" title="which、whereis、find、locate的区别"></a>which、whereis、find、locate的区别</h4><h4 id="sort命令"><a href="#sort命令" class="headerlink" title="sort命令"></a>sort命令</h4><ul>
+<li>-n 依照数值的大小排序。</li>
+<li>-r 以相反的顺序来排序</li>
+<li>[-k field1[,field2]] 按指定的列进行排序。</li>
+</ul>
+<h4 id="uniq命令用法"><a href="#uniq命令用法" class="headerlink" title="uniq命令用法"></a>uniq命令用法</h4><p>用于检查及删除文本文件中重复出现的行列，一般与 sort 命令结合使用</p>
 <ul>
 <li>-c或–count 在每列旁边显示该行重复出现的次数。</li>
 <li>-d或–repeated 仅显示重复出现的行列。</li>
@@ -513,6 +519,13 @@ vi			wc			ln			uniq		nl<span aria-hidden="true" class="line-numbers-rows"><span>
 <span class="token function">sort</span> testfile1 <span class="token operator">|</span> <span class="token function">uniq</span> -c
 <span class="token comment"># 在文件中找出重复的行</span>
 <span class="token function">sort</span> testfile1 <span class="token operator">|</span> <span class="token function">uniq</span> -d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="xargs"><a href="#xargs" class="headerlink" title="xargs"></a>xargs</h4><p>xargs 用作替换工具，读取输入数据重新格式化后输出。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 多行转换为单行输出# </span>
+<span class="token function">cat</span> test.txt <span class="token operator">|</span> <span class="token function">xargs</span>
+<span class="token function">cat</span> test.txt <span class="token operator">|</span> <span class="token function">xargs</span>
+<span class="token comment"># 每行三个数据进行展示</span>
+<span class="token function">cat</span> test.txt <span class="token operator">|</span> <span class="token function">xargs</span> -n3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -800,18 +813,17 @@ crontab		yum			job			history<span aria-hidden="true" class="line-numbers-rows"><
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/12/02/linux-chang-yong-ming-ling/">
+                <a href="/2023/01/16/hexo-bo-ke-da-jian/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="linux常用命令">
+                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="hexo博客搭建">
                         
-                        <span class="card-title">linux常用命令</span>
+                        <span class="card-title">hexo博客搭建</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -821,31 +833,22 @@ crontab		yum			job			history<span aria-hidden="true" class="line-numbers-rows"><
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-12-02
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-01-16
+                        </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/linux/" class="post-category">
-                                    linux
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            zzq
                             
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E5%9F%BA%E7%A1%80/">
-                        <span class="chip bg-color">基础</span>
-                    </a>
-                    
-                    <a href="/tags/linux/">
-                        <span class="chip bg-color">linux</span>
+                    <a href="/tags/hexo/">
+                        <span class="chip bg-color">hexo</span>
                     </a>
                     
                 </div>
@@ -1092,7 +1095,7 @@ crontab		yum			job			history<span aria-hidden="true" class="line-numbers-rows"><
         <div class="col s12 m8 l8 copy-right">
             Copyright&nbsp;&copy;
             
-                <span id="year">2019-2022</span>
+                <span id="year">2019-2023</span>
             
             <span id="year">2019</span>
             <a href="/about" target="_blank">zzq</a>
