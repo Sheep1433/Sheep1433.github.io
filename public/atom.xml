@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>浪迹天涯</title>
+  
+  
+  <link href="http://sheep1433.github.io/atom.xml" rel="self"/>
+  
+  <link href="http://sheep1433.github.io/"/>
+  <updated>2022-03-06T11:29:05.264Z</updated>
+  <id>http://sheep1433.github.io/</id>
+  
+  <author>
+    <name>zzq</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL中limit和offset的用法</title>
+    <link href="http://sheep1433.github.io/2022/03/06/mysql-zhong-limit-he-offset-de-yong-fa/"/>
+    <id>http://sheep1433.github.io/2022/03/06/mysql-zhong-limit-he-offset-de-yong-fa/</id>
+    <published>2022-03-06T11:26:21.000Z</published>
+    <updated>2022-03-06T11:29:05.264Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;pre class=&quot;line-numbers language-python&quot; data-language=&quot;python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;select&lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="MySQL" scheme="http://sheep1433.github.io/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>docker入门</title>
+    <link href="http://sheep1433.github.io/2022/11/26/docker-ru-men/"/>
+    <id>http://sheep1433.github.io/2022/11/26/docker-ru-men/</id>
+    <published>2022-11-25T16:24:22.000Z</published>
+    <updated>2022-11-25T16:25:56.859Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;docker&quot;&gt;&lt;a href=&quot;#docker&quot; class=&quot;headerlink&quot; title=&quot;docker&quot;&gt;&lt;/a&gt;docker&lt;/h2&gt;&lt;p&gt;不支持windows10家庭版&lt;/p&gt;
+&lt;p&gt;CentOS 安装配置&lt;/p&gt;
+&lt;p&gt;yum install</summary>
+        
+      
+    
+    
+    
+    <category term="docker" scheme="http://sheep1433.github.io/categories/docker/"/>
+    
+    
+    <category term="docker" scheme="http://sheep1433.github.io/tags/docker/"/>
+    
+    <category term="基础" scheme="http://sheep1433.github.io/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>git笔记</title>
+    <link href="http://sheep1433.github.io/2022/11/26/git-bi-ji/"/>
+    <id>http://sheep1433.github.io/2022/11/26/git-bi-ji/</id>
+    <published>2022-11-25T16:26:18.000Z</published>
+    <updated>2022-12-03T14:53:47.342Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;git核心&quot;&gt;&lt;a href=&quot;#git核心&quot; class=&quot;headerlink&quot; title=&quot;git核心&quot;&gt;&lt;/a&gt;git核心&lt;/h2&gt;&lt;p&gt;![Screenshot_20220416_171404_tv.danmaku.bili](D:\Huawei</summary>
+        
+      
+    
+    
+    
+    <category term="git" scheme="http://sheep1433.github.io/categories/git/"/>
+    
+    
+    <category term="基础" scheme="http://sheep1433.github.io/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+    <category term="git" scheme="http://sheep1433.github.io/tags/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>grep、sed、awk三剑客</title>
+    <link href="http://sheep1433.github.io/2022/12/01/grep-sed-awk-san-jian-ke/"/>
+    <id>http://sheep1433.github.io/2022/12/01/grep-sed-awk-san-jian-ke/</id>
+    <published>2022-12-01T14:02:56.000Z</published>
+    <updated>2022-12-05T12:59:46.038Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;grep&quot;&gt;&lt;a href=&quot;#grep&quot; class=&quot;headerlink&quot; title=&quot;grep&quot;&gt;&lt;/a&gt;grep&lt;/h2&gt;&lt;p&gt;文本搜索工具，支持使用正则表达式搜索文本，全称为Global Regular Expression</summary>
+        
+      
+    
+    
+    
+    <category term="linux" scheme="http://sheep1433.github.io/categories/linux/"/>
+    
+    
+    <category term="基础" scheme="http://sheep1433.github.io/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+    <category term="三剑客" scheme="http://sheep1433.github.io/tags/%E4%B8%89%E5%89%91%E5%AE%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>hexo博客搭建</title>
+    <link href="http://sheep1433.github.io/2023/01/16/hexo-bo-ke-da-jian/"/>
+    <id>http://sheep1433.github.io/2023/01/16/hexo-bo-ke-da-jian/</id>
+    <published>2023-01-16T13:58:01.197Z</published>
+    <updated>2022-04-15T07:42:55.262Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;参照&lt;a href=&quot;https://blog.csdn.net/sinat_37781304/article/details/82729029&quot;&gt;hexo史上最全搭建教程&lt;/a&gt;搭建了hexo个人网站。&lt;/p&gt;
+&lt;h1 id=&quot;hexo简介&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    
+    <category term="hexo" scheme="http://sheep1433.github.io/tags/hexo/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>linux常用命令</title>
+    <link href="http://sheep1433.github.io/2022/12/02/linux-chang-yong-ming-ling/"/>
+    <id>http://sheep1433.github.io/2022/12/02/linux-chang-yong-ming-ling/</id>
+    <published>2022-12-02T03:32:31.000Z</published>
+    <updated>2022-12-05T11:20:27.648Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;文件操作&quot;&gt;&lt;a href=&quot;#文件操作&quot; class=&quot;headerlink&quot; title=&quot;文件操作&quot;&gt;&lt;/a&gt;文件操作&lt;/h2&gt;&lt;h3 id=&quot;常见命令&quot;&gt;&lt;a href=&quot;#常见命令&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="linux" scheme="http://sheep1433.github.io/categories/linux/"/>
+    
+    
+    <category term="基础" scheme="http://sheep1433.github.io/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+    <category term="linux" scheme="http://sheep1433.github.io/tags/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>map函数的使用</title>
+    <link href="http://sheep1433.github.io/2022/03/04/map-han-shu-de-shi-yong/"/>
+    <id>http://sheep1433.github.io/2022/03/04/map-han-shu-de-shi-yong/</id>
+    <published>2022-03-04T12:42:13.000Z</published>
+    <updated>2022-03-04T12:47:10.617Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;strong&gt;map()&lt;/strong&gt; 会根据提供的函数对指定序列做映射。&lt;/p&gt;
+&lt;p&gt;map() 函数语法：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-python&quot; data-language=&quot;python&quot;&gt;&lt;code</summary>
+        
+      
+    
+    
+    
+    
+    <category term="python基础" scheme="http://sheep1433.github.io/tags/python%E5%9F%BA%E7%A1%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>requests学习</title>
+    <link href="http://sheep1433.github.io/2022/04/17/requests-xue-xi/"/>
+    <id>http://sheep1433.github.io/2022/04/17/requests-xue-xi/</id>
+    <published>2022-04-17T02:22:51.000Z</published>
+    <updated>2022-04-25T06:51:13.860Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;init-模块&quot;&gt;&lt;a href=&quot;#init-模块&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="requests" scheme="http://sheep1433.github.io/tags/requests/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>requests源码学习</title>
+    <link href="http://sheep1433.github.io/2022/04/25/requests-yuan-ma-xue-xi/"/>
+    <id>http://sheep1433.github.io/2022/04/25/requests-yuan-ma-xue-xi/</id>
+    <published>2022-04-25T01:53:39.000Z</published>
+    <updated>2022-05-05T12:22:56.529Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;init-模块&quot;&gt;&lt;a href=&quot;#init-模块&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="requests" scheme="http://sheep1433.github.io/categories/requests/"/>
+    
+    
+    <category term="源码学习" scheme="http://sheep1433.github.io/tags/%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>shell入门</title>
+    <link href="http://sheep1433.github.io/2022/11/26/shell-ru-men/"/>
+    <id>http://sheep1433.github.io/2022/11/26/shell-ru-men/</id>
+    <published>2022-11-25T16:14:09.000Z</published>
+    <updated>2022-12-03T14:53:17.661Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;基础知识&quot;&gt;&lt;a href=&quot;#基础知识&quot; class=&quot;headerlink&quot; title=&quot;基础知识&quot;&gt;&lt;/a&gt;基础知识&lt;/h2&gt;&lt;p&gt;在 shell 脚本，&lt;code&gt;#!&lt;/code&gt; 告诉系统其后路径所指定的程序即是解释此脚本文件的 Shell</summary>
+        
+      
+    
+    
+    
+    <category term="linux" scheme="http://sheep1433.github.io/categories/linux/"/>
+    
+    
+    <category term="基础" scheme="http://sheep1433.github.io/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+    <category term="shell" scheme="http://sheep1433.github.io/tags/shell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>二叉树的前中后序遍历.md</title>
+    <link href="http://sheep1433.github.io/2022/03/10/er-cha-shu-de-qian-zhong-hou-xu-bian-li/"/>
+    <id>http://sheep1433.github.io/2022/03/10/er-cha-shu-de-qian-zhong-hou-xu-bian-li/</id>
+    <published>2022-03-10T13:37:44.000Z</published>
+    <updated>2022-03-10T13:40:43.005Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;给定一个二叉树的根节点 &lt;code&gt;root&lt;/code&gt; ，返回它的 &lt;strong&gt;中序&lt;/strong&gt; 遍历。&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-none&quot;&gt;&lt;code</summary>
+        
+      
+    
+    
+    
+    
+    <category term="数据结构" scheme="http://sheep1433.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>反转链表</title>
+    <link href="http://sheep1433.github.io/2022/03/12/fan-zhuan-lian-biao/"/>
+    <id>http://sheep1433.github.io/2022/03/12/fan-zhuan-lian-biao/</id>
+    <published>2022-03-12T11:20:16.000Z</published>
+    <updated>2022-04-15T07:18:11.740Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;给你单链表的头节点 &lt;code&gt;head&lt;/code&gt; ，请你反转链表，并返回反转后的链表。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://assets.leetcode.com/uploads/2021/02/19/rev1ex1.jpg&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="数据结构与算法" scheme="http://sheep1433.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
+    
+    
+    <category term="数据结构与算法" scheme="http://sheep1433.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>部署文章</title>
+    <link href="http://sheep1433.github.io/2023/01/16/bu-shu-wen-zhang/"/>
+    <id>http://sheep1433.github.io/2023/01/16/bu-shu-wen-zhang/</id>
+    <published>2023-01-16T14:01:44.000Z</published>
+    <updated>2023-01-16T14:02:17.248Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;这是一篇测试文章，看到请忽略&lt;/p&gt;
+</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+</feed>
