@@ -485,7 +485,10 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h2><p>不支持windows10家庭版</p>
+                <h2 id="docker概念"><a href="#docker概念" class="headerlink" title="docker概念"></a>docker概念</h2><p><img src="D:\Sheep1433.github.io\source\picture\image-20230117222926334.png" alt="image-20230117222926334"></p>
+<p><img src="D:\Sheep1433.github.io\source\picture\image-20230117223015800.png" alt="image-20230117223015800"></p>
+<p>核心概念：镜像、容器、仓库</p>
+<h2 id="docker安装"><a href="#docker安装" class="headerlink" title="docker安装"></a>docker安装</h2><p>不支持windows10家庭版</p>
 <p>CentOS 安装配置</p>
 <p>yum install -y yum-utils device-mapper-persistent-data lvm2		安装依赖</p>
 <p> yum-config-manager –add-repo <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo">http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</a>	添加源</p>
@@ -493,13 +496,21 @@
 <p>或者curl -fsSL <a target="_blank" rel="noopener" href="https://get.docker.com/">https://get.docker.com</a> | bash -s docker –mirror Aliyun</p>
 <p>此时直接使用docker ps查看进程是无效的，需要先systemctl start docker启动</p>
 <p>设置开机自启动：	systemctl enable docker</p>
-<p>docker pull nginx或者docker pull nginx:1.17.10</p>
 <p>docker-compose安装</p>
 <pre class="line-numbers language-none"><code class="language-none"># curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.8.1&#x2F;docker-compose-&#96;uname -s&#96;-&#96;uname -m&#96; &gt; &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose
 # chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
+<h2 id="docker常用命令"><a href="#docker常用命令" class="headerlink" title="docker常用命令"></a>docker常用命令</h2><p><strong>一张图总结 Docker 的命令</strong></p>
+<p><img src="D:\Sheep1433.github.io\source\picture\cmd_logic.5970ea4d.png" alt="img"></p>
+<pre class="line-numbers language-none"><code class="language-none">exec	build		commit	exec	logs	ps	 	pull
+push	restart		rm		rmi		run		search	start
+tag		version		info	save	history	……<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker version	docker版本信息
 docker info		docker系统信息
+# 镜像相关
 docker images	查看所有镜像
 docker search busybox 	在网上搜索镜像
 docker pull busybOx:latest	拉取下载
@@ -508,15 +519,19 @@ docker load &lt; busybox.tar	导入
 docker rmi busybox:latest	删除镜像
 docker tag busybox:latest busybox:test 	更改镜像名
 docker history busybox 	查看镜像创建历史
-
+# 容器相关 
+# docker run中-p：端口映射，--name：命名，-v：挂载目录
+docker run -d -it busybox &#x2F;bin&#x2F;bash	# 这种运行方式，容器不会立刻被退出 -d以守护态运行
 docker run -d --name&#x3D;busybox busybox:latest ping 114.114.114.114	运行容器
+
 docker ps, docker ps -a		查看运行的容器
 docker top busybox 		查看容器中运行的进程
 docker stats busybox 	查看资源占用
+# 处于终止状态的容器，可以通过 &#96;docker start&#96; 命令来重新启动。
+# 此外，&#96;docker restart&#96; 命令会将一个运行态的容器终止，然后再重新启动它。
 docker start&#x2F;restart&#x2F;stop&#x2F;kill busybox 容器
 docker pause&#x2F;unpause busybox 	暂停容器
 docker rm -f busybox 	强制删除容器
-
 docker exec -it busybox ls	执行命令
 docker exec -it elasticsearch &#x2F;bin&#x2F;bash	在该容器下执行bash命令
 docker cp busyboxL&#x2F;etc&#x2F;hosts hosts		复制文件
@@ -524,17 +539,9 @@ docker logs -f busybox		查看容器日志
 docker inspect busybox		查看容器&#x2F;镜像的元信息
 docker inspect -f&#39;&#123;&#123;.Id&#125;&#125;&#39; busybox		格式化输出
 
-docker build	基于dockerfile在构建镜像
-docker commit	将容器转化为镜像<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+docker build -t &#123;tag&#125; .	基于dockerfile在构建镜像
+docker commit -m &quot;提交信息&quot; &#123;容器id&#125; &#123;命名&#125;	将容器转化为镜像<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>Nginx容器</p>
-<pre class="line-numbers language-none"><code class="language-none">docker run -d --name nginx -p 8088:80 nginx1.17.9			运行
-docker run -d --name nginx1 -p 8089:80 -v $&#123;PWD&#125;&#x2F;html:&#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html&#x2F;nginx:1.17.9	挂载目录
-docker stop 停止<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>此外，还可以利用 <code>ADD</code> 命令复制本地文件到镜像；用 <code>EXPOSE</code> 命令来向外部开放端口；用 <code>CMD</code> 命令来描述容器启动后运行的程序等。例如</p>
 <p>当利用 <code>docker run</code> 来创建容器时，Docker 在后台运行的标准操作包括：</p>
 <ul>
 <li>检查本地是否存在指定的镜像，不存在就从公有仓库下载</li>
@@ -545,10 +552,26 @@ docker stop 停止<span aria-hidden="true" class="line-numbers-rows"><span></spa
 <li>执行用户指定的应用程序</li>
 <li>执行完毕后容器被终止</li>
 </ul>
-<h2 id="守护态运行："><a href="#守护态运行：" class="headerlink" title="守护态运行："></a>守护态运行：</h2><p>更多的时候，需要让 Docker 容器在后台以守护态（Daemonized）形式运行。此时，可以通过添加 <code>-d</code> 参数来实现</p>
-<h2 id="容器重启"><a href="#容器重启" class="headerlink" title="容器重启"></a>容器重启</h2><p>处于终止状态的容器，可以通过 <code>docker start</code> 命令来重新启动。</p>
-<p>此外，<code>docker restart</code> 命令会将一个运行态的容器终止，然后再重新启动它。</p>
-<h2 id="Dockerfile中命令"><a href="#Dockerfile中命令" class="headerlink" title="Dockerfile中命令"></a>Dockerfile中命令</h2><h3 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h3><p>格式为 <code>RUN &lt;command&gt;</code> 或 <code>RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code>。</p>
+<p>Nginx容器</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">docker</span> run -d --name nginx -p <span class="token number">8088</span>:80 nginx1.17.9			<span class="token comment"># 运行</span>
+<span class="token function">docker</span> run -d --name nginx1 -p <span class="token number">8089</span>:80 -v <span class="token variable">$&#123;<span class="token environment constant">PWD</span>&#125;</span>/html:/usr/share/nginx/html/nginx:1.17.9	挂载目录
+<span class="token function">docker</span> stop 停止<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>Jenkins容器</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">docker</span> run -p <span class="token number">8888</span>:8080 --name myjenkins --user root myjenkins -v /data/jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> -it --user root <span class="token operator">&lt;</span>container id<span class="token operator">></span> /bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><p><strong>示例</strong></p>
+<pre class="line-numbers language-dockerfile" data-language="dockerfile"><code class="language-dockerfile"># Dockerfile
+FROM        ubuntu:14.04
+RUN         apt-get update
+RUN         apt-get -y install redis-server
+EXPOSE      6379
+ENTRYPOINT  [&quot;&#x2F;usr&#x2F;bin&#x2F;redis-server&quot;]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h3><p>格式为 <code>RUN &lt;command&gt;</code> 或 <code>RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code>。</p>
 <p>前者将在 shell 终端中运行命令，即 <code>/bin/sh -c</code>；后者则使用 <code>exec</code> 执行。指定使用其它终端可以通过第二种方式实现，例如 <code>RUN [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;echo hello&quot;]</code>。</p>
 <p>每条 <code>RUN</code> 指令将在当前镜像基础上执行指定命令，并提交为新的镜像。当命令较长时可以使用 <code>\</code> 来换行</p>
 <h3 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h3><p>支持三种格式</p>
@@ -576,6 +599,128 @@ ENV PATH &#x2F;usr&#x2F;local&#x2F;postgres-$PG_MAJOR&#x2F;bin:$PATH<span aria-h
 <h3 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h3><p>格式为 <code>WORKDIR /path/to/workdir</code>。</p>
 <p>为后续的 <code>RUN</code>、<code>CMD</code>、<code>ENTRYPOINT</code> 指令配置工作目录。</p>
 <p>可以使用多个 <code>WORKDIR</code> 指令，后续命令如果参数是相对路径，则会基于之前命令指定的路径</p>
+<h2 id="docker-compose常用命令"><a href="#docker-compose常用命令" class="headerlink" title="docker-compose常用命令"></a>docker-compose常用命令</h2><p>Dockerfile 可以让用户管理一个单独的应用容器；而 Compose 则允许用户在一个模板（YAML 格式）中定义一组相关联的应用容器（被称为一个 <code>project</code>，即项目），例如一个 Web 服务容器再加上后端的数据库服务容器等。</p>
+<p>常用命令</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">build		<span class="token comment"># 构建或重新构建服务。服务一旦构建后，将会带上一个标记名，例如 web_db。可以随时在项目目录下运行 `docker-compose build` 来重新构建服务。</span>
+<span class="token builtin class-name">help</span>		
+<span class="token function">kill</span>		<span class="token comment"># 通过发送 `SIGKILL` 信号来强制停止服务容器。支持通过参数来指定发送的信号，例如</span>
+logs
+port
+<span class="token function">ps</span>
+pull
+<span class="token function">rm</span>
+run
+start
+stop
+up			<span class="token comment">#	构建，（重新）创建，启动，链接一个服务相关的容器。链接的服务都将会启动，除非他们已经运行。默认情况， `docker-compose up` 将会整合所有容器的输出，并且退出时，所有容器将会停止。如果使用 `docker-compose up -d` ，将会在后台启动并运行所有的容器。默认情况，如果该服务的容器已经存在，`docker-compose up` 将会停止并尝试重新创建他们（保持使用`volumes-from` 挂载的卷），以保证 `docker-compose.yml` 的修改生效。如果你不想容器被停止重新创建，可以使用 `docker-compose up --no-recreate`。如果需要的话，这样将会启动已经停止的容器</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="docker-compose-yml常用字段"><a href="#docker-compose-yml常用字段" class="headerlink" title="docker-compose.yml常用字段"></a>docker-compose.yml常用字段</h2><p>默认的模板文件是 <code>docker-compose.yml</code>，其中定义的每个服务都必须通过 <code>image</code> 指令指定镜像或 <code>build</code> 指令（需要 Dockerfile）来自动构建。</p>
+<p>其它大部分指令都跟 <code>docker run</code> 中的类似。</p>
+<p>如果使用 <code>build</code> 指令，在 <code>Dockerfile</code> 中设置的选项(例如：<code>CMD</code>, <code>EXPOSE</code>, <code>VOLUME</code>, <code>ENV</code> 等) 将会自动被获取，无需在 <code>docker-compose.yml</code> 中再次设置。</p>
+<h3 id="image"><a href="#image" class="headerlink" title="image"></a>image</h3><p>指定为镜像名称或镜像 ID。如果镜像在本地不存在，<code>Compose</code> 将会尝试拉去这个镜像。</p>
+<p>例如：</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">image: ubuntu
+image: orchardup&#x2F;postgresql
+image: a4bc65fd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="build"><a href="#build" class="headerlink" title="build"></a>build</h3><p>指定 <code>Dockerfile</code> 所在文件夹的路径。 <code>Compose</code> 将会利用它自动构建这个镜像，然后使用这个镜像。</p>
+<pre class="line-numbers language-none"><code class="language-none">build: &#x2F;path&#x2F;to&#x2F;build&#x2F;dir<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="command"><a href="#command" class="headerlink" title="command"></a>command</h3><p>覆盖容器启动后默认执行的命令。</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">command: bundle exec thin -p 3000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="link"><a href="#link" class="headerlink" title="link"></a>link</h3><p>链接到其它服务中的容器。使用服务名称（同时作为别名）或服务名称：服务别名 <code>（SERVICE:ALIAS）</code> 格式都可以。</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">links:
+ - db
+ - db:database
+ - redis<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用的别名将会自动在服务容器中的 <code>/etc/hosts</code> 里创建。例如：</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">172.17.2.186  db
+172.17.2.186  database
+172.17.2.187  redis<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>相应的环境变量也将被创建。</p>
+<h3 id="external-links"><a href="#external-links" class="headerlink" title="external_links"></a>external_links</h3><p>链接到 docker-compose.yml 外部的容器，甚至 并非 <code>Compose</code> 管理的容器。参数格式跟 <code>links</code> 类似。</p>
+<pre class="line-numbers language-none"><code class="language-none">external_links:
+ - redis_1
+ - project_db_1:mysql
+ - project_db_1:postgresql<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="ports"><a href="#ports" class="headerlink" title="ports"></a>ports</h3><p>暴露端口信息。</p>
+<p>使用宿主：容器 <code>（HOST:CONTAINER）</code>格式或者仅仅指定容器的端口（宿主将会随机选择端口）都可以。</p>
+<pre class="line-numbers language-none"><code class="language-none">ports:
+ - &quot;3000&quot;
+ - &quot;8000:8000&quot;
+ - &quot;49100:22&quot;
+ - &quot;127.0.0.1:8001:8001&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><em>注：当使用 <code>HOST:CONTAINER</code> 格式来映射端口时，如果你使用的容器端口小于 60 你可能会得到错误得结果，因为 <code>YAML</code> 将会解析 <code>xx:yy</code> 这种数字格式为 60 进制。所以建议采用字符串格式。</em></p>
+<h3 id="expose"><a href="#expose" class="headerlink" title="expose"></a>expose</h3><p>暴露端口，但不映射到宿主机，只被连接的服务访问。</p>
+<p>仅可以指定内部端口为参数</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">expose:
+ - &quot;3000&quot;
+ - &quot;8000&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="volumes"><a href="#volumes" class="headerlink" title="volumes"></a>volumes</h3><p>卷挂载路径设置。可以设置宿主机路径 （<code>HOST:CONTAINER</code>） 或加上访问模式 （<code>HOST:CONTAINER:ro</code>）。</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">volumes:
+ - &#x2F;var&#x2F;lib&#x2F;mysql
+ - cache&#x2F;:&#x2F;tmp&#x2F;cache
+ - ~&#x2F;configs:&#x2F;etc&#x2F;configs&#x2F;:ro<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="volumes-from"><a href="#volumes-from" class="headerlink" title="volumes_from"></a>volumes_from</h3><p>从另一个服务或容器挂载它的所有卷。</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">volumes_from:
+ - service_name
+ - container_name<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="environment"><a href="#environment" class="headerlink" title="environment"></a>environment</h3><p>设置环境变量。你可以使用数组或字典两种格式。</p>
+<p>只给定名称的变量会自动获取它在 Compose 主机上的值，可以用来防止泄露不必要的数据。</p>
+<pre class="line-numbers language-none"><code class="language-none">environment:
+  RACK_ENV: development
+  SESSION_SECRET:
+
+environment:
+  - RACK_ENV&#x3D;development
+  - SESSION_SECRET<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="env-file"><a href="#env-file" class="headerlink" title="env_file"></a>env_file</h3><p>从文件中获取环境变量，可以为单独的文件路径或列表。</p>
+<p>如果通过 <code>docker-compose -f FILE</code> 指定了模板文件，则 <code>env_file</code> 中路径会基于模板文件路径。</p>
+<p>如果有变量名称与 <code>environment</code> 指令冲突，则以后者为准。</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">env_file: .env
+
+env_file:
+  - .&#x2F;common.env
+  - .&#x2F;apps&#x2F;web.env
+  - &#x2F;opt&#x2F;secrets.env<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>环境变量文件中每一行必须符合格式，支持 <code>#</code> 开头的注释行。</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh"># common.env: Set Rails&#x2F;Rack environment
+RACK_ENV&#x3D;development<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="extends"><a href="#extends" class="headerlink" title="extends"></a>extends</h3><p>基于已有的服务进行扩展。例如我们已经有了一个 webapp 服务，模板文件为 <code>common.yml</code>。</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh"># common.yml
+webapp:
+  build: .&#x2F;webapp
+  environment:
+    - DEBUG&#x3D;false
+    - SEND_EMAILS&#x3D;false<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>编写一个新的 <code>development.yml</code> 文件，使用 <code>common.yml</code> 中的 webapp 服务进行扩展。</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh"># development.yml
+web:
+  extends:
+    file: common.yml
+    service: webapp
+  ports:
+    - &quot;8000:8000&quot;
+  links:
+    - db
+  environment:
+    - DEBUG&#x3D;true
+db:
+  image: postgres<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>后者会自动继承 common.yml 中的 webapp 服务及相关环节变量。</p>
 
                 
             </div>

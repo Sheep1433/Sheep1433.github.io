@@ -44,16 +44,14 @@
     <link href="http://sheep1433.github.io/2022/11/26/docker-ru-men/"/>
     <id>http://sheep1433.github.io/2022/11/26/docker-ru-men/</id>
     <published>2022-11-25T16:24:22.000Z</published>
-    <updated>2022-11-25T16:25:56.859Z</updated>
+    <updated>2023-01-17T15:44:35.862Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;docker&quot;&gt;&lt;a href=&quot;#docker&quot; class=&quot;headerlink&quot; title=&quot;docker&quot;&gt;&lt;/a&gt;docker&lt;/h2&gt;&lt;p&gt;不支持windows10家庭版&lt;/p&gt;
-&lt;p&gt;CentOS 安装配置&lt;/p&gt;
-&lt;p&gt;yum install</summary>
+    <summary type="html">&lt;h2 id=&quot;docker概念&quot;&gt;&lt;a href=&quot;#docker概念&quot; class=&quot;headerlink&quot; title=&quot;docker概念&quot;&gt;&lt;/a&gt;docker概念&lt;/h2&gt;&lt;p&gt;&lt;img</summary>
         
       
     
@@ -96,6 +94,30 @@
   </entry>
   
   <entry>
+    <title>hexo博客搭建</title>
+    <link href="http://sheep1433.github.io/2023/01/16/hexo-bo-ke-da-jian/"/>
+    <id>http://sheep1433.github.io/2023/01/16/hexo-bo-ke-da-jian/</id>
+    <published>2023-01-16T13:58:01.197Z</published>
+    <updated>2022-04-15T07:42:55.262Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;参照&lt;a href=&quot;https://blog.csdn.net/sinat_37781304/article/details/82729029&quot;&gt;hexo史上最全搭建教程&lt;/a&gt;搭建了hexo个人网站。&lt;/p&gt;
+&lt;h1 id=&quot;hexo简介&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    
+    <category term="hexo" scheme="http://sheep1433.github.io/tags/hexo/"/>
+    
+  </entry>
+  
+  <entry>
     <title>grep、sed、awk三剑客</title>
     <link href="http://sheep1433.github.io/2022/12/01/grep-sed-awk-san-jian-ke/"/>
     <id>http://sheep1433.github.io/2022/12/01/grep-sed-awk-san-jian-ke/</id>
@@ -119,30 +141,6 @@
     <category term="基础" scheme="http://sheep1433.github.io/tags/%E5%9F%BA%E7%A1%80/"/>
     
     <category term="三剑客" scheme="http://sheep1433.github.io/tags/%E4%B8%89%E5%89%91%E5%AE%A2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>hexo博客搭建</title>
-    <link href="http://sheep1433.github.io/2023/01/16/hexo-bo-ke-da-jian/"/>
-    <id>http://sheep1433.github.io/2023/01/16/hexo-bo-ke-da-jian/</id>
-    <published>2023-01-16T13:58:01.197Z</published>
-    <updated>2022-04-15T07:42:55.262Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;参照&lt;a href=&quot;https://blog.csdn.net/sinat_37781304/article/details/82729029&quot;&gt;hexo史上最全搭建教程&lt;/a&gt;搭建了hexo个人网站。&lt;/p&gt;
-&lt;h1 id=&quot;hexo简介&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    
-    <category term="hexo" scheme="http://sheep1433.github.io/tags/hexo/"/>
     
   </entry>
   
@@ -199,6 +197,31 @@
   </entry>
   
   <entry>
+    <title>requests源码学习</title>
+    <link href="http://sheep1433.github.io/2022/04/25/requests-yuan-ma-xue-xi/"/>
+    <id>http://sheep1433.github.io/2022/04/25/requests-yuan-ma-xue-xi/</id>
+    <published>2022-04-25T01:53:39.000Z</published>
+    <updated>2022-05-05T12:22:56.529Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;init-模块&quot;&gt;&lt;a href=&quot;#init-模块&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="requests" scheme="http://sheep1433.github.io/categories/requests/"/>
+    
+    
+    <category term="源码学习" scheme="http://sheep1433.github.io/tags/%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>requests学习</title>
     <link href="http://sheep1433.github.io/2022/04/17/requests-xue-xi/"/>
     <id>http://sheep1433.github.io/2022/04/17/requests-xue-xi/</id>
@@ -222,27 +245,26 @@
   </entry>
   
   <entry>
-    <title>requests源码学习</title>
-    <link href="http://sheep1433.github.io/2022/04/25/requests-yuan-ma-xue-xi/"/>
-    <id>http://sheep1433.github.io/2022/04/25/requests-yuan-ma-xue-xi/</id>
-    <published>2022-04-25T01:53:39.000Z</published>
-    <updated>2022-05-05T12:22:56.529Z</updated>
+    <title>二叉树的前中后序遍历.md</title>
+    <link href="http://sheep1433.github.io/2022/03/10/er-cha-shu-de-qian-zhong-hou-xu-bian-li/"/>
+    <id>http://sheep1433.github.io/2022/03/10/er-cha-shu-de-qian-zhong-hou-xu-bian-li/</id>
+    <published>2022-03-10T13:37:44.000Z</published>
+    <updated>2022-03-10T13:40:43.005Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;init-模块&quot;&gt;&lt;a href=&quot;#init-模块&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;p&gt;给定一个二叉树的根节点 &lt;code&gt;root&lt;/code&gt; ，返回它的 &lt;strong&gt;中序&lt;/strong&gt; 遍历。&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-none&quot;&gt;&lt;code</summary>
         
       
     
     
     
-    <category term="requests" scheme="http://sheep1433.github.io/categories/requests/"/>
     
-    
-    <category term="源码学习" scheme="http://sheep1433.github.io/tags/%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/"/>
+    <category term="数据结构" scheme="http://sheep1433.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
   </entry>
   
@@ -274,30 +296,6 @@
   </entry>
   
   <entry>
-    <title>二叉树的前中后序遍历.md</title>
-    <link href="http://sheep1433.github.io/2022/03/10/er-cha-shu-de-qian-zhong-hou-xu-bian-li/"/>
-    <id>http://sheep1433.github.io/2022/03/10/er-cha-shu-de-qian-zhong-hou-xu-bian-li/</id>
-    <published>2022-03-10T13:37:44.000Z</published>
-    <updated>2022-03-10T13:40:43.005Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;给定一个二叉树的根节点 &lt;code&gt;root&lt;/code&gt; ，返回它的 &lt;strong&gt;中序&lt;/strong&gt; 遍历。&lt;/p&gt;
-&lt;pre class=&quot;line-numbers language-none&quot;&gt;&lt;code</summary>
-        
-      
-    
-    
-    
-    
-    <category term="数据结构" scheme="http://sheep1433.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
-    
-  </entry>
-  
-  <entry>
     <title>反转链表</title>
     <link href="http://sheep1433.github.io/2022/03/12/fan-zhuan-lian-biao/"/>
     <id>http://sheep1433.github.io/2022/03/12/fan-zhuan-lian-biao/</id>
@@ -324,19 +322,18 @@
   </entry>
   
   <entry>
-    <title>部署文章</title>
-    <link href="http://sheep1433.github.io/2023/01/16/bu-shu-wen-zhang/"/>
-    <id>http://sheep1433.github.io/2023/01/16/bu-shu-wen-zhang/</id>
-    <published>2023-01-16T14:01:44.000Z</published>
-    <updated>2023-01-16T14:02:17.248Z</updated>
+    <title></title>
+    <link href="http://sheep1433.github.io/2023/01/18/ri-chang-bi-ji/"/>
+    <id>http://sheep1433.github.io/2023/01/18/ri-chang-bi-ji/</id>
+    <published>2023-01-18T15:29:08.319Z</published>
+    <updated>2023-01-18T15:29:56.871Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;这是一篇测试文章，看到请忽略&lt;/p&gt;
-</summary>
+    <summary type="html">&lt;p&gt;pytest的参数化可以传入一个ids进行区分&lt;br&gt;@pytest.mark.parametrize(‘in_data’, eval(re_data), ids&amp;#x3D;[i[‘detail’] for i in</summary>
         
       
     
