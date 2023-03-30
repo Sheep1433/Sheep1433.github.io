@@ -502,6 +502,42 @@
 <p>session和api中都有request、get等方法，api中的本质上仍然调用的是session的方法</p>
 </li>
 </ol>
+<p>Session类有一个mount方法，def mount(self, prefix, adapter):	是将对应的adapter注册到对应的会话前缀上，使用场景比如为所有请求设置一个超时时间</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> requests<span class="token punctuation">.</span>adapters <span class="token keyword">import</span> HTTPAdapter
+DEFAULT_TIMEOUT <span class="token operator">=</span> <span class="token number">5</span> <span class="token comment"># seconds</span>
+
+<span class="token keyword">class</span> <span class="token class-name">TimeoutHTTPAdapter</span><span class="token punctuation">(</span>HTTPAdapter<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> <span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>timeout <span class="token operator">=</span> DEFAULT_TIMEOUT
+        <span class="token keyword">if</span> <span class="token string">"timeout"</span> <span class="token keyword">in</span> kwargs<span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>timeout <span class="token operator">=</span> kwargs<span class="token punctuation">[</span><span class="token string">"timeout"</span><span class="token punctuation">]</span>
+            <span class="token keyword">del</span> kwargs<span class="token punctuation">[</span><span class="token string">"timeout"</span><span class="token punctuation">]</span>
+        <span class="token builtin">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">send</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        timeout <span class="token operator">=</span> kwargs<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"timeout"</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> timeout <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            kwargs<span class="token punctuation">[</span><span class="token string">"timeout"</span><span class="token punctuation">]</span> <span class="token operator">=</span> self<span class="token punctuation">.</span>timeout
+        <span class="token keyword">return</span> <span class="token builtin">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>send<span class="token punctuation">(</span>request<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用时</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests
+
+http <span class="token operator">=</span> requests<span class="token punctuation">.</span>Session<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 此挂载对http和https都有效</span>
+adapter <span class="token operator">=</span> TimeoutHTTPAdapter<span class="token punctuation">(</span>timeout<span class="token operator">=</span><span class="token number">2.5</span><span class="token punctuation">)</span>
+http<span class="token punctuation">.</span>mount<span class="token punctuation">(</span><span class="token string">"https://"</span><span class="token punctuation">,</span> adapter<span class="token punctuation">)</span>
+http<span class="token punctuation">.</span>mount<span class="token punctuation">(</span><span class="token string">"http://"</span><span class="token punctuation">,</span> adapter<span class="token punctuation">)</span>
+
+<span class="token comment"># 设置默认超时为2.5秒</span>
+response <span class="token operator">=</span> http<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"https://api.twilio.com/"</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 通常为特定的请求重写超时时间</span>
+response <span class="token operator">=</span> http<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"https://api.twilio.com/"</span><span class="token punctuation">,</span> timeout<span class="token operator">=</span><span class="token number">10</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
 <h1 id="models模块"><a href="#models模块" class="headerlink" title="models模块"></a>models模块</h1><p> models模块中首先创建了RequestEncodingMixin、RequestHooksMixin基类，类中只有相关方法，供后续子类调用，其中RequestHooksMixin类中使用了self.hooks属性，hooks属性由其子类创建，因此此处使用了Mixin模式，并且父类调用了子类的属性。</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">RequestHooksMixin</span><span class="token punctuation">(</span><span class="token builtin">object</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     <span class="token keyword">def</span> <span class="token function">register_hook</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> event<span class="token punctuation">,</span> hook<span class="token punctuation">)</span><span class="token punctuation">:</span>
@@ -530,6 +566,23 @@ stu() <span aria-hidden="true" class="line-numbers-rows"><span></span><span></sp
 
 <p>这个stu就是实例对象，但是在内部实现了__callable__方法，就可以像函数一样调用</p>
 <p>在该模块中定义了request和response类，并实现了相关方法</p>
+<p>cookies</p>
+<p>CookieJar是什么</p>
+<h1 id="hooks模块"><a href="#hooks模块" class="headerlink" title="hooks模块"></a>hooks模块</h1><p>hooks即钩子方法，用于在某个框架固定的某个流程执行是捎带执行（钩上）某个自定义的方法，requests中只支持了response的钩子，我们可以做一些响应检查或者在响应中添加信息等功能，示例如下：</p>
+<h4 id="场景一：对响应状态码进行判断，如果失败抛出错误"><a href="#场景一：对响应状态码进行判断，如果失败抛出错误" class="headerlink" title="场景一：对响应状态码进行判断，如果失败抛出错误"></a>场景一：对响应状态码进行判断，如果失败抛出错误</h4><p>常规做法</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># 每个请求都需要实现一次</span>
+r <span class="token operator">=</span> http<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"https://api.github.com/user/repos?page=1"</span><span class="token punctuation">)</span>
+r<span class="token punctuation">.</span>raise_for_status<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>结合hooks</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">http <span class="token operator">=</span> requests<span class="token punctuation">.</span>Session<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+assert_status_hook <span class="token operator">=</span> <span class="token keyword">lambda</span> response<span class="token punctuation">,</span> <span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">:</span> response<span class="token punctuation">.</span>raise_for_status<span class="token punctuation">(</span><span class="token punctuation">)</span>
+http<span class="token punctuation">.</span>hooks<span class="token punctuation">[</span><span class="token string">"response"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>assert_status_hook<span class="token punctuation">]</span>
+
+http<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"https://api.github.com/user/repos?page=1"</span><span class="token punctuation">)</span>
+http<span class="token punctuation">.</span>post<span class="token punctuation">(</span><span class="token string">"https://api.github.com/user/repos?page=1"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 
                 
             </div>

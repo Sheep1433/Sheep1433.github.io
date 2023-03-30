@@ -201,7 +201,7 @@
     <link href="http://sheep1433.github.io/2022/04/25/requests-yuan-ma-xue-xi/"/>
     <id>http://sheep1433.github.io/2022/04/25/requests-yuan-ma-xue-xi/</id>
     <published>2022-04-25T01:53:39.000Z</published>
-    <updated>2022-05-05T12:22:56.529Z</updated>
+    <updated>2023-03-30T16:39:31.399Z</updated>
     
     
       
@@ -326,14 +326,14 @@
     <link href="http://sheep1433.github.io/2023/01/18/ri-chang-bi-ji/"/>
     <id>http://sheep1433.github.io/2023/01/18/ri-chang-bi-ji/</id>
     <published>2023-01-18T15:29:08.319Z</published>
-    <updated>2023-01-18T15:29:56.871Z</updated>
+    <updated>2023-01-18T15:49:20.977Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;pytest的参数化可以传入一个ids进行区分&lt;br&gt;@pytest.mark.parametrize(‘in_data’, eval(re_data), ids&amp;#x3D;[i[‘detail’] for i in</summary>
+    <summary type="html">&lt;p&gt;pytest的参数化可以传入一个ids进行区分&lt;br&gt;@pytest.mark.parametrize(‘in_data’, eval(re_data), ids&amp;#x3D;[i[‘detail’] for i in TestData])&lt;br&gt;from pydantic</summary>
         
       
     
