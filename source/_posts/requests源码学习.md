@@ -61,7 +61,45 @@ api模块中，包含request、get、option、post等函数，而get等通过调
 
    session和api中都有request、get等方法，api中的本质上仍然调用的是session的方法
 
-   
+Session类有一个mount方法，def mount(self, prefix, adapter):	是将对应的adapter注册到对应的会话前缀上，使用场景比如为所有请求设置一个超时时间
+
+```python
+from requests.adapters import HTTPAdapter
+DEFAULT_TIMEOUT = 5 # seconds
+
+class TimeoutHTTPAdapter(HTTPAdapter):
+    def __init__(self, *args, **kwargs):
+        self.timeout = DEFAULT_TIMEOUT
+        if "timeout" in kwargs:
+            self.timeout = kwargs["timeout"]
+            del kwargs["timeout"]
+        super().__init__(*args, **kwargs)
+
+    def send(self, request, **kwargs):
+        timeout = kwargs.get("timeout")
+        if timeout is None:
+            kwargs["timeout"] = self.timeout
+        return super().send(request, **kwargs)
+```
+
+使用时
+
+```python
+import requests
+
+http = requests.Session()
+
+# 此挂载对http和https都有效
+adapter = TimeoutHTTPAdapter(timeout=2.5)
+http.mount("https://", adapter)
+http.mount("http://", adapter)
+
+# 设置默认超时为2.5秒
+response = http.get("https://api.twilio.com/")
+
+# 通常为特定的请求重写超时时间
+response = http.get("https://api.twilio.com/", timeout=10)
+```
 
 
 
@@ -102,4 +140,34 @@ stu()
 这个stu就是实例对象，但是在内部实现了__callable__方法，就可以像函数一样调用
 
 在该模块中定义了request和response类，并实现了相关方法
+
+cookies
+
+CookieJar是什么
+
+# hooks模块
+
+hooks即钩子方法，用于在某个框架固定的某个流程执行是捎带执行（钩上）某个自定义的方法，requests中只支持了response的钩子，我们可以做一些响应检查或者在响应中添加信息等功能，示例如下：
+
+#### 场景一：对响应状态码进行判断，如果失败抛出错误
+
+常规做法
+
+```python
+# 每个请求都需要实现一次
+r = http.get("https://api.github.com/user/repos?page=1")
+r.raise_for_status()
+```
+
+结合hooks
+
+```python
+http = requests.Session()
+
+assert_status_hook = lambda response, *args, **kwargs: response.raise_for_status()
+http.hooks["response"] = [assert_status_hook]
+
+http.get("https://api.github.com/user/repos?page=1")
+http.post("https://api.github.com/user/repos?page=1")
+```
 
