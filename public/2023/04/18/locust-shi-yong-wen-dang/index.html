@@ -1,0 +1,1400 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Locust使用文档, 浪迹天涯">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>Locust使用文档 | 浪迹天涯</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 6.1.0"><link rel="alternate" href="/atom.xml" title="浪迹天涯" type="application/atom+xml">
+</head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">浪迹天涯</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">浪迹天涯</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">Locust使用文档</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Locust%E3%80%81%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">
+                                <span class="chip bg-color">Locust、性能测试</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2023-04-18
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="Locust使用文档"><a href="#Locust使用文档" class="headerlink" title="Locust使用文档"></a>Locust使用文档</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><code>Locust</code>是一个基于协程、简单易用的分布式用户负载测试工具。它用于web站点(或其他系统)的负载测试，并计算一个系统可以处理多少并发用户。</p>
+<p>优点</p>
+<ul>
+<li><strong>用普通的Python编写用户测试场景</strong> 不需要笨拙的UI或庞大的XML，只需像通常那样编码即可。基于协程而不是回调，您的代码看起来和行为都与正常的、阻塞Python代码一样。</li>
+<li><strong>分布式和可扩展——支持成千上万的用户</strong> Locust支持在多台机器上运行负载测试。由于基于事件，即使一个Locust节点也可以在一个进程中处理数千个用户。这背后的部分原因是，即使你模拟了那么多用户，也不是所有用户都积极的访问你的系统。通常，用户无所事事，想知道下一步该怎么做。<strong>每秒请求数</strong>不等于在<strong>线用户数</strong>。</li>
+<li><strong>基于web的UI</strong> Locust具有简洁的HTML + JS用户界面，可实时显示相关的测试细节。而且由于UI是基于Web的，因此它是跨平台且易于扩展的。</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>0.安装3.7或更高版本python</p>
+<p>1.安装包</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">pip install locust<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>要查看命令的使用，可以执行：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">locust --help<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h2><p>编写locust脚本，下面是一个简单的locustfile.py的例子：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> locust <span class="token keyword">import</span> HttpUser<span class="token punctuation">,</span> TaskSet<span class="token punctuation">,</span> between
+
+
+<span class="token keyword">class</span> <span class="token class-name">UserBehavior</span><span class="token punctuation">(</span>TaskSet<span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    <span class="token keyword">def</span> <span class="token function">on_start</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        login<span class="token punctuation">(</span>self<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">on_stop</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        logout<span class="token punctuation">(</span>self<span class="token punctuation">)</span>
+    <span class="token decorator annotation punctuation">@task</span>
+	<span class="token keyword">def</span> <span class="token function">hello_world</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>client<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"/hello"</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>client<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"/world"</span><span class="token punctuation">)</span>
+	
+    <span class="token decorator annotation punctuation">@task</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+    <span class="token keyword">def</span> <span class="token function">view_items</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+<span class="token keyword">class</span> <span class="token class-name">WebsiteUser</span><span class="token punctuation">(</span>HttpUser<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    tasks <span class="token operator">=</span> UserBehavior
+    wait_time <span class="token operator">=</span> between<span class="token punctuation">(</span><span class="token number">5.0</span><span class="token punctuation">,</span> <span class="token number">9.0</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在当前路径执行locust命令，</p>
+<pre class="line-numbers language-none"><code class="language-none">locust
+[2021-07-24 09:58:46,215] ...&#x2F;INFO&#x2F;locust.main: Starting web interface at http:&#x2F;&#x2F;*:8089
+[2021-07-24 09:58:46,285] ...&#x2F;INFO&#x2F;locust.main: Starting Locust 2.15.1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>打开web UI界面</p>
+<p>Open <a target="_blank" rel="noopener" href="http://localhost:8089/">http://localhost:8089</a>，设定好用户数、用户上升速率和host即可触发性能测试。</p>
+<h2 id="编写locustfile"><a href="#编写locustfile" class="headerlink" title="编写locustfile"></a>编写locustfile</h2><p>根据以上一个基本的脚本分析编写一个locustfile文件需要完成哪些部分。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">UserBehavior</span><span class="token punctuation">(</span>TaskSet<span class="token punctuation">)</span><span class="token punctuation">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>首先声明一个UserBehavior类，该类继承自TaskSet，负责定义我们需要执行的任务集，具体任务定义通过使用task装饰器进行装饰。上述示例中使用task装饰了两个任务，其中一个被赋予了更高的权重（3），当任务启动时，每个用户会从这两个任务重随机挑选一个，而view_items被挑选中的概率大概是hello_world被挑选的3倍，在完成一次任务后，用户会进行等待wait_time重新进行任务选择。</p>
+<p>此外，还有on_start和on_stop则是在启动、停止该任务会执行的一次操作，常见的登陆退出操作。</p>
+<p>通过self.client属性发送的请求会被Locust记录下来，以便于展示数据。</p>
+<pre class="line-numbers language-none"><code class="language-none">class WebsiteUser(HttpUser):<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>其次声明一个继承自HttpUser的WebsiteUser类，该类表示用户，其中tasks属性指明需要执行的任务，wait_time是一个等待时间函数，默认的between(min_wait, max_wait函数是指用户在执行任务后会等待min_wait-max_wait秒，具体时间通过随机数生成。</p>
+<p>HttpUser的父类是User，要使文件成为有效的locustfile，它必须包含至少一个继承自User的类，此外为获得更好的性能或者使用其他协议，也可以替换成FastHttpUser或其他，具体使用会在后面进行介绍。</p>
+<h3 id="请求分组"><a href="#请求分组" class="headerlink" title="请求分组"></a>请求分组</h3><p>在数据统计时，有时存在一系列相同类型的url，我们希望将这些请求进行分组展示，这时可以传递name参数，如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token decorator annotation punctuation">@task</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">view_items</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">for</span> item_id <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>client<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"/item?id=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>item_id<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">"/item"</span><span class="token punctuation">)</span>
+        time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在某些情况下，将参数传入请求函数是不可能的，例如当与包装请求会话的库&#x2F;SDK交互时。通过设置客户机提供了分组请求的另一种方法。request_name属性。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># Statistics for these requests will be grouped under: /blog/?id=[id]</span>
+self<span class="token punctuation">.</span>client<span class="token punctuation">.</span>request_name<span class="token operator">=</span><span class="token string">"/blog?id=[id]"</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    self<span class="token punctuation">.</span>client<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"/blog?id=%i"</span> <span class="token operator">%</span> i<span class="token punctuation">)</span>
+self<span class="token punctuation">.</span>client<span class="token punctuation">.</span>request_name<span class="token operator">=</span><span class="token boolean">None</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果希望用最少的样板文件链接多个组，可以使用client.rename_request()上下文管理器。</p>
+<h3 id="多用户"><a href="#多用户" class="headerlink" title="多用户"></a>多用户</h3><p>如果文件中存在多个用户类，并且在命令行上没有指定用户类，则Locust将生成相同数量的每个用户类。你也可以通过将用户类作为命令行参数传递给同一个locustfile来指定要使用的用户类:</p>
+<pre class="line-numbers language-none"><code class="language-none">locust -f locust_file.py WebUser MobileUser<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果希望模拟某种类型的更多用户，可以在这些类上设置权重属性。例如，网络用户的可能性是移动用户的三倍:</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">WebUser</span><span class="token punctuation">(</span>User<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    weight <span class="token operator">=</span> <span class="token number">3</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token keyword">class</span> <span class="token class-name">MobileUser</span><span class="token punctuation">(</span>User<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    weight <span class="token operator">=</span> <span class="token number">1</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>还可以设置fixed_count属性。在这种情况下，weight属性将被忽略，并将生成确切的用户计数。首先生成这些用户。在下面的示例中，将只生成一个AdminUser实例，以便独立于总用户数更准确地控制请求计数。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">AdminUser</span><span class="token punctuation">(</span>User<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    wait_time <span class="token operator">=</span> constant<span class="token punctuation">(</span><span class="token number">600</span><span class="token punctuation">)</span>
+    fixed_count <span class="token operator">=</span> <span class="token number">1</span>
+
+    <span class="token decorator annotation punctuation">@task</span>
+    <span class="token keyword">def</span> <span class="token function">restart_app</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token keyword">class</span> <span class="token class-name">WebUser</span><span class="token punctuation">(</span>User<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="host属性"><a href="#host属性" class="headerlink" title="host属性"></a>host属性</h3><p>host属性指的是要测试的主机的URL前缀，可以在web UI或者命令行–host选项或者User类中进行设置。</p>
+<h3 id="tasks属性"><a href="#tasks属性" class="headerlink" title="tasks属性"></a>tasks属性</h3><p>指明任务</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">MyUser</span><span class="token punctuation">(</span>User<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    wait_time <span class="token operator">=</span> between<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">15</span><span class="token punctuation">)</span>
+
+    <span class="token decorator annotation punctuation">@task</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+    <span class="token keyword">def</span> <span class="token function">task1</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>
+
+    <span class="token decorator annotation punctuation">@task</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>
+    <span class="token keyword">def</span> <span class="token function">task2</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">WebsiteUser</span><span class="token punctuation">(</span>HttpUser<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    tasks <span class="token operator">=</span> UserBehavior
+    wait_time <span class="token operator">=</span> between<span class="token punctuation">(</span><span class="token number">5.0</span><span class="token punctuation">,</span> <span class="token number">9.0</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>在用户类中，可以使用task装饰器标记任务，也可以使用tasks属性标记，tasks属性可以是一个任务列表，也可以是一个&lt;Task: int&gt;字典，其中Task科一是一个python可调用对象，或者是一个TaskSet类。如果任务是一个普通的python函数，它们会接收一个参数，即正在执行任务的User实例。</p>
+<p>如果将tasks属性指定为列表，则每次要执行任务时，将从tasks属性中随机选择该任务。然而，如果任务是一个字典——可调用对象作为键，整型作为值——要执行的任务将随机选择，但以整型作为比率。有一个任务是这样的:</p>
+<pre class="line-numbers language-none"><code class="language-none">&#123;my_task: 3, another_task: 1&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="on-start和on-stop方法"><a href="#on-start和on-stop方法" class="headerlink" title="on_start和on_stop方法"></a>on_start和on_stop方法</h3><p>用户(和任务集)可以声明一个on_start方法和&#x2F;或on_stop方法。用户将在开始运行时调用它的on_start方法，在停止运行时调用它的on_stop方法。对于TaskSet, on_start方法在模拟用户开始执行该TaskSet时被调用，on_stop方法在模拟用户停止执行该TaskSet时被调用(当调用interrupt()或用户被杀死时)。</p>
+<h3 id="tag装饰器"><a href="#tag装饰器" class="headerlink" title="tag装饰器"></a>tag装饰器</h3><p>通过使用@tag装饰器标记任务，可以使用–tags和–exclude-tags参数对测试期间执行的任务进行筛选。考虑下面的例子:</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> locust <span class="token keyword">import</span> User<span class="token punctuation">,</span> constant<span class="token punctuation">,</span> task<span class="token punctuation">,</span> tag
+
+<span class="token keyword">class</span> <span class="token class-name">MyUser</span><span class="token punctuation">(</span>User<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    wait_time <span class="token operator">=</span> constant<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+    <span class="token decorator annotation punctuation">@tag</span><span class="token punctuation">(</span><span class="token string">'tag1'</span><span class="token punctuation">)</span>
+    <span class="token decorator annotation punctuation">@task</span>
+    <span class="token keyword">def</span> <span class="token function">task1</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>
+
+    <span class="token decorator annotation punctuation">@tag</span><span class="token punctuation">(</span><span class="token string">'tag1'</span><span class="token punctuation">,</span> <span class="token string">'tag2'</span><span class="token punctuation">)</span>
+    <span class="token decorator annotation punctuation">@task</span>
+    <span class="token keyword">def</span> <span class="token function">task2</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>
+
+    <span class="token decorator annotation punctuation">@tag</span><span class="token punctuation">(</span><span class="token string">'tag3'</span><span class="token punctuation">)</span>
+    <span class="token decorator annotation punctuation">@task</span>
+    <span class="token keyword">def</span> <span class="token function">task3</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>
+
+    <span class="token decorator annotation punctuation">@task</span>
+    <span class="token keyword">def</span> <span class="token function">task4</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Event"><a href="#Event" class="headerlink" title="Event"></a>Event</h3><p>模块级别的setup、teardown动作是通过Event实现的，比如需要在性能测试的开始或停止时运行一些代码，则应该使用test_start和test_stop事件。你可以在locustfile的模块级别为这些事件设置监听器:</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> locust <span class="token keyword">import</span> events
+
+<span class="token decorator annotation punctuation">@events<span class="token punctuation">.</span>test_start<span class="token punctuation">.</span>add_listener</span>
+<span class="token keyword">def</span> <span class="token function">on_test_start</span><span class="token punctuation">(</span>environment<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"A new test is starting"</span><span class="token punctuation">)</span>
+
+<span class="token decorator annotation punctuation">@events<span class="token punctuation">.</span>test_stop<span class="token punctuation">.</span>add_listener</span>
+<span class="token keyword">def</span> <span class="token function">on_test_stop</span><span class="token punctuation">(</span>environment<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"A new test is ending"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="init事件"><a href="#init事件" class="headerlink" title="init事件"></a>init事件</h4><p>init事件在每个蝗虫进程开始时触发。这在分布式模式下特别有用，因为每个工作进程(而不是每个用户)都需要有机会进行一些初始化。例如，假设你有一些全局状态，所有从这个进程中生成的用户都需要:</p>
+<h3 id="client属性"><a href="#client属性" class="headerlink" title="client属性"></a>client属性</h3><p>client是HttpSession的一个实例。HttpSession是请求的子类&#x2F;包装器。会话，所以它的特性有很好的文档记录，应该为许多人所熟悉。HttpSession添加的内容主要是向Locust报告请求结果(成功&#x2F;失败、响应时间、响应长度、名称)。</p>
+<p>就像<a target="_blank" rel="noopener" href="https://requests.readthedocs.io/en/latest/api/#requests.Session"><code>requests.Session</code></a>一样。会话，它保留请求之间的cookie，因此它可以很容易地用于登录网站。</p>
+<p>HttpSession捕获任何请求。由Session抛出的RequestException(由连接错误，超时或类似原因引起)，而不是返回一个虚拟的Response对象，status_code设置为0，内容设置为None。</p>
+<h3 id="校验响应"><a href="#校验响应" class="headerlink" title="校验响应"></a>校验响应</h3><p>默认判断响应是否正确是通过响应码是否&lt;400进行判断，此外也可以自己定义额外的响应校验规则。</p>
+<p>可以通过使用catch_response参数、with语句和调用response.failure()将请求标记为失败。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">with</span> self<span class="token punctuation">.</span>client<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">,</span> catch_response<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span> <span class="token keyword">as</span> response<span class="token punctuation">:</span>
+    <span class="token keyword">if</span> response<span class="token punctuation">.</span>text <span class="token operator">!=</span> <span class="token string">"Success"</span><span class="token punctuation">:</span>
+        response<span class="token punctuation">.</span>failure<span class="token punctuation">(</span><span class="token string">"Got wrong response"</span><span class="token punctuation">)</span>
+    <span class="token keyword">elif</span> response<span class="token punctuation">.</span>elapsed<span class="token punctuation">.</span>total_seconds<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0.5</span><span class="token punctuation">:</span>
+        response<span class="token punctuation">.</span>failure<span class="token punctuation">(</span><span class="token string">"Request took too long"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>甚至可以通过抛出一个异常，然后在with-block之外捕获它，从而完全避免记录请求。或者您可以抛出一个locust异常，就像下面的例子一样，让locust捕获它。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> locust<span class="token punctuation">.</span>exception <span class="token keyword">import</span> RescheduleTask
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token keyword">with</span> self<span class="token punctuation">.</span>client<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"/does_not_exist/"</span><span class="token punctuation">,</span> catch_response<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span> <span class="token keyword">as</span> response<span class="token punctuation">:</span>
+    <span class="token keyword">if</span> response<span class="token punctuation">.</span>status_code <span class="token operator">==</span> <span class="token number">404</span><span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> RescheduleTask<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="连接池"><a href="#连接池" class="headerlink" title="连接池"></a>连接池</h3><p>如果要在所有用户之间共享连接，则可以使用连接池管理器。将pool_manager属性设置为<code>urllib3.PoolManager</code>的实例。&#96;</p>
+<pre class="line-numbers language-none"><code class="language-none">from locust import HttpUser
+from urllib3 import PoolManager
+
+class MyUser(HttpUser):
+    # All users will be limited to 10 concurrent connections at most.
+    pool_manager &#x3D; PoolManager(maxsize&#x3D;10, block&#x3D;True)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="安全模式"><a href="#安全模式" class="headerlink" title="安全模式"></a>安全模式</h3><p>HTTP客户端配置为以safe_mode运行。这样做的目的是，由于连接错误、超时或类似原因而失败的任何请求都不会引发异常，而是返回一个空的虚拟Response对象。该请求将在Locust的统计信息中标记为失败。返回的虚拟Response的content属性将设置为None，其status_code&#x3D;0。</p>
+<h3 id="TaskSequence类"><a href="#TaskSequence类" class="headerlink" title="TaskSequence类"></a>TaskSequence类</h3><p>TaskSequence类是一个TaskSet，但是它的任务是按顺序执行的。<br>要定义此顺序，您应该执行以下操作:</p>
+<pre class="line-numbers language-none"><code class="language-none">@seq_task(1)
+def first_task(self):
+    pass
+
+@seq_task(2)
+def second_task(self):
+    pass
+
+@seq_task(3)
+@task(10)
+def third_task(self):
+    pass<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>复制<br>在上面的示例中，执行顺序定义为先执行first_task，然后执行second_task，最后执行Third_task 10次。可以看到，可以使用@task装饰器组合@seq_task，当然也可以将TaskSet嵌套在TaskSequences中，反之亦然。</p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">zzq</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://Sheep1433.github.io/2023/04/18/locust-shi-yong-wen-dang/">http://Sheep1433.github.io/2023/04/18/locust-shi-yong-wen-dang/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">zzq</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Locust%E3%80%81%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">
+                                    <span class="chip bg-color">Locust、性能测试</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2023/04/18/locust-shi-yong-wen-dang/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="Locust使用文档">
+                        
+                        <span class="card-title">Locust使用文档</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-04-18
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            zzq
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Locust%E3%80%81%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">
+                        <span class="chip bg-color">Locust、性能测试</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2023/01/18/ri-chang-bi-ji/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        
+                        <span class="card-title"></span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-01-18
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            zzq
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2023</span>
+            
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">zzq</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/Sheep1433" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:2423707031@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=2423707031" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 2423707031" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+	
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
