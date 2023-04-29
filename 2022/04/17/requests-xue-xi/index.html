@@ -472,22 +472,62 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="init-模块"><a href="#init-模块" class="headerlink" title="__init__模块"></a>__init__模块</h1><p>init总体结构只包含check_compatibility和_check_ctyptography两个函数，对版本信息进行校验</p>
+                <h2 id="init-模块"><a href="#init-模块" class="headerlink" title="__init__模块"></a>__init__模块</h2><p>init总体结构只包含check_compatibility和_check_ctyptography两个函数，对版本信息进行校验</p>
 <p>收获：</p>
 <p>在函数内部多次assert，如果没有完全通过，则会抛出AssertError</p>
 <p>对版本信息验证是否在2.0.0~3.0.0之间，可以使用 assert (2,0,0) &lt;&#x3D; (major, minor, patch) &lt; (3,0,0) 或者assert [2,0,0] &lt;&#x3D; (major, minor, patch) &lt; [3,0,0]，归因于python列表(元组)比较大小</p>
 <p>导包过程中 from . import utils中的.表示当前位置</p>
-<h1 id="compat、-internal-utils模块"><a href="#compat、-internal-utils模块" class="headerlink" title="compat、_internal_utils模块"></a>compat、_internal_utils模块</h1><p>负责python2、python3以及简单的编码处理</p>
-<h1 id="certs模块"><a href="#certs模块" class="headerlink" title="certs模块"></a>certs模块</h1><p>CA证书相关</p>
-<h1 id="exceptions模块"><a href="#exceptions模块" class="headerlink" title="exceptions模块"></a>exceptions模块</h1><p>异常处理模块，应用到了super、hasattr、多继承等，还有字典的pop方法，pop方法可以加一个默认返回值kwargs.pop(‘response’, None)，具体工作原理还需要结合调用时学习</p>
+<h2 id="compat、-internal-utils模块"><a href="#compat、-internal-utils模块" class="headerlink" title="compat、_internal_utils模块"></a>compat、_internal_utils模块</h2><p>负责python2、python3以及简单的编码处理</p>
+<h2 id="certs模块"><a href="#certs模块" class="headerlink" title="certs模块"></a>certs模块</h2><p>CA证书相关</p>
+<h2 id="exceptions模块"><a href="#exceptions模块" class="headerlink" title="exceptions模块"></a>exceptions模块</h2><p>异常处理模块，应用到了super、hasattr、多继承等，还有字典的pop方法，pop方法可以加一个默认返回值kwargs.pop(‘response’, None)，具体工作原理还需要结合调用时学习</p>
 <p>cookies模块</p>
 <p>hooks模块</p>
 <p>packages模块	</p>
-<h1 id="status-codes模块"><a href="#status-codes模块" class="headerlink" title="status_codes模块"></a>status_codes模块</h1><p>该模块中有所有的状态信息，但是内部直接通过_init()执行，似乎没有被调用类或变量，还需要models等模块中结合学习</p>
-<h1 id="auth模块"><a href="#auth模块" class="headerlink" title="auth模块"></a>auth模块</h1><p>身份认证相关，在models、adapter、sessions等模块中调用了，学习这几个模块再返回学习</p>
-<h1 id="API模块"><a href="#API模块" class="headerlink" title="API模块"></a>API模块</h1><p>api模块中，包含request、get、option、post等函数，而get等通过调用request实现函数功能，而request调用的是session.request函数，同时使用with sessions.Session() as session:对session进行上下文管理，确保会话及时关闭，避免出现类似内存泄漏的情况</p>
-<h1 id="structures模块"><a href="#structures模块" class="headerlink" title="structures模块"></a>structures模块</h1><p>新建了两种数据结构，CaseInsensitiveDict和LookupDict，其中CaseInsensitiveDict继承于MutableMapping，实现了__setitem__,<strong>getitem</strong>,<strong>delitem</strong>,<strong>iter</strong>,__len__等方法，解决大小写问题，在self._store中存储的键值形式为 “lower_key” : (“real_key”,”value”)，查询时用小写查询，同时能保留原信息，具体实现方法很值得学习</p>
-<h1 id="session模块"><a href="#session模块" class="headerlink" title="session模块"></a>session模块</h1><h1 id="models模块"><a href="#models模块" class="headerlink" title="models模块"></a>models模块</h1><p> models模块中首先创建了RequestEncodingMixin、RequestHooksMixin基类，类中只有相关方法，供后续子类调用，其中RequestHooksMixin类中使用了self.hooks属性，hooks属性由其子类创建，因此此处使用了Mixin模式，并且父类调用了子类的属性。</p>
+<h2 id="status-codes模块"><a href="#status-codes模块" class="headerlink" title="status_codes模块"></a>status_codes模块</h2><p>该模块中有所有的状态信息，但是内部直接通过_init()执行，似乎没有被调用类或变量，还需要models等模块中结合学习</p>
+<h2 id="auth模块"><a href="#auth模块" class="headerlink" title="auth模块"></a>auth模块</h2><p>身份认证相关，在models、adapter、sessions等模块中调用了，学习这几个模块再返回学习</p>
+<h2 id="API模块"><a href="#API模块" class="headerlink" title="API模块"></a>API模块</h2><p>api模块中，包含request、get、option、post等函数，而get等通过调用request实现函数功能，而request调用的是session.request函数，同时使用with sessions.Session() as session:对session进行上下文管理，确保会话及时关闭，避免出现类似内存泄漏的情况</p>
+<h2 id="structures模块"><a href="#structures模块" class="headerlink" title="structures模块"></a>structures模块</h2><p>新建了两种数据结构，CaseInsensitiveDict和LookupDict，其中CaseInsensitiveDict继承于MutableMapping，实现了__setitem__,<strong>getitem</strong>,<strong>delitem</strong>,<strong>iter</strong>,__len__等方法，解决大小写问题，在self._store中存储的键值形式为 “lower_key” : (“real_key”,”value”)，查询时用小写查询，同时能保留原信息，具体实现方法很值得学习</p>
+<h2 id="session模块"><a href="#session模块" class="headerlink" title="session模块"></a>session模块</h2><ol>
+<li><p>为什么通过requests.Session能访问sessions模块中的Session类，因为在requests库的__init__文件中导入了Session</p>
+<p>实现了跨请求保持cookies方法，具体实现方法还没有看懂，核心在于request方法，首先通过models模块中生成Request类，再执行相应的prepare_request方法，最后执行send方法实现功能，常规通过requests.get方法不能保持cookies可能是因为在get方法中调用的是及时关闭session的请求方法</p>
+<p>session和api中都有request、get等方法，api中的本质上仍然调用的是session的方法</p>
+</li>
+</ol>
+<p>Session类有一个mount方法，def mount(self, prefix, adapter):	是将对应的adapter注册到对应的会话前缀上，使用场景比如为所有请求设置一个超时时间</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> requests<span class="token punctuation">.</span>adapters <span class="token keyword">import</span> HTTPAdapter
+DEFAULT_TIMEOUT <span class="token operator">=</span> <span class="token number">5</span> <span class="token comment"># seconds</span>
+
+<span class="token keyword">class</span> <span class="token class-name">TimeoutHTTPAdapter</span><span class="token punctuation">(</span>HTTPAdapter<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> <span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>timeout <span class="token operator">=</span> DEFAULT_TIMEOUT
+        <span class="token keyword">if</span> <span class="token string">"timeout"</span> <span class="token keyword">in</span> kwargs<span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>timeout <span class="token operator">=</span> kwargs<span class="token punctuation">[</span><span class="token string">"timeout"</span><span class="token punctuation">]</span>
+            <span class="token keyword">del</span> kwargs<span class="token punctuation">[</span><span class="token string">"timeout"</span><span class="token punctuation">]</span>
+        <span class="token builtin">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">send</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> request<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        timeout <span class="token operator">=</span> kwargs<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"timeout"</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> timeout <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            kwargs<span class="token punctuation">[</span><span class="token string">"timeout"</span><span class="token punctuation">]</span> <span class="token operator">=</span> self<span class="token punctuation">.</span>timeout
+        <span class="token keyword">return</span> <span class="token builtin">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>send<span class="token punctuation">(</span>request<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用时</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests
+
+http <span class="token operator">=</span> requests<span class="token punctuation">.</span>Session<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 此挂载对http和https都有效</span>
+adapter <span class="token operator">=</span> TimeoutHTTPAdapter<span class="token punctuation">(</span>timeout<span class="token operator">=</span><span class="token number">2.5</span><span class="token punctuation">)</span>
+http<span class="token punctuation">.</span>mount<span class="token punctuation">(</span><span class="token string">"https://"</span><span class="token punctuation">,</span> adapter<span class="token punctuation">)</span>
+http<span class="token punctuation">.</span>mount<span class="token punctuation">(</span><span class="token string">"http://"</span><span class="token punctuation">,</span> adapter<span class="token punctuation">)</span>
+
+<span class="token comment"># 设置默认超时为2.5秒</span>
+response <span class="token operator">=</span> http<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"https://api.twilio.com/"</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 通常为特定的请求重写超时时间</span>
+response <span class="token operator">=</span> http<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"https://api.twilio.com/"</span><span class="token punctuation">,</span> timeout<span class="token operator">=</span><span class="token number">10</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="models模块"><a href="#models模块" class="headerlink" title="models模块"></a>models模块</h2><p> models模块中首先创建了RequestEncodingMixin、RequestHooksMixin基类，类中只有相关方法，供后续子类调用，其中RequestHooksMixin类中使用了self.hooks属性，hooks属性由其子类创建，因此此处使用了Mixin模式，并且父类调用了子类的属性。</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">RequestHooksMixin</span><span class="token punctuation">(</span><span class="token builtin">object</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
     <span class="token keyword">def</span> <span class="token function">register_hook</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> event<span class="token punctuation">,</span> hook<span class="token punctuation">)</span><span class="token punctuation">:</span>
         <span class="token triple-quoted-string string">"""Properly register a hook."""</span>
@@ -499,21 +539,69 @@
             self<span class="token punctuation">.</span>hooks<span class="token punctuation">[</span>event<span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>hook<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>此外用到了Callable，这是一种可调用执行对象，并且可以执行参数，也就是在对象后面使用小括号执行代码，那么这个对象就是Callable对象，callable包含函数、类、类里的方法、实现了__callable__方法的实例对象</p>
-<pre class="line-numbers language-python3" data-language="python3"><code class="language-python3">class Stu(object):
-    def __init__(self, name):
-        self.name &#x3D; name
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">Stu</span><span class="token punctuation">(</span><span class="token builtin">object</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>name <span class="token operator">=</span> name
 
-    def __call__(self, *args, **kwargs):
-        self.run()
+    <span class="token keyword">def</span> <span class="token function">__call__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> <span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-    def run(self):
-        print(&#39;&#123;name&#125; is running&#39;.format(name&#x3D;self.name))
+    <span class="token keyword">def</span> <span class="token function">run</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'&#123;name&#125; is running'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>name<span class="token operator">=</span>self<span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span>
 
-stu &#x3D; Stu(&#39;小明&#39;)
-print(callable(stu))    # True
-stu() <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+stu <span class="token operator">=</span> Stu<span class="token punctuation">(</span><span class="token string">'小明'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token builtin">callable</span><span class="token punctuation">(</span>stu<span class="token punctuation">)</span><span class="token punctuation">)</span>    <span class="token comment"># True</span>
+stu<span class="token punctuation">(</span><span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>这个stu就是实例对象，但是在内部实现了__callable__方法，就可以像函数一样调用</p>
+<p>在该模块中定义了request和response类，并实现了相关方法</p>
+<p>cookies</p>
+<p>CookieJar是什么</p>
+<h2 id="hooks模块"><a href="#hooks模块" class="headerlink" title="hooks模块"></a>hooks模块</h2><p>hooks即钩子方法，用于在某个框架固定的某个流程执行是捎带执行（钩上）某个自定义的方法，requests中只支持了response的钩子，我们可以做一些响应检查或者在响应中添加信息等功能，示例如下：</p>
+<p><strong>场景一：对响应状态码进行判断，如果失败抛出错误</strong></p>
+<p>常规做法</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># 每个请求都需要实现一次</span>
+r <span class="token operator">=</span> http<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"https://api.github.com/user/repos?page=1"</span><span class="token punctuation">)</span>
+r<span class="token punctuation">.</span>raise_for_status<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>结合hooks</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">http <span class="token operator">=</span> requests<span class="token punctuation">.</span>Session<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+assert_status_hook <span class="token operator">=</span> <span class="token keyword">lambda</span> response<span class="token punctuation">,</span> <span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">:</span> response<span class="token punctuation">.</span>raise_for_status<span class="token punctuation">(</span><span class="token punctuation">)</span>
+http<span class="token punctuation">.</span>hooks<span class="token punctuation">[</span><span class="token string">"response"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>assert_status_hook<span class="token punctuation">]</span>
+
+http<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"https://api.github.com/user/repos?page=1"</span><span class="token punctuation">)</span>
+http<span class="token punctuation">.</span>post<span class="token punctuation">(</span><span class="token string">"https://api.github.com/user/repos?page=1"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="文件上传请求"><a href="#文件上传请求" class="headerlink" title="文件上传请求"></a>文件上传请求</h2><p>requests发送上传文件请求</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">url <span class="token operator">=</span> <span class="token string">"https://www.example.com/upload"</span>
+filepath <span class="token operator">=</span> <span class="token string">"/path/to/file.txt"</span>
+
+<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>filepath<span class="token punctuation">,</span> <span class="token string">"rb"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+    <span class="token comment"># 创建一个字典，用于包装要上传的文件数据</span>
+    file_data <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"file"</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>filepath<span class="token punctuation">,</span> f<span class="token punctuation">)</span><span class="token punctuation">&#125;</span>
+    <span class="token comment"># 发送上传文件的请求</span>
+    response <span class="token operator">=</span> requests<span class="token punctuation">.</span>post<span class="token punctuation">(</span>url<span class="token punctuation">,</span> files<span class="token operator">=</span>file_data<span class="token punctuation">)</span>
+    <span class="token comment"># 打印服务器端返回的响应内容</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>text<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>urllib3发送上传文件请求</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">url <span class="token operator">=</span> <span class="token string">"https://www.example.com/upload"</span>
+filepath <span class="token operator">=</span> <span class="token string">"/path/to/file.txt"</span>
+
+<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>filepath<span class="token punctuation">,</span> <span class="token string">"rb"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+    <span class="token comment"># 创建一个 urllib3.PoolManager 对象</span>
+    http <span class="token operator">=</span> urllib3<span class="token punctuation">.</span>PoolManager<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment"># 构造要上传的文件数据</span>
+    file_data <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"file"</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>filepath<span class="token punctuation">,</span> f<span class="token punctuation">,</span> <span class="token string">"application/octet-stream"</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span>
+    <span class="token comment"># 发送上传文件的请求</span>
+    response <span class="token operator">=</span> http<span class="token punctuation">.</span>request<span class="token punctuation">(</span><span class="token string">"POST"</span><span class="token punctuation">,</span> url<span class="token punctuation">,</span> fields<span class="token operator">=</span>file_data<span class="token punctuation">)</span>
+    <span class="token comment"># 打印服务器端返回的响应内容</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>data<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>urllib3需要指明文件的MIME类型</p>
 
                 
             </div>
@@ -753,31 +841,31 @@ stu() <span aria-hidden="true" class="line-numbers-rows"><span></span><span></sp
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/04/25/requests-yuan-ma-xue-xi/">
+                <a href="/2022/11/26/shell-ru-men/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="requests源码学习">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="shell入门">
                         
-                        <span class="card-title">requests源码学习</span>
+                        <span class="card-title">shell入门</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            关于requests中各模块源码的学习
+                            
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-04-25
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-11-26
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/requests/" class="post-category">
-                                    requests
+                            <a href="/categories/linux/" class="post-category">
+                                    linux
                                 </a>
                             
                             
@@ -787,8 +875,12 @@ stu() <span aria-hidden="true" class="line-numbers-rows"><span></span><span></sp
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/">
-                        <span class="chip bg-color">源码学习</span>
+                    <a href="/tags/%E5%9F%BA%E7%A1%80/">
+                        <span class="chip bg-color">基础</span>
+                    </a>
+                    
+                    <a href="/tags/shell/">
+                        <span class="chip bg-color">shell</span>
                     </a>
                     
                 </div>
@@ -802,33 +894,29 @@ stu() <span aria-hidden="true" class="line-numbers-rows"><span></span><span></sp
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/03/12/fan-zhuan-lian-biao/">
+                <a href="/2022/03/10/shu-ju-jie-gou-shua-ti/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="反转链表">
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="数据结构刷题">
                         
-                        <span class="card-title">反转链表</span>
+                        <span class="card-title">数据结构刷题</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            给你单链表的头节点，请你反转链表，并返回反转后的链表。
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-12
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-10
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" class="post-category">
-                                    数据结构与算法
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            zzq
                             
                         </span>
                     </div>
@@ -836,8 +924,8 @@ stu() <span aria-hidden="true" class="line-numbers-rows"><span></span><span></sp
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/">
-                        <span class="chip bg-color">数据结构与算法</span>
+                    <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                        <span class="chip bg-color">数据结构</span>
                     </a>
                     
                 </div>
