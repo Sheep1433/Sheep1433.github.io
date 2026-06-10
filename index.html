@@ -217,7 +217,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2026-06-10 22:30:00 / 修改时间：09:22:35" itemprop="dateCreated datePublished" datetime="2026-06-10T22:30:00+08:00">2026-06-10</time>
+      <time title="创建时间：2026-06-10 22:30:00 / 修改时间：09:27:56" itemprop="dateCreated datePublished" datetime="2026-06-10T22:30:00+08:00">2026-06-10</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -236,7 +236,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.2k</span>
+      <span>2.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -256,75 +256,14 @@
     <div class="post-body" itemprop="articleBody">
           <p>前阵子接手了一个新项目，打开一看：几千行代码，七八个模块，几十个类互相调用，没有文档，没有架构说明，连个 README 都只有三行。想理清入口在哪，只能从 <code>main.py</code> 一路跳转跟踪下去，半天过去了才勉强画出个草稿。</p>
 <p>这种时候就很希望有个东西能帮我把代码结构自动梳理出来。正好看到 <strong>CodeWiki</strong>——一个用 LLM 自动给代码仓库生成文档的工具。它不是简单地”让 AI 读代码然后写文档”，而是在背后做了一整套依赖分析、模块聚类、Agent 协作的工程化工作。花了点时间研究了一下它的设计，挺有意思的，写篇文章梳理一下。</p>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
-<li><a href="#%E5%AE%83%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88">它做了什么</a></li>
-<li><a href="#%E7%AC%AC%E4%B8%80%E5%B1%82%E6%8A%8A%E4%BB%A3%E7%A0%81%E5%8F%98%E6%88%90%E5%9B%BE%E8%B0%B1">第一层：把代码变成”图谱”</a></li>
-<li><a href="#%E7%AC%AC%E4%BA%8C%E5%B1%82llm-%E8%81%9A%E7%B1%BB%E8%BF%99%E4%BA%9B%E6%96%87%E4%BB%B6%E5%BA%94%E8%AF%A5%E5%BD%92%E5%88%B0%E4%B8%80%E4%B8%AA%E6%A8%A1%E5%9D%97%E9%87%8C">第二层：LLM 聚类——“这些文件应该归到一个模块里”</a></li>
-<li><a href="#%E7%AC%AC%E4%B8%89%E5%B1%82agent-%E4%B8%89%E4%BB%B6%E5%A5%97">第三层：Agent 三件套</a></li>
-<li><a href="#%E7%AC%AC%E5%9B%9B%E5%B1%82%E5%AE%9E%E6%97%B6-mermaid-%E6%A0%A1%E9%AA%8C">第四层：实时 Mermaid 校验</a></li>
-<li><a href="#%E7%AC%AC%E4%BA%94%E5%B1%82%E5%8F%8C%E5%90%8E%E7%AB%AF%E6%9C%89-key-%E5%92%8C%E6%B2%A1-key-%E9%83%BD%E8%83%BD%E7%94%A8">第五层：双后端——有 Key 和没 Key 都能用</a></li>
-<li><a href="#%E6%9E%B6%E6%9E%84%E4%B8%80%E8%A7%88">架构一览</a></li>
-<li><a href="#%E5%A2%9E%E9%87%8F%E6%9B%B4%E6%96%B0%E5%8F%AA%E7%94%9F%E6%88%90%E5%8F%98%E4%BA%86%E7%9A%84%E9%83%A8%E5%88%86">增量更新：只生成变了的部分</a></li>
-<li><a href="#%E6%9C%80%E5%90%8E">最后</a></li>
-</ul>
-<h2 id="它做了什么"><a href="#它做了什么" class="headerlink" title="它做了什么"></a>它做了什么</h2><p>简单说：输入一个代码仓库（本地路径或 GitHub URL），CodeWiki 会输出一套结构化的 Markdown 文档——包括仓库概览、每个模块的详细说明、Mermaid 架构图，甚至能打包成一个可直接部署的静态站点。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">codewiki generate /path/to/your-repo --github-pages</span><br></pre></td></tr></table></figure>
-
-<p>跑完之后，你的 <code>output/docs/</code> 目录里会有一套完整的文档，打开 <code>index.html</code> 就能像浏览官方文档一样翻阅。</p>
-<p>但真正有意思的不是”能做什么”，而是”怎么做”。它的架构设计有几个让我觉得”妙啊”的地方。</p>
-<h2 id="第一层：把代码变成”图谱”"><a href="#第一层：把代码变成”图谱”" class="headerlink" title="第一层：把代码变成”图谱”"></a>第一层：把代码变成”图谱”</h2><p>任何文档生成的前提，是先搞清楚”这个项目里到底有什么”。</p>
-<p>CodeWiki 的做法不是简单地把文件列表扔给 LLM，而是先跑一轮<strong>依赖分析</strong>。这一步不依赖 LLM，纯静态分析。</p>
-<p>它内置了 9 种语言的 AST 解析器：Python 用自带的 <code>ast</code> 模块，JS&#x2F;TS&#x2F;Java&#x2F;C#&#x2F;C&#x2F;C++&#x2F;PHP&#x2F;Kotlin 则基于 Tree-sitter。跑完后会输出一个完整的有向图——每个节点是一个函数&#x2F;类&#x2F;方法，边是调用关系。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Node</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="built_in">id</span>: <span class="built_in">str</span>                           <span class="comment"># relative_path::name</span></span><br><span class="line">    name: <span class="built_in">str</span>                         <span class="comment"># 函数/类名</span></span><br><span class="line">    component_type: <span class="built_in">str</span>               <span class="comment"># function / class / method</span></span><br><span class="line">    depends_on: <span class="type">Set</span>[<span class="built_in">str</span>] = <span class="built_in">set</span>()      <span class="comment"># 依赖的其他节点</span></span><br><span class="line">    source_code: <span class="type">Optional</span>[<span class="built_in">str</span>]        <span class="comment"># 源代码片段</span></span><br><span class="line">    start_line / end_line: <span class="built_in">int</span>        <span class="comment"># 起止行号</span></span><br></pre></td></tr></table></figure>
-
-<p>这个图的叶子节点（不被任何其他节点依赖的）就是后续文档生成的”起点”。同时这个图还要做拓扑排序和环检测——万一真有循环依赖，要先打破才能往下走。</p>
-<p>这个过程很像编译器的前端，只不过目标不是生成 IR，而是为 LLM 提供结构化的上下文。这一步还有一个精细化设计：优先保留 <code>class</code>&#x2F;<code>interface</code>&#x2F;<code>struct</code> 类型的叶子节点，如果这些不够才降级取 <code>function</code>。因为类的文档价值比单个函数高得多。</p>
-<h2 id="第二层：LLM-聚类——“这些文件应该归到一个模块里”"><a href="#第二层：LLM-聚类——“这些文件应该归到一个模块里”" class="headerlink" title="第二层：LLM 聚类——“这些文件应该归到一个模块里”"></a>第二层：LLM 聚类——“这些文件应该归到一个模块里”</h2><p>有了叶子节点列表之后，该怎么组织文档？如果每个节点写一篇文档，228 个组件就是 228 个文件，读者直接劝退。</p>
-<p>CodeWiki 的做法是让 LLM 自己<strong>聚类</strong>。把所有叶子节点列表和它们的代码摘要发给 LLM，LLM 判断哪些节点属于同一个逻辑模块，输出一个模块树：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;backend&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;components&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;DocumentationGenerator&quot;</span><span class="punctuation">,</span> <span class="string">&quot;LLMBackend&quot;</span><span class="punctuation">,</span> ...<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;children&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;agent_tools&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> ... <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;dependency_analyzer&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> ... <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>比硬编码的分组规则灵活太多了。比如一个项目里 <code>utils/</code> 目录下的文件，有些是公共工具，有些是某个模块专用的辅助函数——只有 LLM 能理解这些语义差异并做出合理分组。</p>
-<p>这里有一个聪明的 Token 预算控制：当叶子节点太多时，只发送组件摘要而非完整源码，聚类模型和文档生成模型也可以分开配置——聚类用便宜的模型，文档生成用强模型。</p>
-<h2 id="第三层：Agent-三件套"><a href="#第三层：Agent-三件套" class="headerlink" title="第三层：Agent 三件套"></a>第三层：Agent 三件套</h2><p>这是整个系统的”灵魂”部分。生成每个模块文档的不是简单的 prompt-completion，而是一个配备了三个工具的 LLM Agent：</p>
-<ol>
-<li><p><strong><code>read_code_components</code></strong> — Agent 的”眼睛”。按组件 ID 读取任意源码。Agent 初始只拿到核心组件列表，但随时可以按需查更多代码。</p>
-</li>
-<li><p><strong><code>str_replace_editor</code></strong> — Agent 的”手”。对文档目录进行文件操作（创建、编辑、插入）。灵感来自 SWE-agent。有意思的是，这个编辑器不允许 Agent 修改源码目录——只读源码，只写文档。还有个小细节：在读文件时，会自动把视图窗口扩展到完整的函数&#x2F;类边界，避免 Agent 看到”断头”代码。</p>
-</li>
-<li><p><strong><code>generate_sub_module_documentation</code></strong> — Agent 的”分身术”。如果当前模块太复杂，Agent 可以<strong>递归创建子 Agent</strong> 去分别处理每个子模块。</p>
-</li>
-</ol>
-<p>第三个工具是整个体系的关键。它让文档生成变成了<strong>动态规划</strong>式的处理：先处理叶子模块，等它们的文档写好了，再把子文档内容作为上下文喂给父模块。这样一来，生成 <code>backend.md</code> 的时候，LLM 已经知道 <code>agent_tools.md</code> 和 <code>dependency_analyzer.md</code> 里写了什么，产生的总览文档质量明显更高。</p>
-<p>整个过程的决策逻辑是：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">当前模块包含多个文件 AND 当前深度 &lt; 最大递归深度 AND 代码量 &gt; Token 阈值</span><br><span class="line">→ 拆分子模块，递归代理生成</span><br></pre></td></tr></table></figure>
-
-<p>否则直接一次性生成。</p>
-<h2 id="第四层：实时-Mermaid-校验"><a href="#第四层：实时-Mermaid-校验" class="headerlink" title="第四层：实时 Mermaid 校验"></a>第四层：实时 Mermaid 校验</h2><p>让 LLM 写 Mermaid 图表有多痛苦，用过的人都知道。少一个空格、箭头符号写错、节点名里有特殊字符——任何一个微小错误都导致渲染失败。</p>
-<p>CodeWiki 在 <code>str_replace_editor</code> 的每次文件写入操作后，自动提取 Markdown 中的所有 Mermaid 代码块进行解析校验。用了双保险策略：首选 PythonMonkey + SpiderMonkey JS 引擎（和 Mermaid 官方渲染引擎相同），降级时用纯 Python 的 <code>mermaid-py</code>。</p>
-<p>解析失败就报具体行号，Agent 根据错误信息修正重试。这个小设计大幅提升了文档中架构图的可靠性。</p>
-<h2 id="第五层：双后端——有-Key-和没-Key-都能用"><a href="#第五层：双后端——有-Key-和没-Key-都能用" class="headerlink" title="第五层：双后端——有 Key 和没 Key 都能用"></a>第五层：双后端——有 Key 和没 Key 都能用</h2><p>LLM 调用这块做了个漂亮的抽象。<code>LLMBackend</code> 是一个接口，有两个实现：</p>
-<ul>
-<li><strong>PydanticAIBackend</strong>：API Key 模式，基于 <code>pydantic-ai</code>，支持 OpenAI &#x2F; Azure &#x2F; Bedrock &#x2F; Anthropic，带模型回退链</li>
-<li><strong>CawBackend</strong>：订阅模式，封装 <code>claude</code> &#x2F; <code>codex</code> 的 CLI，利用用户已有的 OAuth 订阅，<strong>不需要 API Key</strong></li>
-</ul>
-<p>第二个实现特别实用——如果你已经有 Claude Code 或 Codex 的订阅，直接用就好了，不用额外搞 Key。</p>
-<p>CawBackend 还有几个工程细节值得一提：因为 <code>caw</code> 的调用是同步阻塞的，需要用 <code>asyncio.to_thread</code> 推到工作线程；Mermaid 校验又需要回到主事件循环，通过全局注册的方式解决。Codex 的上游库还缺了 <code>tool_timeout_sec</code> 配置，代码里直接做了临时补丁。</p>
-<h2 id="架构一览"><a href="#架构一览" class="headerlink" title="架构一览"></a>架构一览</h2><p>把上面这些串起来，端到端流程是这样的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">用户输入仓库路径</span><br><span class="line">    ↓</span><br><span class="line">DependencyGraphBuilder: 解析 AST，构建调用图，拓扑排序</span><br><span class="line">    ↓</span><br><span class="line">cluster_modules: LLM 聚类叶子节点 → 模块树</span><br><span class="line">    ↓</span><br><span class="line">逐模块处理（叶子优先）:</span><br><span class="line">    ├── LLM Agent 读取源码、编辑文档、必要时递归委托子模块</span><br><span class="line">    ├── 每次写入后自动校验 Mermaid 图</span><br><span class="line">    └── 子模块文档完成后，作为父模块的上下文</span><br><span class="line">    ↓</span><br><span class="line">生成 overview.md + metadata.json</span><br><span class="line">    ↓</span><br><span class="line">可选: 打包为静态 HTML 站点 (带侧边栏导航 + Mermaid 渲染)</span><br></pre></td></tr></table></figure>
-
-<h2 id="增量更新：只生成变了的部分"><a href="#增量更新：只生成变了的部分" class="headerlink" title="增量更新：只生成变了的部分"></a>增量更新：只生成变了的部分</h2><p>这个功能的设计很实用。通过 <code>--update</code> 标志：</p>
-<ol>
-<li>读上次生成的 <code>metadata.json</code>，拿到当时的 <code>commit_id</code></li>
-<li><code>git diff</code> 对比当前 HEAD，找出变更了哪些文件</li>
-<li>在 <code>module_tree.json</code> 中定位受影响的模块</li>
-<li>删除对应的 <code>.md</code> 缓存</li>
-<li>只重新生成这部分文档</li>
-</ol>
-<p>对于活跃开发的仓库，避免了每次改几个文件就要全量跑一遍。</p>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>CodeWiki 让我觉得有意思的地方，不是它”用 AI 生成文档”这个结果——现在谁都会调 API 做这事。而是在这个目标之下，它用了一套完整的工程手段来保证质量：静态分析做基础、LLM 做语义理解、Agent 工具链做执行、拓扑排序做编排、实时校验做反馈。每一层解决一个具体问题。</p>
-<p>从某种意义上说，这也是 LLM 应用的一个缩影：prompt 只是冰山一角，真正让产品可用的，是冰山水面之下的工程基础设施。</p>
-<p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/FSoft-AI4Code/CodeWiki">https://github.com/FSoft-AI4Code/CodeWiki</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/06/10/codewiki-%E8%AE%A9-llm-%E8%87%AA%E5%8A%A8%E8%AF%BB%E6%87%82%E4%BD%A0%E7%9A%84%E4%BB%A3%E7%A0%81%E4%BB%93%E5%BA%93/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -386,7 +325,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-04 20:12:55" itemprop="dateModified" datetime="2026-06-04T20:12:55+08:00">2026-06-04</time>
+      <time title="修改时间：2026-06-10 09:28:23" itemprop="dateModified" datetime="2026-06-10T09:28:23+08:00">2026-06-10</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -405,7 +344,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.3k</span>
+      <span>1.4k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -423,7 +362,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2>
+          <p>日常开发中经常需要处理文本——查日志、改配置、格式化数据。grep、sed、awk 是 Linux 下文本处理的三把利器，熟练使用能省下大量时间。这篇文章整理它们的常用场景和技巧。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/12/01/grep%E3%80%81sed%E3%80%81awk%E4%B8%89%E5%89%91%E5%AE%A2/#more" rel="contents">
@@ -469,7 +408,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">4k</span>
+    <span title="站点总字数">3k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
