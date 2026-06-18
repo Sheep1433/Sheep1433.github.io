@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sheep1433.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"atom-one-light","dark":"atom-one-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":false,"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="背景做故障诊断 Agent 时遇到一个核心问题：Agent 没有记忆。 用户报一个 K8s Pod CrashLoopBackOff，Agent 每次都要走一遍完整诊断流程：describe pod → 看 logs → 查 events → 定位根因。第二次遇到同样的 OOM 问题，还是走同样的流程。 这就像厨师每次炒菜都要重新看一遍菜谱——效率低，也不智能。 更进一步，不同用户的环境不一样：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="给故障诊断 Agent 装上记忆系统：四层记忆模块设计实践">
+<meta property="og:url" content="https://sheep1433.github.io/2026/06/11/%E6%95%85%E9%9A%9C%E8%AF%8A%E6%96%ADAgent%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F%E5%9B%9B%E5%B1%82%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="浪迹天涯">
+<meta property="og:description" content="背景做故障诊断 Agent 时遇到一个核心问题：Agent 没有记忆。 用户报一个 K8s Pod CrashLoopBackOff，Agent 每次都要走一遍完整诊断流程：describe pod → 看 logs → 查 events → 定位根因。第二次遇到同样的 OOM 问题，还是走同样的流程。 这就像厨师每次炒菜都要重新看一遍菜谱——效率低，也不智能。 更进一步，不同用户的环境不一样：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-10T16:13:00.000Z">
+<meta property="article:modified_time" content="2026-06-11T01:06:03.989Z">
+<meta property="article:author" content="zzq">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="Agent">
+<meta property="article:tag" content="记忆系统">
+<meta property="article:tag" content="故障诊断">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://sheep1433.github.io/2026/06/11/%E6%95%85%E9%9A%9C%E8%AF%8A%E6%96%ADAgent%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F%E5%9B%9B%E5%B1%82%E8%AE%BE%E8%AE%A1/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://sheep1433.github.io/2026/06/11/%E6%95%85%E9%9A%9C%E8%AF%8A%E6%96%ADAgent%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F%E5%9B%9B%E5%B1%82%E8%AE%BE%E8%AE%A1/","path":"2026/06/11/故障诊断Agent记忆系统四层设计/","title":"给故障诊断 Agent 装上记忆系统：四层记忆模块设计实践"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>给故障诊断 Agent 装上记忆系统：四层记忆模块设计实践 | 浪迹天涯</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">浪迹天涯</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Agent 应用开发与个人知识沉淀</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-分类"><a href="/categories" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-归档"><a href="/archives" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-标签"><a href="/tags" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-关于"><a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%B0%E5%BF%86%E5%9B%9B%E5%B1%82%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">记忆四层设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E5%B1%82%EF%BC%9ASOP%EF%BC%88%E6%A0%87%E5%87%86%E8%AF%8A%E6%96%AD%E6%B5%81%E7%A8%8B%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">第一层：SOP（标准诊断流程）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E5%B1%82%EF%BC%9AReference%EF%BC%88%E9%AB%98%E9%A2%91%E6%95%85%E9%9A%9C%E6%A0%B9%E5%9B%A0%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">第二层：Reference（高频故障根因）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E5%B1%82%EF%BC%9AUser%EF%BC%88%E7%94%A8%E6%88%B7%E7%89%B9%E5%BE%81%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">第三层：User（用户特征）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E5%B1%82%EF%BC%9AFeedback%EF%BC%88%E8%AF%8A%E6%96%AD%E5%81%8F%E5%A5%BD%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">第四层：Feedback（诊断偏好）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%8C%BA%E5%88%86%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">关键区分点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB-vs-%E9%9A%94%E7%A6%BB"><span class="nav-number">5.</span> <span class="nav-text">共享 vs 隔离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88"><span class="nav-number">6.</span> <span class="nav-text">存储方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E6%9C%9F%E6%9C%BA%E5%88%B6"><span class="nav-number">7.</span> <span class="nav-text">过期机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zzq"
+      src="https://github.com/Sheep1433.png">
+  <p class="site-author-name" itemprop="name">zzq</p>
+  <div class="site-description" itemprop="description">Agent 应用开发、后端技术、个人知识沉淀的技术博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Sheep1433" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Sheep1433" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hnzzq123@gmail.com" title="Email → mailto:hnzzq123@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sheep1433.github.io/2026/06/11/%E6%95%85%E9%9A%9C%E8%AF%8A%E6%96%ADAgent%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F%E5%9B%9B%E5%B1%82%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://github.com/Sheep1433.png">
+      <meta itemprop="name" content="zzq">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="浪迹天涯">
+      <meta itemprop="description" content="Agent 应用开发、后端技术、个人知识沉淀的技术博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="给故障诊断 Agent 装上记忆系统：四层记忆模块设计实践 | 浪迹天涯">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          给故障诊断 Agent 装上记忆系统：四层记忆模块设计实践
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-11 00:13:00 / 修改时间：09:06:03" itemprop="dateCreated datePublished" datetime="2026-06-11T00:13:00+08:00">2026-06-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/AI-Agent/" itemprop="url" rel="index"><span itemprop="name">AI Agent</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>做故障诊断 Agent 时遇到一个核心问题：<strong>Agent 没有记忆。</strong></p>
+<p>用户报一个 K8s Pod CrashLoopBackOff，Agent 每次都要走一遍完整诊断流程：describe pod → 看 logs → 查 events → 定位根因。第二次遇到同样的 OOM 问题，还是走同样的流程。</p>
+<p>这就像厨师每次炒菜都要重新看一遍菜谱——效率低，也不智能。</p>
+<p>更进一步，不同用户的环境不一样：</p>
+<ul>
+<li>用户 A 的集群用 Calico v3.27，网络问题频发</li>
+<li>用户 B 的集群用 Flannel，从来没出过网络问题</li>
+</ul>
+<p>如果所有用户的经验混在一起，Agent 的决策会被噪音干扰。</p>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>设计一套记忆系统，让 Agent 能：</p>
+<ol>
+<li><strong>记住高频故障</strong> — 见过的病，下次直接开药</li>
+<li><strong>区分共享知识 vs 用户私有知识</strong> — 不让 A 的历史干扰 B 的诊断</li>
+<li><strong>自动沉淀经验</strong> — 诊断完自动学习，而不是等人来写文档</li>
+<li><strong>老知识自动过期</strong> — 集群版本升级了，过时的 SOP 自动标记</li>
+</ol>
+<span id="more"></span>
+
+<h2 id="记忆四层设计"><a href="#记忆四层设计" class="headerlink" title="记忆四层设计"></a>记忆四层设计</h2><p>受 Claude Code 记忆机制启发，我把诊断 Agent 的记忆分为四层：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">用户报故障 → Agent 查询记忆</span><br><span class="line"></span><br><span class="line">  ① User（用户配置）</span><br><span class="line">     → 加载该用户的集群版本、网络拓扑、历史故障</span><br><span class="line">  ② Feedback（用户偏好）</span><br><span class="line">     → 加载用户的诊断策略偏好（先查网络？先查日志？）</span><br><span class="line">  ③ Reference（高频根因）</span><br><span class="line">     → 这个症状以前见过吗？直接修复</span><br><span class="line">  ④ SOP（诊断流程）</span><br><span class="line">     → 没见过，按标准流程排查</span><br><span class="line">  ⑤ 诊断结束</span><br><span class="line">     → 自动抽取新的 reference/feedback</span><br></pre></td></tr></table></figure>
+
+<h3 id="第一层：SOP（标准诊断流程）"><a href="#第一层：SOP（标准诊断流程）" class="headerlink" title="第一层：SOP（标准诊断流程）"></a>第一层：SOP（标准诊断流程）</h3><p><strong>类型：</strong> project（共享）</p>
+<p><strong>本质：</strong> “怎么查”——整段的排查步骤</p>
+<p><strong>内容示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># SOP: Calico 跨节点 Pod 通信异常</span><br><span class="line">1. calicoctl node status → BGP 邻居状态</span><br><span class="line">2. kubectl exec &lt;pod&gt; -- ip route → Pod 路由</span><br><span class="line">3. calicoctl get ippool → IP Pool 配置</span><br><span class="line"></span><br><span class="line">常见根因：</span><br><span class="line">| BGP 未建立 | 检查 179 端口 | 重新建立邻居 |</span><br><span class="line">| IP Pool 冲突 | CIDR 重叠 | 修改 IP Pool |</span><br></pre></td></tr></table></figure>
+
+<p><strong>特点：</strong></p>
+<ul>
+<li>长篇、步骤式</li>
+<li>变更频率低（诊断过程稳定）</li>
+<li>所有用户共享</li>
+<li>由运维团队人工维护</li>
+</ul>
+<h3 id="第二层：Reference（高频故障根因）"><a href="#第二层：Reference（高频故障根因）" class="headerlink" title="第二层：Reference（高频故障根因）"></a>第二层：Reference（高频故障根因）</h3><p><strong>类型：</strong> reference（共享）</p>
+<p><strong>本质：</strong> “是什么”——直接的诊断结论 + 修复命令</p>
+<p><strong>内容示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">高频故障 #12: Pod CrashLoopBackOff → OOM</span><br><span class="line">  修复: kubectl set resources deployment X --limits=memory=2Gi</span><br><span class="line">  特征: describe pod 显示 OOMKilled</span><br><span class="line">  出现频率: 本月第 7 次</span><br></pre></td></tr></table></figure>
+
+<p><strong>特点：</strong></p>
+<ul>
+<li>短篇、结论式</li>
+<li>Agent 先查 reference（匹配 → 直接修复）</li>
+<li>不匹配才走 SOP</li>
+<li><strong>自动沉淀</strong>：每次诊断结束自动抽取</li>
+</ul>
+<h3 id="第三层：User（用户特征）"><a href="#第三层：User（用户特征）" class="headerlink" title="第三层：User（用户特征）"></a>第三层：User（用户特征）</h3><p><strong>类型：</strong> user（用户隔离）</p>
+<p><strong>本质：</strong> 该用户的集群环境配置和历史</p>
+<p><strong>内容示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">集群版本: K8s 1.28, Calico v3.27</span><br><span class="line">历史故障:</span><br><span class="line">  - 2026-05: CoreDNS OOM → 已修复</span><br><span class="line">  - 2026-06: Node NotReady 磁盘满 → ...</span><br><span class="line">网络拓扑: 3 节点, 10.244.0.0/16</span><br></pre></td></tr></table></figure>
+
+<p><strong>特点：</strong></p>
+<ul>
+<li>只对当前用户生效</li>
+<li>Agent 首次诊断时自动探测和记录</li>
+<li>跨会话继承</li>
+</ul>
+<h3 id="第四层：Feedback（诊断偏好）"><a href="#第四层：Feedback（诊断偏好）" class="headerlink" title="第四层：Feedback（诊断偏好）"></a>第四层：Feedback（诊断偏好）</h3><p><strong>类型：</strong> feedback（用户隔离）</p>
+<p><strong>本质：</strong> 该用户习惯的诊断策略</p>
+<p><strong>内容示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">---  </span><br><span class="line">name: 网络优先诊断策略  </span><br><span class="line">description: K8s 安装失败优先排查网络连通性  </span><br><span class="line">type: feedback  </span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">K8s 安装失败场景，诊断第一步应执行网络连通性检查。</span><br><span class="line">Why: 该用户所在集群网络环境复杂，70% 的故障是网络问题。</span><br><span class="line">How to apply: 首次诊断步骤包含 ping 和 CNI 状态检查。</span><br></pre></td></tr></table></figure>
+
+<p><strong>特点：</strong></p>
+<ul>
+<li>诊断结束后 Agent 自动学习</li>
+<li>下次同一用户来诊断时自动应用</li>
+<li>避免重复问用户”先查什么”</li>
+</ul>
+<h2 id="关键区分点"><a href="#关键区分点" class="headerlink" title="关键区分点"></a>关键区分点</h2><p>面试时被问得最多的是：<strong>SOP 和 Reference 到底有什么区别？</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SOP = 菜谱（第一步切葱、第二步热油、第三步炒肉……）</span><br><span class="line">Reference = 老妈的经验笔记（&quot;上次回锅肉糊了是因为火太大&quot;）</span><br><span class="line"></span><br><span class="line">Agent 的行为：</span><br><span class="line">  ① 先查 Reference → &quot;这个症状我见过&quot; → 直接修</span><br><span class="line">  ② 不匹配 → 走 SOP → 按步骤排查</span><br><span class="line">  ③ 排查完 → 自动生成新的 Reference</span><br></pre></td></tr></table></figure>
+
+<h2 id="共享-vs-隔离"><a href="#共享-vs-隔离" class="headerlink" title="共享 vs 隔离"></a>共享 vs 隔离</h2><p>这里有一个容易被忽视的设计决策：<strong>Agent 实例是共享的，但记忆按用户隔离。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────┐</span><br><span class="line">│      共享层（Agent 级别）                │</span><br><span class="line">│  - SOP 库（通用诊断流程）                │</span><br><span class="line">│  - Reference（高频故障模式）             │</span><br><span class="line">│  - 工具约束（黑名单、安全规则）          │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│      用户层（User 级别）                │</span><br><span class="line">│  - 集群环境特征（K8s 版本、CNI 类型）    │</span><br><span class="line">│  - 历史故障记录                          │</span><br><span class="line">│  - 诊断偏好                              │</span><br><span class="line">│  - 这部分只对当前用户生效                │</span><br><span class="line">└─────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>为什么共享 Agent 实例？因为诊断逻辑对所有人都一样，没必要每人起一个实例。但<strong>记忆不能混</strong>——A 团队的历史故障 B 团队不需要知道。</p>
+<h2 id="存储方案"><a href="#存储方案" class="headerlink" title="存储方案"></a>存储方案</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 共享层（全局）</span><br><span class="line">SOPs/</span><br><span class="line">├── SOP_INDEX.md              # 常驻 system prompt</span><br><span class="line">├── caas_helm_install_timeout.md</span><br><span class="line">├── calico_cross_node_network.md</span><br><span class="line">└── ...</span><br><span class="line"></span><br><span class="line"># 用户层（按用户隔离）</span><br><span class="line">memory/</span><br><span class="line">├── user_001/</span><br><span class="line">│   ├── cluster_config.md</span><br><span class="line">│   ├── diagnosis_history.md</span><br><span class="line">│   └── preferences.md</span><br><span class="line">├── user_002/</span><br><span class="line">│   └── ...</span><br></pre></td></tr></table></figure>
+
+<p><code>SOP_INDEX.md</code> 常驻 system prompt（几百 token），Agent 启动时就知道”有哪些 SOP 可用”。正文按需加载，每次 top-5。</p>
+<h2 id="过期机制"><a href="#过期机制" class="headerlink" title="过期机制"></a>过期机制</h2><p>纯靠时间判断不靠谱。判断 SOP 是否过期的标准不是”过了多久”，而是**”SOP 假设的环境状态是否仍然成立”**：</p>
+<ol>
+<li><strong>时间维度</strong>：创建超 30 天未验证的标记为 stale</li>
+<li><strong>事件驱动</strong>：集群版本升级时主动标记相关 SOP</li>
+<li><strong>使用反馈</strong>：连续 3 次被标记”无效”自动过期</li>
+</ol>
+<p>Agent 执行过期 SOP 前，先用 MCP 工具验证关键前提——“该 SOP 依赖的 Ansible 版本是否还是当前版本？”</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>类型</th>
+<th>作用域</th>
+<th>本质</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SOP</td>
+<td>project</td>
+<td>共享</td>
+<td>怎么查（流程）</td>
+<td>人工维护</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td>reference</td>
+<td>共享</td>
+<td>是什么（结论）</td>
+<td>自动沉淀</td>
+</tr>
+<tr>
+<td>User</td>
+<td>user</td>
+<td>用户隔离</td>
+<td>环境配置</td>
+<td>自动记录</td>
+</tr>
+<tr>
+<td>Feedback</td>
+<td>feedback</td>
+<td>用户隔离</td>
+<td>诊断偏好</td>
+<td>自动学习</td>
+</tr>
+</tbody></table>
+<p>这套设计的核心思想：<strong>共享诊断能力，隔离用户上下文。</strong></p>
+<p>SOP 告诉 Agent 怎么排查问题，Reference 告诉 Agent 这个问题以前修过，User 告诉 Agent 这个用户的环境是什么，Feedback 告诉 Agent 这个用户喜欢怎么查。</p>
+<p>四层配合，Agent 就能像一位经验丰富的运维工程师一样——<strong>见过的病直接开药，没见过按流程查，查完自动记笔记。</strong></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>zzq
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sheep1433.github.io/2026/06/11/%E6%95%85%E9%9A%9C%E8%AF%8A%E6%96%ADAgent%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F%E5%9B%9B%E5%B1%82%E8%AE%BE%E8%AE%A1/" title="给故障诊断 Agent 装上记忆系统：四层记忆模块设计实践">https://sheep1433.github.io/2026/06/11/故障诊断Agent记忆系统四层设计/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/LLM/" rel="tag"># LLM</a>
+              <a href="/tags/Agent/" rel="tag"># Agent</a>
+              <a href="/tags/%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F/" rel="tag"># 记忆系统</a>
+              <a href="/tags/%E6%95%85%E9%9A%9C%E8%AF%8A%E6%96%AD/" rel="tag"># 故障诊断</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/10/codewiki-%E8%AE%A9-llm-%E8%87%AA%E5%8A%A8%E8%AF%BB%E6%87%82%E4%BD%A0%E7%9A%84%E4%BB%A3%E7%A0%81%E4%BB%93%E5%BA%93/" rel="prev" title="CodeWiki：让 LLM 自动读懂你的代码仓库">
+                  <i class="fa fa-angle-left"></i> CodeWiki：让 LLM 自动读懂你的代码仓库
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/06/18/WildClawBench-Agent%E8%AF%84%E6%B5%8B%E8%AF%A5%E8%AF%84%E4%BB%80%E4%B9%88/" rel="next" title="WildClawBench 告诉我们：Agent 评测不该只看模型分数">
+                  WildClawBench 告诉我们：Agent 评测不该只看模型分数 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2025 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">true</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">7k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">26 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
