@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sheep1433.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"atom-one-light","dark":"atom-one-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":false,"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="逐字段拆解 LongMemEval V1 的 question JSON 与索引对齐、V2 的轨迹目录与五类记忆问题，还原 Insert&#x2F;Query 评测协议、AgentRunbook-R&#x2F;C 两条 baseline 的运行机制，并推导 LAFS 延迟调整分数的积分公式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LongMemEval V1→V2 全解构：从 500 条对话到 1.15 亿 token 轨迹的长期记忆评测">
+<meta property="og:url" content="https://sheep1433.github.io/2026/09/12/LongMemEval-V1-V2-%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E5%85%A8%E8%A7%A3%E6%9E%84/index.html">
+<meta property="og:site_name" content="浪迹天涯">
+<meta property="og:description" content="逐字段拆解 LongMemEval V1 的 question JSON 与索引对齐、V2 的轨迹目录与五类记忆问题，还原 Insert&#x2F;Query 评测协议、AgentRunbook-R&#x2F;C 两条 baseline 的运行机制，并推导 LAFS 延迟调整分数的积分公式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-09-12T13:30:00.000Z">
+<meta property="article:modified_time" content="2026-09-12T09:40:05.692Z">
+<meta property="article:author" content="Sheep">
+<meta property="article:tag" content="Benchmark">
+<meta property="article:tag" content="LLM评测">
+<meta property="article:tag" content="LongMemEval">
+<meta property="article:tag" content="AgentMemory">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://sheep1433.github.io/2026/09/12/LongMemEval-V1-V2-%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E5%85%A8%E8%A7%A3%E6%9E%84/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://sheep1433.github.io/2026/09/12/LongMemEval-V1-V2-%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E5%85%A8%E8%A7%A3%E6%9E%84/","path":"2026/09/12/LongMemEval-V1-V2-长期记忆评测基准全解构/","title":"LongMemEval V1→V2 全解构：从 500 条对话到 1.15 亿 token 轨迹的长期记忆评测"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>LongMemEval V1→V2 全解构：从 500 条对话到 1.15 亿 token 轨迹的长期记忆评测 | 浪迹天涯</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">浪迹天涯</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Agent 应用开发与个人知识沉淀</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-分类"><a href="/categories" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-归档"><a href="/archives" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-标签"><a href="/tags" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-关于"><a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%8C%83%E5%BC%8F%E6%BC%94%E8%BF%9B%EF%BC%9AV1-vs-V2"><span class="nav-number">1.</span> <span class="nav-text">一、范式演进：V1 vs V2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81V1-%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F%EF%BC%9A500-%E4%B8%AA-JSON-%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%A7%A3%E5%89%96"><span class="nav-number">2.</span> <span class="nav-text">二、V1 数据格式：500 个 JSON 对象的解剖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%8D%95%E6%9D%A1-question-%E7%9A%84%E5%AD%97%E6%AE%B5%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 单条 question 的字段结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%B4%A2%E5%BC%95%E5%AF%B9%E9%BD%90%EF%BC%9A%E4%B8%89%E4%B8%AA%E5%B9%B3%E8%A1%8C%E6%95%B0%E7%BB%84%E5%A6%82%E4%BD%95%E6%8B%BC%E5%87%BA%E3%80%8C%E5%B8%A6%E6%97%B6%E9%97%B4%E6%88%B3%E7%9A%84%E5%8E%86%E5%8F%B2%E3%80%8D"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 索引对齐：三个平行数组如何拼出「带时间戳的历史」</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E4%BA%94%E5%A4%A7%E8%83%BD%E5%8A%9B%E4%B8%8E%E5%85%AD%E7%A7%8D%E9%A2%98%E5%9E%8B%E7%9A%84%E6%98%A0%E5%B0%84"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 五大能力与六种题型的映射</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81V2-%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F%EF%BC%9A%E8%BD%A8%E8%BF%B9%E7%9B%AE%E5%BD%95%E4%B8%8E%E4%BA%94%E7%B1%BB%E8%AE%B0%E5%BF%86%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">三、V2 数据格式：轨迹目录与五类记忆问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E8%BD%A8%E8%BF%B9%E7%9A%84%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 轨迹的物理结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E4%BA%94%E7%B1%BB%E8%AE%B0%E5%BF%86%E9%97%AE%E9%A2%98"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 五类记忆问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E8%AF%84%E6%B5%8B-Harness-%E4%B8%8E-API-%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.</span> <span class="nav-text">四、评测 Harness 与 API 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Context-Gathering%EF%BC%9A%E4%B8%A4%E4%B8%AA%E6%96%B9%E6%B3%95%EF%BC%8C%E5%9B%9B%E6%AD%A5%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 Context Gathering：两个方法，四步流水线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-AgentRunbook-R%EF%BC%9A%E4%B8%89%E6%B1%A0-RAG-baseline"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 AgentRunbook-R：三池 RAG baseline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-AgentRunbook-C%EF%BC%9A%E6%8A%8A%E8%AE%B0%E5%BF%86%E6%A3%80%E7%B4%A2%E5%8F%98%E6%88%90%E6%B2%99%E7%9B%92%E9%87%8C%E7%9A%84%E7%BC%96%E7%A0%81%E4%BB%BB%E5%8A%A1"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 AgentRunbook-C：把记忆检索变成沙盒里的编码任务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E8%AF%84%E6%B5%8B%E6%89%A7%E8%A1%8C%E4%B8%8E-Judge-%E6%89%93%E5%88%86"><span class="nav-number">5.</span> <span class="nav-text">五、评测执行与 Judge 打分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-Harness-%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%EF%BC%9A%E4%B8%89%E9%81%8D%E5%BC%8F%EF%BC%8C%E4%B8%8D%E6%98%AF%E5%A4%9A%E8%BF%9B%E7%A8%8B%E5%88%86%E7%89%87"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 Harness 运行机制：三遍式，不是多进程分片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-V1-%E7%9A%84-Judge%EF%BC%9A%E6%8C%89%E9%A2%98%E5%9E%8B%E5%88%86-prompt-%E7%9A%84-GPT-4o"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 V1 的 Judge：按题型分 prompt 的 GPT-4o</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-V2-%E7%9A%84%E6%89%93%E5%88%86%EF%BC%9A%E8%83%BD%E8%A7%84%E5%88%99%E7%9A%84%E8%A7%84%E5%88%99%EF%BC%8C%E4%B8%8D%E8%83%BD%E8%A7%84%E5%88%99%E7%9A%84%E6%89%8D%E7%BB%99-GPT-5-2"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 V2 的打分：能规则的规则，不能规则的才给 GPT-5.2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-LAFS%EF%BC%9A%E6%8A%8A%E3%80%8C%E5%BF%AB%E8%80%8C%E5%87%86%E3%80%8D%E5%8E%8B%E6%88%90%E4%B8%80%E4%B8%AA%E6%95%B0"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 LAFS：把「快而准」压成一个数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E8%B7%91%E8%BF%99%E5%A5%97%E5%9F%BA%E5%87%86%E6%97%B6%E5%AE%B9%E6%98%93%E8%B8%A9%E7%9A%84%E5%9D%91"><span class="nav-number">6.</span> <span class="nav-text">六、跑这套基准时容易踩的坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E4%BC%B8%E9%98%85%E8%AF%BB"><span class="nav-number">8.</span> <span class="nav-text">延伸阅读</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Sheep"
+      src="https://github.com/Sheep1433.png">
+  <p class="site-author-name" itemprop="name">Sheep</p>
+  <div class="site-description" itemprop="description">Agent 应用开发、后端技术、个人知识沉淀的技术博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Sheep1433" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Sheep1433" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hnzzq123@gmail.com" title="Email → mailto:hnzzq123@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sheep1433.github.io/2026/09/12/LongMemEval-V1-V2-%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E5%85%A8%E8%A7%A3%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://github.com/Sheep1433.png">
+      <meta itemprop="name" content="Sheep">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="浪迹天涯">
+      <meta itemprop="description" content="Agent 应用开发、后端技术、个人知识沉淀的技术博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="LongMemEval V1→V2 全解构：从 500 条对话到 1.15 亿 token 轨迹的长期记忆评测 | 浪迹天涯">
+      <meta itemprop="description" content="逐字段拆解 LongMemEval V1 的 question JSON 与索引对齐、V2 的轨迹目录与五类记忆问题，还原 Insert&#x2F;Query 评测协议、AgentRunbook-R&#x2F;C 两条 baseline 的运行机制，并推导 LAFS 延迟调整分数的积分公式。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LongMemEval V1→V2 全解构：从 500 条对话到 1.15 亿 token 轨迹的长期记忆评测
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-09-12 21:30:00 / 修改时间：17:40:05" itemprop="dateCreated datePublished" datetime="2026-09-12T21:30:00+08:00">2026-09-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/AI-Agent/" itemprop="url" rel="index"><span itemprop="name">AI Agent</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>24 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">逐字段拆解 LongMemEval V1 的 question JSON 与索引对齐、V2 的轨迹目录与五类记忆问题，还原 Insert/Query 评测协议、AgentRunbook-R/C 两条 baseline 的运行机制，并推导 LAFS 延迟调整分数的积分公式。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>LongMemEval 评测的是这样一件事：把一段漫长的历史交互<strong>只允许经过一次顺序写入</strong>交给你的记忆系统，然后在每个问题上，系统在有限 token 预算内取回证据，交给一个<strong>固定的</strong>阅读模型作答，答对了才算记忆有效。V1（ICLR 2025）用 500 道题、115k～1.5M token 的对话干草堆考 chat assistant 的长期交互记忆；V2（arXiv 2605.12493）把考卷换成 451 道题、最高约 1.15 亿 token 的多模态 Agent 轨迹，并把准确率与查询延迟压成一条曲线下的面积——LAFS。</p>
+<p>这两个版本出自同一个作者组（Di Wu、Kai-Wei Chang 等），可以当成同一评测哲学在两个时代的投影：<strong>从「模型能不能在长历史里找到那句话」变成「记忆系统能不能让 Agent 变成一个有经验的同事」</strong>。这篇文章逐字段、逐脚本地把两个版本拆开：数据格式、索引对齐、Harness 协议、baseline 内部实现、Judge 打分和 LAFS 公式。</p>
+<p>文中所有字段名、文件名、超参数都对照官方仓库与论文核实过（V1：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.10813">arXiv 2410.10813</a>、<a target="_blank" rel="noopener" href="https://github.com/xiaowu0162/LongMemEval">github.com&#x2F;xiaowu0162&#x2F;LongMemEval</a>；V2：<a target="_blank" rel="noopener" href="https://arxiv.org/html/2605.12493">arXiv 2605.12493</a>、<a target="_blank" rel="noopener" href="https://github.com/xiaowu0162/LongMemEval-V2">github.com&#x2F;xiaowu0162&#x2F;LongMemEval-V2</a>），部分数据细节是我拿本地 cleaned 版文件逐条数出来的。</p>
+<h2 id="一、范式演进：V1-vs-V2"><a href="#一、范式演进：V1-vs-V2" class="headerlink" title="一、范式演进：V1 vs V2"></a>一、范式演进：V1 vs V2</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>LongMemEval-V1（ICLR 2025）</th>
+<th>LongMemEval-V2（2026）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>记忆对象</td>
+<td>用户与助手的跨会话聊天历史</td>
+<td>多模态 Agent 操作轨迹（WebArena + WorkArena）</td>
+</tr>
+<tr>
+<td>题量</td>
+<td>500 questions</td>
+<td>451 questions</td>
+</tr>
+<tr>
+<td>干草堆规模</td>
+<td>S 档 <del>115k token（30–40 会话）；M 档 ~1.5M token（</del>500 会话）</td>
+<td>Small 档 100 条轨迹 ~25M token；Medium 档每题最多 500 条轨迹 ~115M token</td>
+</tr>
+<tr>
+<td>模态</td>
+<td>纯文本对话</td>
+<td>目标&#x2F;动作&#x2F;结果文本 + 每步无障碍树（AXTree）dump + 每步截图</td>
+</tr>
+<tr>
+<td>被测对象</td>
+<td>模型 × 记忆组织方式（阅读端可变）</td>
+<td>记忆系统本身（阅读模型钉死为 Qwen3.5-9B）</td>
+</tr>
+<tr>
+<td>评估输出</td>
+<td>LLM-judge 二值准确率 + 检索 Recall@k &#x2F; NDCG@k</td>
+<td>分题型准确率 + 查询延迟 → LAFS 单一分数</td>
+</tr>
+<tr>
+<td>数据来源</td>
+<td>WildChat 真实用户对话 + ShareGPT&#x2F;UltraChat&#x2F;仿真填充</td>
+<td>AgentLab harness 采的 1,540 条真实轨迹（成功率 52%）</td>
+</tr>
+</tbody></table>
+<p>规模差了两个数量级：V1 的 M 档全量历史约 1.5M token，已经超出当时所有模型的有效上下文；V2 的 Medium 档干草堆约 1.15 亿 token，<strong>任何「塞进上下文窗口」的方案从定义上就出局了</strong>，评测强制退化成检索与压缩问题。</p>
+<p>更关键的变化在被测对象上。V1 论文的实验口径是「同一个模型，换不同的记忆组织方式再读」（全历史直读 &#x2F; 会话分解检索 &#x2F; 时间感知检索等），被测的其实是<strong>模型的长历史阅读能力</strong>；社区（Mem0、MemOS、Zep 等）后来把它当系统级 benchmark 用——你的记忆系统吃进 <code>haystack_sessions</code>，吐出检索结果。这两种口径的分数不能直接比，这是 V1 榜单上最常见的混淆。V2 把话说死了：阅读模型固定为 Qwen3.5-9B（vLLM 部署，temperature 0.6、top_p 0.95、top_k 20、关闭 thinking），所有准确率差异<strong>只能</strong>来自记忆系统返回的证据质量。控制变量的思路从论文评审搬进了 harness。</p>
+<p>模态描述上有个流传很广的说法是「文本 + DOM 树 + 截图」。官方实现里不是 DOM：每步状态保存的是 <code>text</code> 字段——一份 AXTree dump（无障碍树，即页面控件的角色&#x2F;名称&#x2F;状态的结构化文本表示），加一张对应截图。「DOM」是转述时混进来的词，写 harness 时照它去抓页面结构会走弯路。</p>
+<h2 id="二、V1-数据格式：500-个-JSON-对象的解剖"><a href="#二、V1-数据格式：500-个-JSON-对象的解剖" class="headerlink" title="二、V1 数据格式：500 个 JSON 对象的解剖"></a>二、V1 数据格式：500 个 JSON 对象的解剖</h2><h3 id="2-1-单条-question-的字段结构"><a href="#2-1-单条-question-的字段结构" class="headerlink" title="2.1 单条 question 的字段结构"></a>2.1 单条 question 的字段结构</h3><p><code>longmemeval_s.json</code> &#x2F; <code>longmemeval_m.json</code> &#x2F; <code>longmemeval_oracle.json</code> 三个文件各是一个含 500 个对象的 JSON 数组。节选一条（内容截断，字段顺序与官方数据一致）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;question_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;e47becba&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;question_type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;temporal-reasoning&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;question&quot;</span><span class="punctuation">:</span> <span class="string">&quot;How long had I been working at Google when I mentioned my promotion?&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;question_date&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2023/05/30 (Tue) 23:40&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;answer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;About two and a half years&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;answer_session_ids&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;answer_280352e9&quot;</span><span class="punctuation">,</span> <span class="string">&quot;answer_5f2a71c0&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;haystack_dates&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;2023/02/15 (Wed) 13:26&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;2023/03/02 (Thu) 20:11&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;2023/03/29 (Wed) 09:47&quot;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;haystack_session_ids&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;85a1be56_1&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;sharegpt_yywfIrx_0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;answer_280352e9&quot;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;haystack_sessions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;I just moved to a new apartment...&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Congratulations! ...&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Can you recommend a good laptop?&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Sure! What&#x27;s your budget...&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;I got promoted to senior engineer today!&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;has_answer&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;That&#x27;s wonderful! You joined Google in 2020...&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;has_answer&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>字段逐个说：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>question_id</code></td>
+<td>str</td>
+<td>唯一 ID；<strong>拒答题以 <code>_abs</code> 后缀标识</strong>（如 <code>0862e8bf_abs</code>），拒答不是一种 <code>question_type</code>，而是叠加在原题型上的标记</td>
+</tr>
+<tr>
+<td><code>question_type</code></td>
+<td>str</td>
+<td>6 个取值：<code>single-session-user</code> &#x2F; <code>single-session-assistant</code> &#x2F; <code>single-session-preference</code> &#x2F; <code>temporal-reasoning</code> &#x2F; <code>knowledge-update</code> &#x2F; <code>multi-session</code></td>
+</tr>
+<tr>
+<td><code>question</code></td>
+<td>str</td>
+<td>题面</td>
+</tr>
+<tr>
+<td><code>question_date</code></td>
+<td>str</td>
+<td>提问时间戳，格式 <code>%Y/%m/%d (%a) %H:%M</code>——时间推理题的锚点</td>
+</tr>
+<tr>
+<td><code>answer</code></td>
+<td>str</td>
+<td>标准答案；<code>single-session-preference</code> 题存的是判卷 rubric 而非唯一答案</td>
+</tr>
+<tr>
+<td><code>answer_session_ids</code></td>
+<td>list</td>
+<td>证据会话 ID，全部以 <code>answer_</code> 前缀标识；500 题合计 948 个证据会话（均值 1.9，最多 6）</td>
+</tr>
+<tr>
+<td><code>haystack_dates</code></td>
+<td>list</td>
+<td>每个历史会话的时间戳，与下面两个数组按下标对齐</td>
+</tr>
+<tr>
+<td><code>haystack_session_ids</code></td>
+<td>list</td>
+<td>会话 ID；前缀泄露来源——<code>answer_</code> 是证据会话，<code>sharegpt_</code> &#x2F; <code>ultrachat</code>（形如 <code>85a1be56_1</code>）&#x2F;仿真会话是填充物</td>
+</tr>
+<tr>
+<td><code>haystack_sessions</code></td>
+<td>list[list]</td>
+<td>会话本体，每个 turn 是 <code>&#123;role, content&#125;</code>；含证据的 turn 额外带 <code>&quot;has_answer&quot;: true</code></td>
+</tr>
+</tbody></table>
+<p>填充物构成有公开配方：25% ShareGPT、25% UltraChat、50% 与用户画像一致的仿真会话；S 档填充上限 80 个会话并设 115,000 token 的 JSON 长度帽，M 档上限 500 个。</p>
+<h3 id="2-2-索引对齐：三个平行数组如何拼出「带时间戳的历史」"><a href="#2-2-索引对齐：三个平行数组如何拼出「带时间戳的历史」" class="headerlink" title="2.2 索引对齐：三个平行数组如何拼出「带时间戳的历史」"></a>2.2 索引对齐：三个平行数组如何拼出「带时间戳的历史」</h3><p>V1 最容易被忽视、又最容易写错的设计是：<strong>三个等长数组按数组下标描述同一个会话</strong>，500&#x2F;500 条数据里长度严格相等：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">haystack_sessions[i]      ← 第 i 个会话的对话内容</span><br><span class="line">haystack_dates[i]         ← 第 i 个会话的发生时间</span><br><span class="line">haystack_session_ids[i]   ← 第 i 个会话的唯一 ID</span><br><span class="line">        │</span><br><span class="line">        └── 三者共享下标 i：会话、时间戳、ID 一一对应</span><br><span class="line">            证据会话（answer_ 前缀）散布在任意位置，不保证排在末尾</span><br></pre></td></tr></table></figure>
+
+<p>这带来两个工程后果。第一，<strong>会话隔离与时间标定是免费的</strong>：不需要解析会话内容里的任何时间信息，每个会话的「何时发生」由 <code>haystack_dates[i]</code> 直接给出，时间推理题考的是「文本内显式时间表达 + 元数据时间戳」的联合推理，不是考模型找时间。第二，检索评估可以做到两级粒度——会话级用 <code>answer_session_ids</code>，turn 级用 <code>has_answer</code> 标记（全数据集共 896 个证据 turn）。</p>
+<p>我自己核对 cleaned 版数据时发现一个 README 没写的坑：官方说 <code>_s</code>&#x2F;<code>_m</code> 的会话「按时间戳排序」，实际 500 条里只有 289 条是分钟级严格递增，<strong>同一天内存在乱序</strong>（比如 <code>15:24</code> 之后跟着 <code>01:34</code>）。如果你的 harness 假设「数组尾部就是最新会话」做 recency 截断，会截错。另外 <code>question_date</code> 晚于全部历史时间戳这条设计（论文记作 t_q &gt; t_N），实测只对 424&#x2F;500 成立——直接拿这两条做不变量断言会翻车。</p>
+<h3 id="2-3-五大能力与六种题型的映射"><a href="#2-3-五大能力与六种题型的映射" class="headerlink" title="2.3 五大能力与六种题型的映射"></a>2.3 五大能力与六种题型的映射</h3><p>论文定义的五个核心能力，落到数据上是六种 <code>question_type</code> 加 <code>_abs</code> 标记。cleaned 版 S 档的真实分布（我逐条数的）：</p>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>题型载体</th>
+<th align="right">题量</th>
+<th>考什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Information Extraction（IE）</td>
+<td><code>single-session-user</code></td>
+<td align="right">70</td>
+<td>从单个会话里提取<strong>用户自述</strong>的事实</td>
+</tr>
+<tr>
+<td>Information Extraction（IE）</td>
+<td><code>single-session-assistant</code></td>
+<td align="right">56</td>
+<td>提取<strong>助手曾给出</strong>的信息（换述后不能丢）</td>
+</tr>
+<tr>
+<td>IE &#x2F; 个性化</td>
+<td><code>single-session-preference</code></td>
+<td align="right">30</td>
+<td>用户偏好总结，按 rubric 判卷，无唯一答案</td>
+</tr>
+<tr>
+<td>Multi-Session Reasoning（MR）</td>
+<td><code>multi-session</code></td>
+<td align="right">133</td>
+<td>一题的证据散在多个会话，需关联后推理</td>
+</tr>
+<tr>
+<td>Knowledge Updates（KU）</td>
+<td><code>knowledge-update</code></td>
+<td align="right">78</td>
+<td>事实随时间被更新（换工作、改偏好），必须用<strong>最新值</strong>回答</td>
+</tr>
+<tr>
+<td>Temporal Reasoning（TR）</td>
+<td><code>temporal-reasoning</code></td>
+<td align="right">133</td>
+<td>结合时间戳与文本内时间表达做推算（「结婚时 Rachel 多大」这类）</td>
+</tr>
+<tr>
+<td>Abstention（ABS）</td>
+<td><code>question_id</code> 带 <code>_abs</code></td>
+<td align="right">30</td>
+<td>错误前提下拒答；横跨 multi-session 12 &#x2F; single-session-user 6 &#x2F; temporal-reasoning 6 &#x2F; knowledge-update 6</td>
+</tr>
+</tbody></table>
+<p>顺带纠正两个流传的说法：其一，不少转述给 V1 编了一套「子类分类法」（needle&#x2F;cross-session、arithmetic&#x2F;scope filtering&#x2F;edit propagation 之类）——论文和仓库里都不存在这套词，TR 在数据生成阶段只有 <code>temp_reasoning_implicit</code> &#x2F; <code>temp_reasoning_explicit</code> 两个内部任务名，没有正式发表的子类。其二，V1 没有「L 档」：HF 上只有 <code>_oracle</code> &#x2F; <code>_s</code> &#x2F; <code>_m</code> 三个文件，M 档就是 ~1.5M token，不存在 1.1M 的第三档。给 V1 评分的 J score 也不是 LongMemEval 的指标——那是 Mem0 论文（arXiv 2504.19413）在 LOCOMO 上的 LLM-as-a-Judge 指标。</p>
+<p>还有两个文件变体值得知道：<code>longmemeval_oracle.json</code> 只保留证据会话（去填充物），用于测「检索完美时」的阅读上限——论文里 GPT-4o 的 oracle 分是 87.0%，这就是这套题的天花板；以及 2025&#x2F;09 官方用 <code>longmemeval-cleaned</code> 替换了原版 HF 数据集（清除了干扰答案正确性的历史内容），<strong>拿旧版跑出的分数和 cleaned 版没有可比性</strong>。</p>
+<h2 id="三、V2-数据格式：轨迹目录与五类记忆问题"><a href="#三、V2-数据格式：轨迹目录与五类记忆问题" class="headerlink" title="三、V2 数据格式：轨迹目录与五类记忆问题"></a>三、V2 数据格式：轨迹目录与五类记忆问题</h2><h3 id="3-1-轨迹的物理结构"><a href="#3-1-轨迹的物理结构" class="headerlink" title="3.1 轨迹的物理结构"></a>3.1 轨迹的物理结构</h3><p>V2 的干草堆不再是 JSON 数组里的会话列表，而是磁盘上的轨迹目录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">lme-v2/</span><br><span class="line">├── trajectories/</span><br><span class="line">│   ├── &lt;trajectory_id&gt;/</span><br><span class="line">│   │   └── trajectory.json      # 一条轨迹的全部内容</span><br><span class="line">│   └── ...</span><br><span class="line">├── trajectory_screenshots/      # .tar.gz 截图包，由脚本解开</span><br><span class="line">└── screenshots/</span><br><span class="line">    └── &lt;trajectory_id&gt;/</span><br><span class="line">        ├── 0.png                # 每步一张，与 state_index 对齐</span><br><span class="line">        ├── 1.png</span><br><span class="line">        └── ...</span><br></pre></td></tr></table></figure>
+
+<p><code>trajectory.json</code> 的字段（截图路径与状态按下标对齐，和 V1 的三数组对齐是同一个思想）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webarena_0142&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;goal&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Find the cheapest USB-C hub with at least 4 ports and add it to cart&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;start_url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://onestopshop.com/shop&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;actions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;click [id=search]&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;type [search] &#x27;usb-c hub&#x27;&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;click [link=&#x27;USB-C Hub 7-in-1&#x27;]&quot;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;outcome&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;success&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;states&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;state_index&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://onestopshop.com/shop&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;[1] banner &#x27;OneStopShop&#x27; [2] textbox &#x27;Search products&#x27; ...&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;screenshot&quot;</span><span class="punctuation">:</span> <span class="string">&quot;screenshots/webarena_0142/0.png&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;thoughts&quot;</span><span class="punctuation">:</span> <span class="string">&quot;I should search for USB-C hubs first.&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;action&quot;</span><span class="punctuation">:</span> <span class="string">&quot;click [id=search]&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>states[].text</code> 就是 AXTree dump——几十条轨迹加起来上亿 token 的主要来源；<code>states[].screenshot</code> 是路径引用，截图本体在 <code>screenshots/</code> 下按 <code>&lt;trajectory_id&gt;/&lt;step&gt;.png</code> 组织。数据脚本链是 <code>data/download_data.py</code> → <code>prepare_data.py</code>（解包截图）→ <code>validate_data.py</code>。</p>
+<p>数据集本身的一些硬数字：1,540 条轨迹（WebArena 599 + WorkArena 941），由 AgentLab harness 用 ReAct 式 Agent 采集（GPT-5-mini 73.1% &#x2F; GPT-5.2 22.9% &#x2F; Codex-GPT-5.2-xhigh 4.0% 的混合，整体成功率 52.0%，平均每条 28.1 个状态）。每道题平均需要 1.4 条答案轨迹（最少 1，最多 5）。</p>
+<h3 id="3-2-五类记忆问题"><a href="#3-2-五类记忆问题" class="headerlink" title="3.2 五类记忆问题"></a>3.2 五类记忆问题</h3><p>V2 论文用「有经验的同事」做比喻定义五类问题，这是它和 V1 最深的一次范式转变——考的不再是「记得用户说过什么」，而是「从长期操作中学到了什么」：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>论文定义（意译）</th>
+<th>典型问法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Static State Recall</td>
+<td>记得环境里的重要地标、页面布局、控件用途，以及状态间的细微差别</td>
+<td>「商品列表页每页显示多少条结果？」</td>
+</tr>
+<tr>
+<td>Dynamic State Tracking</td>
+<td>能充当环境的世界模型：给定状态与动作，理解环境如何随之变化</td>
+<td>「把商品加进愿望单之后，愿望单图标会怎么变？」</td>
+</tr>
+<tr>
+<td>Workflow Knowledge</td>
+<td>知道在这个定制环境里完成常见任务的步骤</td>
+<td>「在后台取消一张订单，完整流程是什么？」</td>
+</tr>
+<tr>
+<td>Environment Gotchas</td>
+<td>意识到环境里的常见坑，能避开环境特有的失败模式</td>
+<td>题面伪装成新手带着截图求助：「这一步为什么总是报错？」</td>
+</tr>
+<tr>
+<td>Premise Awareness</td>
+<td>识别出「在别的环境成立、在这里不成立」的前提假设</td>
+<td>错误前提 + 截图，必须指出前提错误（题型带 <code>-abs</code> 后缀，是 V2 的拒答题）</td>
+</tr>
+</tbody></table>
+<p>题型实现上分三种：判断题、多选题、短答题。Premise Awareness 是显式的 abstention 题；Gotchas 题以「新手发消息求助 + 截图」的情景出现，考的是你有没有把过去踩过的坑变成可迁移的告诫。</p>
+<h2 id="四、评测-Harness-与-API-协议"><a href="#四、评测-Harness-与-API-协议" class="headerlink" title="四、评测 Harness 与 API 协议"></a>四、评测 Harness 与 API 协议</h2><h3 id="4-1-Context-Gathering：两个方法，四步流水线"><a href="#4-1-Context-Gathering：两个方法，四步流水线" class="headerlink" title="4.1 Context Gathering：两个方法，四步流水线"></a>4.1 Context Gathering：两个方法，四步流水线</h3><p>V2 的评测范式叫 context gathering：<strong>不评 Agent 的端到端任务成功率，只评记忆系统能否为下游问答产出紧凑证据</strong>。任何记忆后端（官方叫 memory module）继承同一个基类并用装饰器注册：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@register_memory</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Memory</span>(<span class="title class_ inherited__">ABC</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">insert</span>(<span class="params">self, trajectory: <span class="built_in">dict</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;顺序写入一条轨迹；只进不改，写入阶段拿不到任何题目信息。&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">query</span>(<span class="params">self, query: <span class="built_in">str</span>, query_image=<span class="literal">None</span></span>) -&gt; <span class="built_in">list</span>[<span class="built_in">dict</span>]:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;返回上下文条目列表，每项形如：</span></span><br><span class="line"><span class="string">        &#123;&quot;type&quot;: &quot;text&quot;,  &quot;value&quot;: &quot;...&quot;&#125;</span></span><br><span class="line"><span class="string">        &#123;&quot;type&quot;: &quot;image&quot;, &quot;value&quot;: &quot;screenshots/xxx/3.png&quot;&#125;</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>协议有个容易低估的设计：<strong>隐私隔离</strong>。后端在整个评测过程中拿不到任何 benchmark 元数据——没有题目 ID、题型、标准答案，<code>query()</code> 收到的除了问题文本（和可选截图）只有一个随机 <code>query_invocation_id</code>（通过 <code>self.get_query_context()</code> 获取）。仓库里有专门的 <code>tests/test_query_privacy.py</code> 钉住这一点，防止后端「认识题目」作弊。</p>
+<p>Harness 的四步流水线：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">① 顺序流式插入           ② 记忆构建            ③ 查询 + 预算截断            ④ 固定 Reader 作答</span><br><span class="line">┌──────────────────┐   ┌──────────────┐   ┌─────────────────────┐   ┌──────────────────┐</span><br><span class="line">│ for traj in 轨迹:  │──▶│ memory.insert │──▶│ ctx = memory.query(q)│──▶│ ans = Qwen3.5-9B │</span><br><span class="line">│   按时间序喂入      │   │ 累积内部状态   │   │ ctx = truncate(ctx,  │   │ (q + ctx + 截图)  │</span><br><span class="line">│   （只进不改）      │   │ （索引/笔记等）│   │   200k token)        │   └──────────────────┘</span><br><span class="line">└──────────────────┘   └──────────────┘   └─────────────────────┘          │</span><br><span class="line">                                                                       ⑤ 打分（规则 / Judge）</span><br></pre></td></tr></table></figure>
+
+<p>第③步的 token 预算由 <code>--memory-context-max-tokens</code> 控制（默认 200,000），<strong>计数器是 Qwen3.5-9B 的 chat 模板 processor，图片按 PIL 尺寸折算</strong>——也就是说截断标准和阅读模型的真实 tokenizer 完全一致，不存在「按 GPT 的 token 数估的预算在 Qwen 侧爆窗」。超预算的上下文不是粗暴砍尾，而是<strong>二分搜索最大可容纳前缀</strong>再截断。第②步还有个共享优化：Small 档所有题共用同一干草堆，memory 实例只构建一次并被线程安全共享；RAG&#x2F;Codex&#x2F;AgentRunbook 这类每题需要独立工作区的后端则走每题独立 workspace 路径。</p>
+<h3 id="4-2-AgentRunbook-R：三池-RAG-baseline"><a href="#4-2-AgentRunbook-R：三池-RAG-baseline" class="headerlink" title="4.2 AgentRunbook-R：三池 RAG baseline"></a>4.2 AgentRunbook-R：三池 RAG baseline</h3><p><code>memory_modules/agentrunbook_r.py</code>（注册名 <code>agentrunbook_r</code>）是官方的「结构化 RAG」上限参考。插入阶段把每条轨迹拆进三个知识池：</p>
+<table>
+<thead>
+<tr>
+<th>池</th>
+<th>内容</th>
+<th>生成方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Raw Slices（原始切片）</td>
+<td>以某状态为中心、半径 1 的连续状态窗口（AXTree 文本 + 截图）</td>
+<td>纯机械切分，embedding 索引在 <code>slice_axtree_text</code> 上</td>
+</tr>
+<tr>
+<td>Transition Events（转移事件）</td>
+<td>每次状态转移一条事件，JSON <code>&#123;&quot;overview&quot;: &quot;...&quot;, &quot;state_transition&quot;: &quot;...&quot;&#125;</code>，ID 形如 <code>event_0012_0013</code></td>
+<td>LLM 逐转移描述；插入阶段<strong>异步并发</strong>（<code>EVENT_ASYNC_MAX_CONCURRENCY = 16</code>）</td>
+</tr>
+<tr>
+<td>Strategy Notes（策略笔记）</td>
+<td>每条轨迹两条：一条 procedure note（操作流程）、一条 hint note（坑与提示）</td>
+<td>LLM 事后总结</td>
+</tr>
+</tbody></table>
+<p>三池落盘为 <code>agentrunbook_r_artifact/</code> 下的 <code>raw_state_pool.jsonl</code>、<code>event_pool.jsonl</code>、<code>.npy</code> embedding 和 <code>artifact_index.json</code>，带 SHA-256 指纹防串改。</p>
+<p>查询时是一个 <strong>Qwen3.5-9B 控制器先改写问题、再向量检索</strong>的流程。控制器输出一份结构化查询计划：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;raw_state_queries&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;search results page layout&quot;</span><span class="punctuation">,</span> <span class="string">&quot;product listing pagination&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;event_query&quot;</span><span class="punctuation">:</span> <span class="string">&quot;add item to wishlist outcome&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;note_query&quot;</span><span class="punctuation">:</span> <span class="string">&quot;checkout workflow and known issues&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>raw_state_queries</code> 最多 5 条、每个不同 UI 界面一条。三路计划用 Qwen3-Embedding-8B 做稠密余弦检索，超参数：事件取 top-6、笔记取 top-3、原始切片预算 6 个且单查询上限 <code>m = min(2, 6 // n_queries)</code>。可选再来一轮 LLM rerank（输出 <code>&#123;&quot;selected_indices&quot;: [...], &quot;selection_description&quot;: &quot;...&quot;&#125;</code>）。最终上下文渲染成三个 markdown 区块（”## Procedure and Hint Notes Learned from Previous Tasks in the Environment” 等）交给 reader。</p>
+<p>有个说法需要修正：不少转述称三路检索「并发执行」。官方实现里查询侧是<strong>顺序</strong>执行的（改写→检索→可选 rerank 串行），并发只存在于插入侧的事件生成和 harness 层。它 Small&#x2F;Medium 档的公开成绩是 58.6% &#x2F; 57.0%，延迟 26.9s &#x2F; 25.8s。</p>
+<h3 id="4-3-AgentRunbook-C：把记忆检索变成沙盒里的编码任务"><a href="#4-3-AgentRunbook-C：把记忆检索变成沙盒里的编码任务" class="headerlink" title="4.3 AgentRunbook-C：把记忆检索变成沙盒里的编码任务"></a>4.3 AgentRunbook-C：把记忆检索变成沙盒里的编码任务</h3><p><code>agentrunbook_c.py</code> 继承自 Codex 基类，思路是：既然轨迹已经在文件系统上，就让一个 coding agent 在沙盒里<strong>主动翻文件</strong>来答检索。每次 <code>query()</code> 构建独立沙盒：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">attempt_dir/sandbox/</span><br><span class="line">├── question.json                     # 当前题目</span><br><span class="line">├── INSTRUCTION.md                    # 角色与输出约束说明</span><br><span class="line">├── scripts/</span><br><span class="line">│   └── inspect_trajectory.py         # 官方提供的唯一查看工具</span><br><span class="line">├── trajectories -&gt; /workspace/...    # 指向轨迹池的符号链接</span><br><span class="line">├── TRAJECTORY_SUMMARY_CONCISE.md     # 粗筛清单（每工作区渲染一次，加锁）</span><br><span class="line">└── TRAJECTORY_SUMMARY_FULL.md        # 精查清单</span><br></pre></td></tr></table></figure>
+
+<p><code>inspect_trajectory.py</code> 的用法（INSTRUCTION.md 里教给 agent）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">python scripts/inspect_trajectory.py &lt;trajectory_id&gt;</span><br><span class="line">python scripts/inspect_trajectory.py &lt;trajectory_id&gt; --state 5      <span class="comment"># 看单步</span></span><br><span class="line">python scripts/inspect_trajectory.py &lt;trajectory_id&gt; --span 3:8     <span class="comment"># 看区间</span></span><br><span class="line">python scripts/inspect_trajectory.py &lt;trajectory_id&gt; --match <span class="string">&quot;wishlist&quot;</span>  <span class="comment"># 正则搜轨迹文本</span></span><br></pre></td></tr></table></figure>
+
+<p>INSTRUCTION.md 的约束写得很工程化：要求 agent 把自己当「快速记忆检索模块」，先对问题做 triage，<strong>禁止基于数字序列、相邻行、相似按钮外推</strong>（do not extrapolate from numeric progressions, nearby rows, similar buttons）——这条是针对 RAG&#x2F;LLM 检索常见的「证据近似就编」失败模式设计的。</p>
+<p>答案不写自然语言自由文本，而是写回结构化的 <code>memory_module_output.json</code>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;memory_markdown&quot;</span><span class="punctuation">:</span> <span class="string">&quot;## Support Analysis\nThe question asks about ... The premise is valid.\n\n## Relevant Procedure and Hint Notes\n...&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;trajectory_spans&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;trajectory_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webarena_0142&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;start_state_index&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span> <span class="attr">&quot;end_state_index&quot;</span><span class="punctuation">:</span> <span class="number">6</span><span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>memory_markdown</code> 固定两个 section：<code>## Support Analysis</code>（必须明确说出问题前提是否成立——这是给 Premise Awareness 题留的接口）和 <code>## Relevant Procedure and Hint Notes</code>。<code>trajectory_spans</code> 是零基、闭区间的证据指针，<strong>全题合计最多 20 个状态、单个 span 通常 ≤3 步</strong>。harness 会校验 span 合法性（越界 span 拆出），然后把 span 连同 goal、URL、动作、AXTree 文本、截图渲染进 reader 上下文——「摘要 + 可回溯指针」的双层输出，是它比朴素 RAG 少犯 reader error 的直接原因。</p>
+<p>底下的 Codex 基线（<code>codex.py</code>）则不给任何脚手架，直接 <code>subprocess.Popen</code> 拉起一个真实 CLI：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">codex <span class="built_in">exec</span> -C &lt;sandbox&gt; --skip-git-repo-check \</span><br><span class="line">  --dangerously-bypass-approvals-and-sandbox \</span><br><span class="line">  --json -o last_message.txt \</span><br><span class="line">  -m gpt-5.4-mini -c model_reasoning_effort=<span class="string">&quot;xhigh&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>超时 1800s（轮询 0.25s，SIGTERM 后 5s 宽限再 SIGKILL 整个进程组），每查询最多 3 次尝试，stdout&#x2F;stderr&#x2F;events&#x2F;usage&#x2F;duration 全量落审计日志。注意它<strong>不是</strong> tmux——常见转述里的 tmux 多路复用方案在官方仓库里不存在，进程编排就是一个带进程组的子进程。</p>
+<p>四个 baseline 在两个档位的结果（论文口径，LAFS 参考前沿的原始数据）：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th align="right">Small 准确率</th>
+<th align="right">Small 延迟</th>
+<th align="right">Medium 准确率</th>
+<th align="right">Medium 延迟</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RAG query→slice + notes</td>
+<td align="right">51.0%</td>
+<td align="right">0.2s</td>
+<td align="right">45.9%</td>
+<td align="right">0.3s</td>
+</tr>
+<tr>
+<td>AgentRunbook-R</td>
+<td align="right">58.6%</td>
+<td align="right">26.9s</td>
+<td align="right">57.0%</td>
+<td align="right">25.8s</td>
+</tr>
+<tr>
+<td>Codex（裸 CLI）</td>
+<td align="right">69.9%</td>
+<td align="right">177.2s</td>
+<td align="right">68.7%</td>
+<td align="right">185.8s</td>
+</tr>
+<tr>
+<td><strong>AgentRunbook-C</strong></td>
+<td align="right"><strong>74.9%</strong></td>
+<td align="right">108.3s</td>
+<td align="right"><strong>70.1%</strong></td>
+<td align="right">139.9s</td>
+</tr>
+</tbody></table>
+<p>这张表里藏着一个关键事实：Codex 比最强 RAG 高 18 个百分点，但延迟 700 倍；AgentRunbook-C 用 manifest 粗筛 + helper 脚本换来了「比 Codex 再高 5 个点、还快 32%」。<strong>准确率和延迟不是免费互换的，脚手架质量决定 Pareto 前沿的位置</strong>——这正是 LAFS 存在的理由。</p>
+<h2 id="五、评测执行与-Judge-打分"><a href="#五、评测执行与-Judge-打分" class="headerlink" title="五、评测执行与 Judge 打分"></a>五、评测执行与 Judge 打分</h2><h3 id="5-1-Harness-运行机制：三遍式，不是多进程分片"><a href="#5-1-Harness-运行机制：三遍式，不是多进程分片" class="headerlink" title="5.1 Harness 运行机制：三遍式，不是多进程分片"></a>5.1 Harness 运行机制：三遍式，不是多进程分片</h3><p><code>evaluation/harness.py</code> + <code>run_eval.py</code> 的执行结构是三遍顺序推进，而不是网上说的「多进程分片 + tmux」：</p>
+<ol>
+<li><strong>Prompt 构建遍</strong>：为每题调 <code>memory.query()</code> 组装消息。可配 <code>ThreadPoolExecutor(prompt_build_max_workers)</code> 并行；共享干草堆时 memory 单实例共享，非共享型后端每题独立 workspace（跑完由 <code>compact_nonshared_memory_workspace</code> 清掉没用到的轨迹文件）。</li>
+<li><strong>Reader 生成遍</strong>：全异步——<code>asyncio</code> + <code>AsyncOpenAI</code>，并发由 <code>asyncio.Semaphore(reader_max_concurrent_requests)</code>（默认 500）控制，<code>max_retries=10</code>，<code>BadRequestError</code> 降级为空响应不中断整批。图片以 base64 data URL 进多模态消息。</li>
+<li><strong>打分遍</strong>：顺序执行。</li>
+</ol>
+<p>查询延迟用 <code>time.perf_counter()</code> 包住 <code>memory.query()</code>（含 <code>post_query_hook</code>）计时，聚合成 avg&#x2F;p50&#x2F;p95&#x2F;max 写进 <code>aggregated_metrics.json</code>，每题明细进 <code>per_question.jsonl</code>；两个 domain（web&#x2F;enterprise）由 <code>combine_aggregated_metrics.py</code> 按题量加权合并。SIGINT&#x2F;SIGTERM&#x2F;SIGHUP 被改写成 <code>cancel_event</code>，memory 后端观测它做优雅取消——长时间跑 451 题时 Ctrl-C 不会留下一堆半写状态。运行入口是 <code>evaluation/scripts/run_agentrunbook_r.sh</code> 这类脚本，输出目录形如 <code>runs/no_retrieval_web_small</code>，memory 配置经 <code>--memory-config-path</code> 传入 <code>evaluation/memory_configs/*.json</code>。</p>
+<h3 id="5-2-V1-的-Judge：按题型分-prompt-的-GPT-4o"><a href="#5-2-V1-的-Judge：按题型分-prompt-的-GPT-4o" class="headerlink" title="5.2 V1 的 Judge：按题型分 prompt 的 GPT-4o"></a>5.2 V1 的 Judge：按题型分 prompt 的 GPT-4o</h3><p>V1 的打分脚本是 <code>src/evaluation/evaluate_qa.py</code>，用法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> OPENAI_API_KEY=...</span><br><span class="line">python3 evaluate_qa.py gpt-4o &lt;hyp_file&gt; &lt;ref_file&gt;</span><br><span class="line"><span class="comment"># hyp_file 是 JSONL：&#123;&quot;question_id&quot;: &quot;...&quot;, &quot;hypothesis&quot;: &quot;...&quot;&#125;</span></span><br><span class="line"><span class="comment"># 产出 &lt;hyp_file&gt;.eval-results-&lt;model&gt;，每行追加 autoeval_label: &#123;model, label&#125;</span></span><br><span class="line">python3 print_qa_metrics.py &lt;eval_log&gt;   <span class="comment"># 重新聚合</span></span><br></pre></td></tr></table></figure>
+
+<p>判卷模型 <code>gpt-4o-2024-08-06</code>，temperature 0、max_tokens 10，输出 yes&#x2F;no 二值标签，准确率即标签均值，另按 <code>question_type</code> 分桶。与人类专家的一致率 97–98%（判 GPT-4o 答案 0.98，判 Llama-3.1-8B 答案 0.97，abstention 0.97&#x2F;0.90）。</p>
+<p>值得细看的是<strong>判卷 prompt 按题型定制</strong>这件事，四个例子：</p>
+<ul>
+<li><code>temporal-reasoning</code>：<strong>不因天数差一惩罚</strong>——问「多少天」答 45 而标准答案 46，判对；</li>
+<li><code>knowledge-update</code>：回答里<strong>允许残留旧信息，只要新答案在场</strong>——考的是「知不知道最新值」，不是「忘没忘掉旧值」；</li>
+<li><code>single-session-preference</code>：对着 rubric 判，容忍合理的偏好表述差异；</li>
+<li>abstention（<code>_abs</code> 题）：单独的 prompt，判「模型是否正确识别该问题不可答」，输入是问题 + 不可答原因 + 模型回答。</li>
+</ul>
+<p>检索质量另有一套指标：用 <code>answer_session_ids</code> 和 <code>has_answer</code> 算会话级与 turn 级的 Recall@k &#x2F; NDCG@k，30 道 <code>_abs</code> 题不参与检索评估（它们没有「该召回什么」的正确答案）。检索指标和准确率分开看是这套 benchmark 最实用的用法——我们跑 20 题子集时，答案准确率 70% 的主要损失在时序推理（8 题对 4 题），而检索 precision 有 0.85：证据送到了、reader 算错了，和证据根本没送到，是两种完全不同的修复方向。</p>
+<h3 id="5-3-V2-的打分：能规则的规则，不能规则的才给-GPT-5-2"><a href="#5-3-V2-的打分：能规则的规则，不能规则的才给-GPT-5-2" class="headerlink" title="5.3 V2 的打分：能规则的规则，不能规则的才给 GPT-5.2"></a>5.3 V2 的打分：能规则的规则，不能规则的才给 GPT-5.2</h3><p>V2 的打分链比 V1 冷静得多。答案必须装箱（<code>extract_boxed_answer</code> 解析），然后分两路：</p>
+<ul>
+<li><strong>结构化题</strong>（多选、短答）走<strong>确定性评估器</strong>——归一化短语匹配、保序短语匹配，零模型调用、零判卷方差；</li>
+<li>只有 <strong>Gotchas 和 abstention 两类</strong>交给 Judge：<code>llm_gotchas_checker</code> &#x2F; <code>llm_abstention_checker</code>，GPT-5.2（medium reasoning），输出二值 JSON 标签。</li>
+</ul>
+<p>还有一条硬规则：<strong>在非拒答题上给出 abstention 式回答，强制判错</strong>——「不放心就拒答」在 V2 里不是安全牌。leaderboard 上的指标因此是分题型的：<code>static_accuracy</code>、<code>dynamic_accuracy</code>、<code>procedure_accuracy</code>、<code>gotchas_accuracy</code> 加 abstention，再合成总分。</p>
+<h3 id="5-4-LAFS：把「快而准」压成一个数"><a href="#5-4-LAFS：把「快而准」压成一个数" class="headerlink" title="5.4 LAFS：把「快而准」压成一个数"></a>5.4 LAFS：把「快而准」压成一个数</h3><p>单看准确率，RAG 的 0.2s 和 AgentRunbook-C 的 108s 没法比；单看延迟又会奖赏烂检索。V2 的解法是 Latency-Adjusted Frontier Score：在 1s 到 200s 的<strong>对数均匀延迟预算</strong>上，积分「该预算内可达的最佳准确率」，再除以积分区间长度。实现就在 <code>leaderboard/compute_lafs.py</code>，核心常量 <code>T_MIN = 1.0</code>、<code>T_MAX = 200.0</code>、<code>FLOOR_ACC = 0.0</code>。</p>
+<p>数学形式（对数轴上的阶跃函数积分，ln 为自然对数）：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">                 T_max</span><br><span class="line">                 ⌠</span><br><span class="line">                 ⌡  max( &#123; acc_i | lat_i ≤ T &#125; ∪ &#123;0&#125; )  d(ln T)</span><br><span class="line">LAFS = ─────────────────────────────────────────────────────────</span><br><span class="line">                        ln(T_max / T_min)</span><br><span class="line"></span><br><span class="line"># max-under-budget：预算 T 内所有已出结果点的最高准确率；预算内无点时取 0</span><br></pre></td></tr></table></figure>
+
+<p>离散化成 Pareto 前沿上相邻点构成的区间求和：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">lafs</span>(<span class="params">points</span>):  <span class="comment"># points: [(latency_s, accuracy_pct)]</span></span><br><span class="line">    frontier = pareto_frontier(points)   <span class="comment"># 按 (latency, -acc) 排序后保留严格占优点</span></span><br><span class="line">    knots = [T_MIN] + <span class="built_in">sorted</span>(l <span class="keyword">for</span> l, _ <span class="keyword">in</span> frontier <span class="keyword">if</span> T_MIN &lt; l &lt; T_MAX) + [T_MAX]</span><br><span class="line">    total = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> left, right <span class="keyword">in</span> <span class="built_in">zip</span>(knots, knots[<span class="number">1</span>:]):</span><br><span class="line">        best = <span class="built_in">max</span>([a <span class="keyword">for</span> l, a <span class="keyword">in</span> frontier <span class="keyword">if</span> l &lt;= left], default=FLOOR_ACC)</span><br><span class="line">        total += best * math.log(right / left)</span><br><span class="line">    <span class="keyword">return</span> total / math.log(T_MAX / T_MIN)</span><br></pre></td></tr></table></figure>
+
+<p>两个设计决策值得咀嚼：<strong>对数轴</strong>意味着「从 1s 优化到 2s」和「从 100s 优化到 200s」权重相同——延迟的边际价值按倍数衰减，符合记忆系统的实际使用直觉；<strong>max-under-budget</strong> 意味着慢而准的方法不会拖累快而糙的方法，每个延迟区间由该区间内最强者代表。</p>
+<p>拿 Small 档参考前沿手算一遍。四个 baseline 点：(0.2, 51.0)、(26.9, 58.6)、(108.3, 74.9)、(177.2, 69.9)。第四个点被 (108.3, 74.9) 严格支配（更慢且更不准），Pareto 前沿剩三个点。积分区间与取值：</p>
+<table>
+<thead>
+<tr>
+<th>对数区间</th>
+<th align="right">预算内最佳准确率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[1, 26.9]</td>
+<td align="right">51.0（0.2s 的 RAG 已在预算内）</td>
+</tr>
+<tr>
+<td>[26.9, 108.3]</td>
+<td align="right">58.6</td>
+</tr>
+<tr>
+<td>[108.3, 200]</td>
+<td align="right">74.9</td>
+</tr>
+</tbody></table>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LAFS = [ 51.0·ln(26.9/1) + 58.6·ln(108.3/26.9) + 74.9·ln(200/108.3) ] / ln(200/1)</span><br><span class="line">     = ( 167.9 + 81.6 + 45.9 ) / 5.298</span><br><span class="line">     ≈ 55.8</span><br></pre></td></tr></table></figure>
+
+<p>Leaderboard 的实际用法是<strong>增量制</strong>：提交方可给多个延迟工作点（标注 fast &#x2F; balanced &#x2F; accurate），提交增益 &#x3D; <code>LAFS(F_ref ∪ S) − LAFS(F_ref)</code>，即你的点对固定参考前沿（上表四点）的边际贡献。想在快区拿分，就得有 1–27s 内超过 51% 的方法；想在慢区拿分，得在 200s 内打过 74.9%。Codex 那个 177.2s 的点对参考前沿贡献为零——被支配的点无论多准都不产生 LAFS 增益，这就是这个指标对「盲目堆延迟」的惩罚。</p>
+<h2 id="六、跑这套基准时容易踩的坑"><a href="#六、跑这套基准时容易踩的坑" class="headerlink" title="六、跑这套基准时容易踩的坑"></a>六、跑这套基准时容易踩的坑</h2><p>拿本地数据核对加实测跑分，攒下这些容易翻车的点：</p>
+<ol>
+<li>**V1 要用 <code>longmemeval-cleaned</code>**。原 HF 数据集已标 deprecated（2025&#x2F;09），旧版分数与 cleaned 版不可比；两版的差异在官方 Google Sheets changelog 里。</li>
+<li><strong>别假设会话数组分钟级有序</strong>。README 说 sorted by timestamp，实际 cleaned 版只有 289&#x2F;500 严格递增，同天有乱序；<code>question_date</code> 晚于全部历史也只对 424&#x2F;500 成立。做 recency 截断或时间不变量断言前先自己数一遍。</li>
+<li><strong><code>_abs</code> 题在 judge 和检索两个环节都特殊</strong>。判卷走单独的「是否正确拒答」prompt；检索评估直接跳过。把它混进普通题算 recall 会污染指标。</li>
+<li><strong>V2 的 token 预算按 Qwen3.5-9B 的 tokenizer 计</strong>（默认 200k，图片折算在内），用别的 tokenizer 估预算会错位；截断是二分最大前缀，不是砍尾。</li>
+<li><strong>小样本子集的置信区间宽得吓人</strong>。20 题二项 70% 的 95% 置信区间宽达 46%–88%（Clopper-Pearson 精确区间），拿它和别家全量分数并排做表时必须写明口径。</li>
+<li><strong>V2 后端拿不到题目元数据</strong>，只有随机 <code>query_invocation_id</code>。想在 query 里按题型分支优化的「捷径」协议上就不存在，<code>test_query_privacy.py</code> 专门堵这个。</li>
+</ol>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>LongMemEval 两代合起来讲了一个完整的评测故事：V1 证明了「跨会话事实、时间推算、知识更新、拒答」可以被组织成可复现的数据结构——三个平行数组的索引对齐、<code>has_answer</code> 的 turn 级标注、oracle 上限，这些设计让记忆系统的检索质量第一次可以被独立测量；V2 把同样的严谨性搬到了大两个数量级的多模态轨迹上——固定 reader 隔离记忆系统变量、200k token 预算强制压缩、确定性打分压缩判卷方差、LAFS 把「快」和「准」变成同一条曲线下的面积。</p>
+<p>如果要带走一个观察：这套 benchmark 真正测的不是「存了多少」，而是<strong>「压缩证据的保真度」</strong>——AgentRunbook-C 的高分来自「manifest 粗筛 → helper 精查 → 最多 20 个状态的带指针摘要」这条压缩链，而不是任何花哨的存储结构。想在 LAFS 上拿分，先想清楚你的系统交出去的那份 200k token 以内的证据，是不是每一条都值得 reader 读。</p>
+<h2 id="延伸阅读"><a href="#延伸阅读" class="headerlink" title="延伸阅读"></a>延伸阅读</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.10813">LongMemEval V1 论文（arXiv 2410.10813）</a> &#x2F; <a target="_blank" rel="noopener" href="https://github.com/xiaowu0162/LongMemEval">官方仓库</a> &#x2F; <a target="_blank" rel="noopener" href="https://xiaowu0162.github.io/long-mem-eval/">项目页</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/html/2605.12493">LongMemEval-V2 论文（arXiv 2605.12493）</a> &#x2F; <a target="_blank" rel="noopener" href="https://github.com/xiaowu0162/LongMemEval-V2">官方仓库</a> &#x2F; <a target="_blank" rel="noopener" href="https://huggingface.co/datasets/xiaowu0162/longmemeval-v2">HF 数据集</a></li>
+<li><a target="_blank" rel="noopener" href="https://xiaowu0162.github.io/longmemeval-v2/agentrunbook-c-v2/">AgentRunbook-C V2 说明</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2504.19413">Mem0 论文（arXiv 2504.19413）</a>——J score 与 LOCOMO 的出处，常被误记进 LongMemEval</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ProsusAI/MemEval">MemEval（ProsusAI）</a>——统一 harness 的对话记忆系统横评，可与本文的口径差异对照着看</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>三岁浪迹天涯
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sheep1433.github.io/2026/09/12/LongMemEval-V1-V2-%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E5%85%A8%E8%A7%A3%E6%9E%84/" title="LongMemEval V1→V2 全解构：从 500 条对话到 1.15 亿 token 轨迹的长期记忆评测">https://sheep1433.github.io/2026/09/12/LongMemEval-V1-V2-长期记忆评测基准全解构/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Benchmark/" rel="tag"># Benchmark</a>
+              <a href="/tags/LLM%E8%AF%84%E6%B5%8B/" rel="tag"># LLM评测</a>
+              <a href="/tags/LongMemEval/" rel="tag"># LongMemEval</a>
+              <a href="/tags/AgentMemory/" rel="tag"># AgentMemory</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/07/08/Promptfoo-%E5%AE%9E%E6%88%98-Agent%E8%87%AA%E5%8A%A8%E5%8C%96%E8%AF%84%E6%B5%8B/" rel="prev" title="Promptfoo 实战：从零搭建 Agent 自动化评测体系">
+                  <i class="fa fa-angle-left"></i> Promptfoo 实战：从零搭建 Agent 自动化评测体系
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/09/12/Deep-Research-%E8%AF%84%E6%B5%8B%E9%9B%86%E5%85%A8%E8%A7%A3%E6%9E%84-BrowseComp%E4%B8%8ERACE%E5%88%A4%E5%88%86%E4%BD%93%E7%B3%BB/" rel="next" title="Deep Research 评测集全解构：从 BrowseComp 的 1,266 道难题到 RACE 相对分判分体系">
+                  Deep Research 评测集全解构：从 BrowseComp 的 1,266 道难题到 RACE 相对分判分体系 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2025 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">true</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">24k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:26</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
