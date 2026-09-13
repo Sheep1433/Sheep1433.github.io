@@ -27,7 +27,7 @@
 <meta property="og:description" content="逐字段拆解 BrowseComp 家族的加密 CSV 与判分 prompt、DeepResearch Bench 的 query&#x2F;criteria&#x2F;reference 三件套与 RACE&#x2F;FACT 双框架公式，横评 GAIA、HLE、xbench-DeepSearch、ReportBench、ResearcherBench 等报告基准，并给出我们自建 harness 跑分的一手工程细节与 Brow">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-09-12T15:00:00.000Z">
-<meta property="article:modified_time" content="2026-09-12T11:48:50.918Z">
+<meta property="article:modified_time" content="2026-09-13T12:35:50.355Z">
 <meta property="article:author" content="Sheep">
 <meta property="article:tag" content="Agent评测">
 <meta property="article:tag" content="Benchmark">
@@ -223,9 +223,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2026-09-12 23:00:00 / 修改时间：19:48:50" itemprop="dateCreated datePublished" datetime="2026-09-12T23:00:00+08:00">2026-09-12</time>
+      <time title="创建时间：2026-09-12 23:00:00" itemprop="dateCreated datePublished" datetime="2026-09-12T23:00:00+08:00">2026-09-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-09-13 20:35:50" itemprop="dateModified" datetime="2026-09-13T20:35:50+08:00">2026-09-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -251,7 +257,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>6.3k</span>
+      <span>6.4k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -309,7 +315,7 @@
 </tr>
 <tr>
 <td>BrowseComp-ZH</td>
-<td>复旦等，2025-04</td>
+<td>Peilin Zhou 等（多机构），2025-04</td>
 <td align="right">289</td>
 <td>中文互联网多跳检索</td>
 <td>短答案</td>
@@ -341,7 +347,7 @@
 </tr>
 <tr>
 <td>DeepResearch Bench</td>
-<td>通义，2025-06</td>
+<td>USTC + Metastone，2025-06</td>
 <td align="right">100</td>
 <td>开放调研报告（22 领域，中英各半）</td>
 <td>长报告 + 引用</td>
@@ -431,7 +437,7 @@
 <p>作答协议要求行内方括号引用证据文档 ID（如 <code>[20]</code>，不是某些转述说的 @-mention），额外产出 Coverage &#x2F; Precision &#x2F; Recall &#x2F; 平均引用数四项指标（GPT-5 基线：98.0% &#x2F; 83.4% &#x2F; 62.3% &#x2F; 4.28）。判分模型也换了思路：论文用 gpt-4.1，<strong>发布版评测脚本改用 Qwen3-32B</strong>——理由是长期可复现（闭源 judge 停服就废榜），且两个 judge 均差 &lt;1%。</p>
 <h3 id="2-4-家族变体一句话清单"><a href="#2-4-家族变体一句话清单" class="headerlink" title="2.4 家族变体一句话清单"></a>2.4 家族变体一句话清单</h3><p>MM-BrowseComp（400 题多模态，最强 GPT-5-High 带工具 24.25%）、BrowseComp-V³（300 题多模态，~36%）、BrowseComp-Wikipedia（232 题跑在 25.6M 篇 Wikipedia 索引上）、BrowseComp-Small（60 题子集）。没有 BrowseComp-2，也没有官方 EN 刷新版——「BrowseComp-EN」只是论文里指代原版英文集的简称。</p>
 <h2 id="三、DeepResearch-Bench：报告评测的参照系"><a href="#三、DeepResearch-Bench：报告评测的参照系" class="headerlink" title="三、DeepResearch Bench：报告评测的参照系"></a>三、DeepResearch Bench：报告评测的参照系</h2><p>短答案基准测不了报告——报告没有「唯一正确答案」，判分只能走 rubric。这一节是全文的重心，也是我们自己搭过 harness 跑过的基准。</p>
-<h3 id="3-1-数据集：三个-jsonl-的分工"><a href="#3-1-数据集：三个-jsonl-的分工" class="headerlink" title="3.1 数据集：三个 jsonl 的分工"></a>3.1 数据集：三个 jsonl 的分工</h3><p>通义的 DeepResearch Bench（arXiv 2506.11763，仓库 <code>Ayanami0730/deep_research_bench</code>）有 100 道博士级调研任务，覆盖 <strong>22 个领域</strong>（WebOrganizer 分类法，不是转述里常说的 26 个），中英各 50 题。题源是 96,147 条匿名真实用户查询，经 DeepSeek-V3-0324 筛出 44,019 条 deep research 型查询，再由 5 年以上经验的博士&#x2F;从业者出题。<strong>参考报告全部是 Gemini-2.5-Pro Deep Research 在 2025 年 4 月的快照</strong>——这个时间戳后面判分口径一节会用到。</p>
+<h3 id="3-1-数据集：三个-jsonl-的分工"><a href="#3-1-数据集：三个-jsonl-的分工" class="headerlink" title="3.1 数据集：三个 jsonl 的分工"></a>3.1 数据集：三个 jsonl 的分工</h3><p>DeepResearch Bench（arXiv 2506.11763，中科大（USTC）与 Metastone Technology 出品——论文注明工作在一作 Mingxuan Du 于 Metastone 实习期间完成，通讯作者为 USTC 的 Zhendong Mao；仓库 <code>Ayanami0730/deep_research_bench</code>）有 100 道博士级调研任务，覆盖 <strong>22 个领域</strong>（WebOrganizer 分类法，不是转述里常说的 26 个），中英各 50 题。题源是 96,147 条匿名真实用户查询，经 DeepSeek-V3-0324 筛出 44,019 条 deep research 型查询，再由 5 年以上经验的博士&#x2F;从业者出题。<strong>参考报告全部是 Gemini-2.5-Pro Deep Research 在 2025 年 4 月的快照</strong>——这个时间戳后面判分口径一节会用到。</p>
 <p>官方数据三件套（我们本地子集里的真实样例）：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// data/prompt_data/query.jsonl —— 题目</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">20</span><span class="punctuation">,</span> <span class="attr">&quot;topic&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Software Development&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;language&quot;</span><span class="punctuation">:</span> <span class="string">&quot;zh&quot;</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;prompt&quot;</span><span class="punctuation">:</span> <span class="string">&quot;研究下Anthropic最新发布的Streamable HTTP的工程中的具体实现方案&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// data/criteria_data/criteria.jsonl —— 该题的自适应评判标准（节选，权重为示意）</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">20</span><span class="punctuation">,</span> <span class="attr">&quot;prompt&quot;</span><span class="punctuation">:</span> <span class="string">&quot;研究下……&quot;</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;dimension_weight&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;comprehensiveness&quot;</span><span class="punctuation">:</span> <span class="number">0.30</span><span class="punctuation">,</span> <span class="attr">&quot;insight&quot;</span><span class="punctuation">:</span> <span class="number">0.35</span><span class="punctuation">,</span></span><br><span class="line">                      <span class="attr">&quot;instruction_following&quot;</span><span class="punctuation">:</span> <span class="number">0.15</span><span class="punctuation">,</span> <span class="attr">&quot;readability&quot;</span><span class="punctuation">:</span> <span class="number">0.20</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;criterions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">   <span class="attr">&quot;comprehensiveness&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">     <span class="punctuation">&#123;</span><span class="attr">&quot;criterion&quot;</span><span class="punctuation">:</span> <span class="string">&quot;是否覆盖 Streamable HTTP 与旧协议的核心差异&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;explanation&quot;</span><span class="punctuation">:</span> <span class="string">&quot;……&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;weight&quot;</span><span class="punctuation">:</span> <span class="number">0.4</span><span class="punctuation">&#125;</span></span><br><span class="line">   <span class="punctuation">]</span></span><br><span class="line"> <span class="punctuation">&#125;</span><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// data/test_data/raw_data/reference.jsonl —— 专家参考报告（也是提交格式）</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">20</span><span class="punctuation">,</span> <span class="attr">&quot;prompt&quot;</span><span class="punctuation">:</span> <span class="string">&quot;研究下……&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;article&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&lt;Gemini-2.5-Pro DR 报告全文&gt;&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
