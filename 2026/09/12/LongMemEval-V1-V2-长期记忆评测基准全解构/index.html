@@ -27,7 +27,7 @@
 <meta property="og:description" content="逐字段拆解 LongMemEval V1 的 question JSON 与索引对齐、V2 的轨迹目录与五类记忆问题，还原 Insert&#x2F;Query 评测协议、AgentRunbook-R&#x2F;C 两条 baseline 的运行机制，并推导 LAFS 延迟调整分数的积分公式。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-09-12T13:30:00.000Z">
-<meta property="article:modified_time" content="2026-09-12T09:40:05.692Z">
+<meta property="article:modified_time" content="2026-09-14T08:33:28.522Z">
 <meta property="article:author" content="Sheep">
 <meta property="article:tag" content="Benchmark">
 <meta property="article:tag" content="LLM评测">
@@ -222,9 +222,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2026-09-12 21:30:00 / 修改时间：17:40:05" itemprop="dateCreated datePublished" datetime="2026-09-12T21:30:00+08:00">2026-09-12</time>
+      <time title="创建时间：2026-09-12 21:30:00" itemprop="dateCreated datePublished" datetime="2026-09-12T21:30:00+08:00">2026-09-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-09-14 16:33:28" itemprop="dateModified" datetime="2026-09-14T16:33:28+08:00">2026-09-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -311,7 +317,7 @@
 </tr>
 <tr>
 <td>数据来源</td>
-<td>WildChat 真实用户对话 + ShareGPT&#x2F;UltraChat&#x2F;仿真填充</td>
+<td>属性控制的针中藏针合成会话（证据）+ ShareGPT&#x2F;UltraChat&#x2F;仿真会话（填充）</td>
 <td>AgentLab harness 采的 1,540 条真实轨迹（成功率 52%）</td>
 </tr>
 </tbody></table>
@@ -381,7 +387,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">haystack_sessions[i]      ← 第 i 个会话的对话内容</span><br><span class="line">haystack_dates[i]         ← 第 i 个会话的发生时间</span><br><span class="line">haystack_session_ids[i]   ← 第 i 个会话的唯一 ID</span><br><span class="line">        │</span><br><span class="line">        └── 三者共享下标 i：会话、时间戳、ID 一一对应</span><br><span class="line">            证据会话（answer_ 前缀）散布在任意位置，不保证排在末尾</span><br></pre></td></tr></table></figure>
 
 <p>这带来两个工程后果。第一，<strong>会话隔离与时间标定是免费的</strong>：不需要解析会话内容里的任何时间信息，每个会话的「何时发生」由 <code>haystack_dates[i]</code> 直接给出，时间推理题考的是「文本内显式时间表达 + 元数据时间戳」的联合推理，不是考模型找时间。第二，检索评估可以做到两级粒度——会话级用 <code>answer_session_ids</code>，turn 级用 <code>has_answer</code> 标记（全数据集共 896 个证据 turn）。</p>
-<p>我自己核对 cleaned 版数据时发现一个 README 没写的坑：官方说 <code>_s</code>&#x2F;<code>_m</code> 的会话「按时间戳排序」，实际 500 条里只有 289 条是分钟级严格递增，<strong>同一天内存在乱序</strong>（比如 <code>15:24</code> 之后跟着 <code>01:34</code>）。如果你的 harness 假设「数组尾部就是最新会话」做 recency 截断，会截错。另外 <code>question_date</code> 晚于全部历史时间戳这条设计（论文记作 t_q &gt; t_N），实测只对 424&#x2F;500 成立——直接拿这两条做不变量断言会翻车。</p>
+<p>我自己核对 cleaned 版数据时发现一个 README 没写的坑：官方说 <code>_s</code>&#x2F;<code>_m</code> 的会话「按时间戳排序」，实际 500 条里有 211 条在同一天内存在乱序（比如 <code>15:24</code> 之后跟着 <code>01:34</code>），做到分钟级非降序的只有 289 条、严格递增的只有 249 条。如果你的 harness 假设「数组尾部就是最新会话」做 recency 截断，会截错。另外 <code>question_date</code> 晚于全部历史时间戳这条设计（论文记作 t_q &gt; t_N），实测只对 424&#x2F;500 成立——直接拿这两条做不变量断言会翻车。</p>
 <h3 id="2-3-五大能力与六种题型的映射"><a href="#2-3-五大能力与六种题型的映射" class="headerlink" title="2.3 五大能力与六种题型的映射"></a>2.3 五大能力与六种题型的映射</h3><p>论文定义的五个核心能力，落到数据上是六种 <code>question_type</code> 加 <code>_abs</code> 标记。cleaned 版 S 档的真实分布（我逐条数的）：</p>
 <table>
 <thead>
@@ -731,7 +737,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:26</span>
+    <span title="站点阅读时长">1:27</span>
   </span>
 </div>
 <div class="busuanzi-count">
