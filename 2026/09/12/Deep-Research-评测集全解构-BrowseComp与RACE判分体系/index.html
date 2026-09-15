@@ -27,7 +27,7 @@
 <meta property="og:description" content="以 DeepResearch Bench 为主角拆解报告型评测：query&#x2F;criteria&#x2F;reference 三件套数据格式、RACE 双盲对比与自适应标准的加权公式、FACT 引用可信度流水线、judge 选型成本矩阵与位置偏差问题，附我们自建 harness 跑中文子集与移植官方判分脚本的一手工程细节。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-09-12T15:00:00.000Z">
-<meta property="article:modified_time" content="2026-09-14T08:48:13.099Z">
+<meta property="article:modified_time" content="2026-09-15T11:26:03.234Z">
 <meta property="article:author" content="Sheep">
 <meta property="article:tag" content="Agent评测">
 <meta property="article:tag" content="Benchmark">
@@ -230,7 +230,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-09-14 16:48:13" itemprop="dateModified" datetime="2026-09-14T16:48:13+08:00">2026-09-14</time>
+      <time title="修改时间：2026-09-15 19:26:03" itemprop="dateModified" datetime="2026-09-15T19:26:03+08:00">2026-09-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -256,14 +256,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>4.3k</span>
+      <span>4.6k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>16 分钟</span>
+      <span>17 分钟</span>
     </span>
 </div>
 
@@ -391,10 +391,10 @@
 
 <p>为什么最后一步做成相对分？因为 rubric 绝对分有严重漂移：换个 judge 模型、换个 prompt 版本，7 分的含义就变了。把专家参考报告拉进来同场对比，「你比 Gemini-2.5-Pro 的报告好还是差」是个跨 judge 更稳定的量。代价也明确：<strong>你的分数量化的是「相对 2025 年 4 月的 Gemini 快照」，不是绝对质量</strong>——参考报告自己也在老化。</p>
 <p>裁判选型论文里给了完整的成本-一致率矩阵（与人类判断的一致率 &#x2F; 单题成本）：Gemini-2.5-Pro 72.56% &#x2F; $0.13、Claude-3.7-Sonnet 72.28% &#x2F; $0.47、o4-mini 71.63% &#x2F; $0.04、o3 68.58% &#x2F; $0.37；人类标注者之间的一致率只有 68.4%——<strong>最好的 LLM 裁判已经比人类互相之间更一致</strong>。论文期 RACE 裁判选了 Gemini-2.5-Pro，2026 年仓库已切到 GPT-5.5（一致率 71.82%），Gemini 代码保留在 <code>Gemini-2.5</code> 分支。历史分数因此<strong>跨 judge 版本不可比</strong>。</p>
-<h2 id="四、FACT：引用的两项指标"><a href="#四、FACT：引用的两项指标" class="headerlink" title="四、FACT：引用的两项指标"></a>四、FACT：引用的两项指标</h2><p>FACT（<strong>F</strong>actual <strong>A</strong>bundance and <strong>C</strong>itation <strong>T</strong>rustworthiness）管另一半：报告里的事实有没有出处、出处撑不撑得住。流水线：judge LLM 从报告抽取「陈述–URL」对 → 同 URL 的重复事实去重 → 经 Jina Reader API 抓取 URL 正文 → 二值判定「支持&#x2F;不支持」。两项指标：</p>
+<h2 id="四、FACT：引用的两项指标"><a href="#四、FACT：引用的两项指标" class="headerlink" title="四、FACT：引用的两项指标"></a>四、FACT：引用的两项指标</h2><p>FACT（<strong>F</strong>actual <strong>A</strong>bundance and <strong>C</strong>itation <strong>T</strong>rustworthiness）管另一半：报告里的事实有没有出处、出处撑不撑得住。流水线与 LLM 调用账单（从官方 <code>utils/extract.py</code> &#x2F; <code>validate.py</code> 源码核实）：抽取 <strong>1 次调用</strong>（整篇报告进一个 prompt，输出全部「陈述–URL」三元组）→ 程序化去重（同事实同 URL 只留一条）→ Jina Reader 抓取正文（非 LLM）→ 判定<strong>每个唯一 URL 1 次调用</strong>（该 URL 正文 + 所有引用它的陈述打包进同一 prompt，三值判定 supported &#x2F; unsupported &#x2F; unknown，内部最多重试 3 次）。一篇引用 100+ 条陈述的报告，判定调用量等于其唯一 URL 数——比 RACE 高一个数量级，这也是官方用便宜档模型（论文期 Gemini-2.5-Flash，现 GPT-5.4-mini）做 FACT 的原因。两项指标：</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">C.Acc = (1/|T|) Σ_t Acc_t     其中 Acc_t = N_s,t / N_u,t（该题无引用则计 0）</span><br><span class="line">        # 每题「被支持的陈述数 / 唯一引用陈述数」的平均</span><br><span class="line">E.Cit = Σ_t N_s,t / |T|        # 每题平均多少条陈述可被引用验证</span><br></pre></td></tr></table></figure>
 
-<p>人类一致率：支持 96% &#x2F; 不支持 92%。这两个数与 RACE 是<strong>反着用的</strong>——C.Acc 高 E.Cit 低是「引得准但引得少」，C.Acc 低 E.Cit 高是「海量引用里混着撑不住的」。</p>
+<p>人类一致率：支持 96% &#x2F; 不支持 92%。三个从源码核出的读数细节：<strong>unknown 从分母剔除</strong>（抓取失败不伤 C.Acc，只是让该陈述退出统计）；<strong>supported 标准宽松</strong>——陈述的事实「全部或部分」在来源中找到即算，数值接受四舍五入，所以 C.Acc 度量的是「引用没有张冠李戴」而非「每条陈述被完整背书」；每次判定要求裁判返回条数与打包陈述数严格相等，否则整次重试、三次失败则该 URL 全部陈述作废。另外论文公式是逐题平均（无引用计 0），发布脚本 <code>stat.py</code> 算的是全库池化比率且跳过无引用题——移植时照哪个口径要自己定并写明。这两个数与 RACE 是<strong>反着用的</strong>——C.Acc 高 E.Cit 低是「引得准但引得少」，C.Acc 低 E.Cit 高是「海量引用里混着撑不住的」。</p>
 <p>论文 Table 1 的头部结果（RACE &#x2F; C.Acc &#x2F; E.Cit）：</p>
 <table>
 <thead>
@@ -546,7 +546,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:19</span>
+    <span title="站点阅读时长">1:20</span>
   </span>
 </div>
 <div class="busuanzi-count">
