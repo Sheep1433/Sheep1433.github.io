@@ -60,6 +60,8 @@
 
   
 
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
 
 
 
@@ -460,7 +462,21 @@
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (dataStr === <span class="string">&quot;[DONE]&quot;</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (terminalObserved) <span class="title function_">settleSuccess</span>();</span><br><span class="line">  <span class="keyword">else</span> <span class="title function_">restartFromSnapshot</span>();      <span class="comment">// 半路 EOF，不假装完成</span></span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><code>terminalObserved</code> 只在真的收到 <code>run-finished</code>（或快照是终态）后才置位。少了这个判断，就会出现”界面显示完成，但数据库里还在 running”的假成功。</p>
 <p><strong>EOF 是传输事实，终态是业务事实。</strong></p>
-<h3 id="6-3-一次重连的七步"><a href="#6-3-一次重连的七步" class="headerlink" title="6.3 一次重连的七步"></a>6.3 一次重连的七步</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">flowchart TD</span><br><span class="line">    A[&quot;收到一帧&quot;] --&gt; B&#123;&quot;sequence ≤ cursor?&quot;&#125;</span><br><span class="line">    B -- 是 --&gt; C[&quot;丢弃重复&quot;]</span><br><span class="line">    B -- 否 --&gt; D&#123;&quot;sequence == cursor + 1?&quot;&#125;</span><br><span class="line">    D -- 是 --&gt; E[&quot;应用事件&quot;]</span><br><span class="line">    D -- 否 --&gt; F[&quot;stop：断开当前连接&quot;]</span><br><span class="line">    F --&gt; G[&quot;拉权威快照&quot;]</span><br><span class="line">    G --&gt; H&#123;&quot;仍然 active?&quot;&#125;</span><br><span class="line">    H -- 否 --&gt; I[&quot;安静退出&quot;]</span><br><span class="line">    H -- 是 --&gt; J[&quot;退避后重连，带 after_sequence&quot;]</span><br></pre></td></tr></table></figure>
+<h3 id="6-3-一次重连的七步"><a href="#6-3-一次重连的七步" class="headerlink" title="6.3 一次重连的七步"></a>6.3 一次重连的七步</h3><pre>
+<code class="mermaid">
+
+flowchart TD
+    A[&quot;收到一帧&quot;] --&gt; B{&quot;sequence ≤ cursor?&quot;}
+    B -- 是 --&gt; C[&quot;丢弃重复&quot;]
+    B -- 否 --&gt; D{&quot;sequence &#x3D;&#x3D; cursor + 1?&quot;}
+    D -- 是 --&gt; E[&quot;应用事件&quot;]
+    D -- 否 --&gt; F[&quot;stop：断开当前连接&quot;]
+    F --&gt; G[&quot;拉权威快照&quot;]
+    G --&gt; H{&quot;仍然 active?&quot;}
+    H -- 否 --&gt; I[&quot;安静退出&quot;]
+    H -- 是 --&gt; J[&quot;退避后重连，带 after_sequence&quot;]
+</code>
+</pre>
 
 <ol>
 <li><strong>发现异常</strong>：<code>read()</code> 超过 45 秒没返回，或者序号不等于 <code>cursor + 1</code>。</li>
